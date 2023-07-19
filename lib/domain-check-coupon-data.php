@@ -84,7 +84,7 @@ class DomainCheckCouponData {
 		static::$data = $return_data;
 	}
 
-	public static function search($needle, $language = 'all') {
+	public static function search($needle, $language = 'all', $site = null) {
 		static::init();
 
 		$ret = array();

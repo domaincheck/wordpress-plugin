@@ -3,7 +3,7 @@
 Plugin Name: Domain Check
 Plugin URI: http://domaincheckplugin.com
 Description: Domain Check lets you search domain names in your admin using your Wordpress blog, set domain expiration reminders for yourself or multiple email addresses, check SSL certificates, and set SSL expiration reminders. Get email reminders when domains expire or SSL certificates expire and set multiple emails for domain expiration reminders. Watch domain names on your own domain watch list and do your own domain lookups! Get the latest daily coupon codes from all the major domain registrars, SSL certificate providers, and hosting companies right in your Wordpress admin!
-Version: 1.0.4
+Version: 1.0.5
 Author: Domain Check
 Author URI: http://domaincheckplugin.com
 
@@ -52,7 +52,7 @@ if(!class_exists('DomainCheck')) {
 		const PLUGIN_CLASSNAME = 'DomainCheck';
 		const PLUGIN_NAME = 'domain-check';
 		const PLUGIN_OPTION_PREFIX = 'domain_check';
-		const PLUGIN_VERSION = '1.0.4';
+		const PLUGIN_VERSION = '1.0.5';
 
 		public static $db_table; //db table (has to be dynamic for wp prefix)
 
@@ -82,7 +82,8 @@ if(!class_exists('DomainCheck')) {
 			require_once($pluginDir . 'lib/domain-check-coupon-data.php'); //coupon functions
 			require_once($pluginDir . 'lib/domain-check-links.php'); //link functions
 			require_once($pluginDir . 'lib/domain-check-search.php'); //search functions
-			require_once($pluginDir . 'lib/domain-check-help.php'); //lhelp functions
+			require_once($pluginDir . 'lib/domain-check-help.php'); //help functions
+			require_once($pluginDir . 'lib/domain-check-email.php'); //email functions
 
 			static::$basename = plugin_basename(__FILE__);
 
@@ -156,7 +157,7 @@ if(!class_exists('DomainCheck')) {
 			DomainCheckCouponData::update();
 		}
 
-		//here there be dragons...
+		//here there be monsters...
 		public function domain_check_cron_email() {
 			global $wpdb;
 
@@ -201,7 +202,7 @@ if(!class_exists('DomainCheck')) {
 				}
 
 				$blog_name = get_option('blogname');
-				$site_url = get_option('site_url');
+				$site_url = site_url();
 			}
 
 			//get general emails from settings
@@ -727,7 +728,6 @@ if(!class_exists('DomainCheck')) {
 
 			DomainCheckSearch::domain_search(site_url(), false, true, true);
 			DomainCheckSearch::ssl_search(site_url(), true);
-			//DomainCheckSearch::domain_search(get_option('site_url'));
 
 			//trigger_error(ob_get_contents(), E_USER_ERROR);
 		}

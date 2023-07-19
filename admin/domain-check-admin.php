@@ -924,6 +924,23 @@ if(!class_exists('DomainCheckAdmin')) {
 							}
 						}
 						break;
+					case 'email_test':
+
+						if (isset($_POST['email_address'])) {
+							$email = trim($_POST['email_address']);
+							$email = sanitize_email($email);
+							if (is_email($email)) {
+								$ret = DomainCheckEmail::email_test($email);
+								if (!is_array($ret)) {
+									$this->ajax_success(array('message' => 'Success! Email sent to ' . $email . '!'));
+								} else {
+									$this->ajax_error('Error sending email to ' . $email . '. ' . $ret['error']);
+								}
+							} else {
+								$this->ajax_error($email . ' is not a valid email address.');
+							}
+						}
+						break;
 				}
 			}
 			$this->ajax_error('Setting not updated.');
@@ -2264,9 +2281,35 @@ if(!class_exists('DomainCheckAdmin')) {
 						background-color: #ffffff;
 					}
 				</style>
-				<p class="p">
-					Use this tool to import your data and easily grab any domains from files, text lists, emails, or other documents. To get a list of your domains you should log in to your domain registrar and find the section that lists all of your domains. Highlight the entire page and copy and paste in to the first textbox. If you have multiple pages of domains you can also see if your domain registrar can export a CSV and you can use the file importer.
-				</p>
+				<div style="width: auto;">
+					<div class="domain-check-import-left" style="min-height: 1px; max-width: 740px;">
+						Use this tool to import your data and easily grab any domains from files, text lists, emails, or other documents. To get a list of your domains you should log in to your domain registrar and find the section that lists all of your domains. Highlight the entire page and copy and paste in to the first textbox. If you have multiple pages of domains you can also see if your domain registrar can export a CSV and you can use the file importer.
+					</div>
+					<div class="domain-check-import-left" style="min-height: 1px; max-width: 350px;">
+						<table width="100%">
+						<?php
+						$coupons = DomainCheckCouponData::get_data();
+						$coupon_site_counter = 0;
+
+						$counter = 0;
+						$coupons = array_keys($coupons);
+						sort($coupons);
+						foreach ($coupons as $coupon_site) {
+							if (!($coupon_site_counter % 3)) {
+								?><tr><?php
+							}
+							$homepage_link = DomainCheckLinks::homepage(site_url(), $coupon_site);
+							?><td><strong><a href="<?php echo $homepage_link; ?>" target="_blank"><?php echo ucfirst($coupon_site); ?></a></strong></td><?php
+							if (($coupon_site_counter % 3) == 2) {
+								?></tr><?php
+							}
+							$counter++;
+							$coupon_site_counter = $coupon_site_counter + 1;
+						}
+						?>
+						</table>
+					</div>
+				</div>
 				<h2>
 					<img src="<?php echo plugins_url('/images/icons/data-transfer-upload.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
 					Import
@@ -2304,12 +2347,13 @@ if(!class_exists('DomainCheckAdmin')) {
 					</div>
 					<textarea id="found_domains" style="width: 100%; height: 350px;"></textarea>
 					<br>
-					<a href="#" class="button-primary" value="Search" onclick="import_text_search();">
+					<a href="#step3" class="button-primary" value="Search" onclick="import_text_search();">
 						Start the Import!
 					</a>
 				</div><?php
 				//spacer
 				?><div class="domain-check-import-left">
+					<a name="step3" />
 					<h2>Step 3</h2>
 					<h3>Domain Import Results</h3>
 					<div id="import-text-results-wrapper" name="import-text-results-wrapper">
@@ -2687,6 +2731,32 @@ if(!class_exists('DomainCheckAdmin')) {
 
 			$this->admin_header();
 			?>
+			<script type="text/javascript">
+				function email_test(setting_id) {
+					var data_obj = {};
+					switch (setting_id) {
+						case 'email_test':
+							data_obj = {
+								action: "settings",
+								method: "email_test",
+								email_address: document.getElementById('email-test-email-address').value
+							};
+							break;
+					}
+					domain_check_ajax_call(
+						data_obj,
+						email_test_callback
+					);
+				}
+
+				function email_test_callback(data) {
+					if (!data.hasOwnProperty('error')) {
+						jQuery('#domain-check-admin-notices').append('<div class="notice updated domain-check-notice"><p>' + data.message + '</p></div>');
+					} else {
+						jQuery('#domain-check-admin-notices').append('<div class="notice error domain-check-notice"><p>' + data.error + '</p></div>');
+					}
+				}
+			</script>
 			<h2>
 				<img src="<?php echo plugins_url('/images/icons/266-question.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
 				Help
@@ -2778,6 +2848,15 @@ if(!class_exists('DomainCheckAdmin')) {
 				</p>
 			</div>
 			<div class="setting-div">
+				<h3>Email Address Test</h3>
+				<p>
+					This tool will send a sample Domain Check email to any email address from <strong><?php echo get_option('admin_email'); ?></strong>. If you do not get the email check the spam folder and mark the email as Not Spam. <strong>Make sure the email address is set up to accept all emails from <?php echo get_option('admin_email'); ?></strong>.
+				</p>
+				<div>
+					<input type="text" id="email-test-email-address" style="width: 100%;">
+					<br><br>
+					<a href="#" class="button-primary" onclick="email_test('email_test');">Send Test Email</a>
+				</div>
 				<h3>
 					<img src="<?php echo plugins_url('/images/icons/266-question.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
 					FAQ
@@ -2822,7 +2901,7 @@ if(!class_exists('DomainCheckAdmin')) {
 					}
 					?>
 					<div style="display: inline-block; margin-right: 5px; width: 14px; height: 14px; background-color: <?php echo $available_color; ?>;" alt="Availability Checks Supported" title="Availability Checks Supported"></div>
-					<div style="display: inline-block; margin-right: 5px; width: 14px; height: 14px; background-color: <?php echo $expires_color; ?>;" alt="Expiration Dates Supported" title="Expirations Dates Supported"></div>
+					<div style="display: inline-block; margin-right: 5px; width: 14px; height: 14px; background-color: <?php echo $expires_color; ?>;" alt="Expiration Date Supported" title="Expiration Dates Supported"></div>
 						<?php
 			//}
 			?>

@@ -243,7 +243,7 @@ class DomainCheckWhois {
 		$domain_extension = null;
 		if ( strpos( $domain, '.' ) !== false ) {
 			$domain_parse = parse_url(strtolower(trim($domain)));
-			if (isset($domain_parse['path'])) {
+			if (isset($domain_parse['path']) && $domain_parse['path'] != '/') {
 				$domain_parse = $domain_parse['path'];
 				$domain_parse = preg_replace("/[^a-z0-9.-]+/i", '', $domain_parse);
 				if ($domain_parse && strpos($domain_parse, '.') !== false) {

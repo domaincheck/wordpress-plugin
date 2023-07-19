@@ -240,7 +240,8 @@ class DomainCheckSearch {
 		$ajax_response = array();
 
 		$search = parse_url(strtolower(trim($domain)));
-		if (isset($search['path'])) {
+
+		if (isset($search['path']) && $search['path'] != '/') {
 			$search = $search['path'];
 		} else if (isset($search['host'])) {
 			$search = $search['host'];
@@ -253,6 +254,7 @@ class DomainCheckSearch {
 			);
 			return false;
 		}
+
 
 		$search = preg_replace("/[^a-z0-9.-]+/i", '', $search);
 

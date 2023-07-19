@@ -89,21 +89,26 @@ class DomainCheckLinks {
 		}
 	}
 
-	public static function homepage($domain) {
+	public static function homepage($domain, $site = null) {
 		static::init();
 		$coupons = DomainCheckCouponData::search('home', 'en');
-		if (isset($coupons[static::$primary_extension]) && count($coupons[static::$primary_extension]['links']['link'])) {
-			$tmp_coupon = array_pop($coupons[static::$primary_extension]['links']['link']);
+
+		if (!$site) {
+			$site = static::$primary_extension;
+		}
+
+		if (isset($coupons[$site]) && count($coupons[$site]['links']['link'])) {
+			$tmp_coupon = array_pop($coupons[$site]['links']['link']);
 			return $tmp_coupon['clickUrl'];
 		}
 		$coupons = DomainCheckCouponData::search('homepage', 'en');
-		if (isset($coupons[static::$primary_extension]) && count($coupons[static::$primary_extension]['links']['link'])) {
-			$tmp_coupon = array_pop($coupons[static::$primary_extension]['links']['link']);
+		if (isset($coupons[$site]) && count($coupons[$site]['links']['link'])) {
+			$tmp_coupon = array_pop($coupons[$site]['links']['link']);
 			return $tmp_coupon['clickUrl'];
 		}
 		$coupons = DomainCheckCouponData::search('domain', 'en');
-		if (isset($coupons[static::$primary_extension]) && count($coupons[static::$primary_extension]['links']['link'])) {
-			$tmp_coupon = array_pop($coupons[static::$primary_extension]['links']['link']);
+		if (isset($coupons[$site]) && count($coupons[$site]['links']['link'])) {
+			$tmp_coupon = array_pop($coupons[$site]['links']['link']);
 			return $tmp_coupon['clickUrl'];
 		}
 		return false;
