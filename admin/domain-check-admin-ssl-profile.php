@@ -241,10 +241,10 @@ class DomainCheckAdminSslProfile {
 					<div style="background-color: #FFFFFF;">
 					<pre class="domain-check-profile-code"><?php
 						if (is_array($domain_result['cache'])) {
-							echo htmlentities(print_r($domain_result['cache'], true));
-							//echo implode('<br>', $ssl_domain_result['cache']);
-						} else {
 
+							echo htmlentities(print_r($domain_result['cache'], true));
+						} else {
+							echo htmlentities(print_r($domain_result['cache'], true));
 						}
 						?></pre>
 					</div>

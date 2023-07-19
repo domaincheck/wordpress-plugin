@@ -286,9 +286,12 @@ class DomainCheckAdminProfile {
 					<div style="background-color: #FFFFFF;">
 						<pre class="domain-check-profile-code"><?php
 							if (is_array($domain_result['cache']['data'])) {
-								echo htmlentities(implode('<br>', $domain_result['cache']['data']));
+								foreach ( $domain_result['cache']['data'] as $idx => $val ) {
+									$domain_result['cache']['data'][$idx] = htmlentities($val);
+								}
+								echo implode('<br>', $domain_result['cache']['data']);
 							} else {
-								htmlentities(print_r($domain_result['cache']['data'], true));
+								echo htmlentities(print_r($domain_result['cache']['data'], true));
 							}
 							?></pre>
 						</div>
@@ -319,7 +322,7 @@ class DomainCheckAdminProfile {
 							echo htmlentities(print_r($ssl_domain_result['cache'], true));
 							//echo implode('<br>', $ssl_domain_result['cache']);
 						} else {
-
+							echo htmlentities(print_r($ssl_domain_result['cache'], true));
 						}
 						?></pre>
 					</div>
