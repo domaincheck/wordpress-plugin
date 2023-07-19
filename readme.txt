@@ -7,7 +7,7 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Tags: admin, multisite, domain, ssl, https, hosting, email, admin, alerts, coupons, deals, dashboard, expiration, alert, notification, dashboard, domain checker, domain search, domain mapping
 Requires at least: 3.8
 Tested up to: 4.7.2
-Stable tag: 1.0.13
+Stable tag: 1.0.14
 
 Domain Check lets you search domain names, check SSL certificates and HTTPS, set email alerts for domain and SSL expiration, and get daily coupons.
 
@@ -15,7 +15,7 @@ Domain Check lets you search domain names, check SSL certificates and HTTPS, set
 
 **Domain Check**
 
-Domain Check allows you to see what domains and SSL certificates are coming up for expiration and to quickly locate the coupons, coupon codes, and deals from your favorite sites before renewing. Add any email addresses and have multiple people get alerts for upcoming domain renewals or SSL certificate expiration.  You can also search for new domain names with the domain checker using hundreds of supported extensions and even check if your SSL certificates are working on a number of sites. All this plus bulk importing makes Domain Check the ultimate domain management tool.
+Domain Check allows you to see what domains and SSL certificates are coming up for expiration and to quickly locate the coupons, coupon codes, and deals from your favorite sites before renewing. Add any email addresses and have multiple people get alerts for upcoming domain renewals or SSL certificate expiration.  You can also search for new domain names with the domain checker using hundreds of supported extensions and even check if your SSL certificates are working on a number of sites. All this plus bulk importing makes Domain Check the best domain management tool for your domain portfolio.
 
 **Your Domains**
 
@@ -97,6 +97,12 @@ A: Please use the email alert tester in the Help section within the plugin. This
 5. See the lastest coupon codes and daily deals from major domain registrars, SSL certificate providers, and hosting companies. No more clicking to shady coupon sites!
 
 == Changelog ==
+
+= 1.0.14 =
+* Bugfix: Unable to add new domains to Your Domains from the Your Domains search box fixed
+* Bugfix: Unable to add new domains to Watch Domains from the Watch Domains search box fixed
+* Bugfix: Unable to add new domains to SSL Alerts from the SSL Alerts search box fixed
+* Bugfix: SSL certificate display minor UI issues introduced in 1.0.12 fixed
 
 = 1.0.13 =
 * Bugfix: WHOIS results not encoding correctly on display introduced in 1.0.12 fixed

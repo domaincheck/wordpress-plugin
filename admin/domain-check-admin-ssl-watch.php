@@ -17,7 +17,7 @@ class DomainCheckAdminSslWatch {
 			</h2>
 			<?php
 			DomainCheckAdminHeader::admin_header();
-			DomainCheckAdmin::ssl_search_box();
+			DomainCheckAdminSslWatch::ssl_search_box();
 			?>
 			<div id="poststuff">
 				<div id="post-body" class="metabox-holder columns-2">
@@ -178,6 +178,33 @@ class DomainCheckAdminSslWatch {
 				);
 			}
 		}
+	}
+
+	public static function ssl_search_box( $dashboard = false ) {
+		$css_class = 'domain-check-admin-search-input';
+		if ( $dashboard ) {
+			$css_class .= '-dashboard';
+		}
+		$css_class_button = $css_class . '-btn';
+		?>
+		<script type="text/javascript">
+			function domain_check_ssl_watch_click(evt) {
+				document.getElementById('domain-check-ssl-watch-box-form').submit();
+			}
+		</script>
+		<form id="domain-check-ssl-watch-box-form" action="" method="GET">
+			<input type="text" name="domain_check_ssl_watch" id="domain_check_ssl_watch" class="<?php echo $css_class; ?>">
+			<input type="hidden" name="page" value="domain-check-ssl-watch">
+			<?php if ( !$dashboard ) { ?>
+			<div type="button" class="button domain-check-admin-search-input-btn" onclick="domain_check_ssl_watch_click();">
+				<img src="<?php echo plugins_url('/images/icons/color/bell.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-update-nag">
+				<div style="display: inline-block;">Add SSL Alert</div>
+			</div>
+			<?php } else { ?>
+			<input type="submit" class="button <?php echo $css_class_button; ?>" value="Watch SSL" />
+			<?php } ?>
+		</form>
+		<?php
 	}
 
 }

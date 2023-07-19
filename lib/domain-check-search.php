@@ -92,7 +92,7 @@ class DomainCheckSearch {
 					$ajax_response = DomainCheckAdmin::ajax_success(array('message' => $message, 'status' => 0, 'domain' => $search));
 				} else {
 					if ($domain_result['status'] == 2) {
-						$message = 'Success! You already own <strong><a href="admin.php?page=domain-check-profile&domain=' . $search . '">' . $search . '</a></strong>!';
+						$message = 'Success! You own <strong><a href="admin.php?page=domain-check-profile&domain=' . $search . '">' . $search . '</a></strong>!';
 						if (class_exists('DomainCheckAdmin')) {
 							DomainCheckAdmin::admin_notices_add($message, 'owned', $message_options, 'flag');
 						}
@@ -139,7 +139,7 @@ class DomainCheckSearch {
 						if (($in_db && isset($domain_result) && $domain_result['status'] == 2) || $force_owned) {
 							$status = 2;
 							$domain_result['status'] = 2;
-							$message = 'Success, you already own <strong><a href="admin.php?page=domain-check-profile&domain=' . $search . '">' . $search . '</a></strong>!';
+							$message = 'Success! You own <strong><a href="admin.php?page=domain-check-profile&domain=' . $search . '">' . $search . '</a></strong>!';
 							if (class_exists('DomainCheckAdmin')) {
 								DomainCheckAdmin::admin_notices_add($message, 'owned', $message_options, 'flag');
 							}

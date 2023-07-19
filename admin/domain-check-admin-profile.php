@@ -325,17 +325,19 @@ class DomainCheckAdminProfile {
 							echo htmlentities(print_r($ssl_domain_result['cache'], true));
 						}
 						?></pre>
-					</div>
 					<?php
 				} else {
 					?>
 					SSL not found in cache.<br><br>
 					<a href="" class="button">
-						<img src="<?php echo plugins_url('/images/icons/color/lock-locked.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-update-nag">
+						<img src="<?php echo plugins_url('/images/icons/color/lock-locked-yellow.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-update-nag">
 						Check SSL
 					</a>
 					<?php
 				}
+				?>
+				</div>
+				<?php
 
 			} else {
 				//domain not found... redirect to search...

@@ -446,7 +446,7 @@ class DomainCheckAdminHeader {
 		}
 		function watch_trigger_callback(data) {
 			var htmlDomain = data.domain.replace(/\./g, '-');
-			var iconDir = '<?php echo plugins_url('domain-check/images/icons/color'); ?>';
+			var iconDir = '<?php echo plugins_url('/images/icons/color/', __FILE__); ?>';
 			if (data.watch) {
 				jQuery('#domain-check-admin-notices').append('<div class="notice updated domain-check-notice"><p>' + data.message + '</p></div>');
 				//jQuery('#watch-link-' + htmlDomain).text('Stop Watching');
@@ -463,14 +463,14 @@ class DomainCheckAdminHeader {
 
 		function ssl_watch_trigger_callback(data) {
 			var htmlDomain = data.domain.replace(/\./g, '-');
-			var iconDir = '<?php echo plugins_url('domain-check/images/icons/color'); ?>';
+			var iconDir = '<?php echo plugins_url('/images/icons/color/', __FILE__); ?>';
 			if (data.watch) {
 				jQuery('#domain-check-admin-notices').append('<div class="notice updated domain-check-notice"><p>' + data.message + '</p></div>');
 				var replace = '<img id="watch-image-' + htmlDomain + '" src="' + iconDir + 'bell.svg" class="svg svg-fill svg-icon-table svg-icon-table-links svg-fill-gray" onload="paint_svg(\'watch-image-' + htmlDomain + '\')">';
 				jQuery('#watch-image-' + htmlDomain).replaceWith(replace);
 			} else {
 				jQuery('#domain-check-admin-notices').append('<div class="notice error domain-check-notice"><p>' + data.message + '</p></div>');
-				var replace = '<img id="watch-image-' + htmlDomain + '" src="' + iconDir + 'bell-disabled.svg" class="svg svg-fill svg-icon-table svg-icon-table-links svg-fill-disabled" onload="paint_svg(\'watch-image-' + htmlDomain + '\')">';
+				var replace = '<img id="watch-image-' + htmlDomain + '" src="' + iconDir + '/bell-disabled.svg" class="svg svg-fill svg-icon-table svg-icon-table-links svg-fill-disabled" onload="paint_svg(\'watch-image-' + htmlDomain + '\')">';
 				jQuery('#watch-image-' + htmlDomain).replaceWith(replace);
 			}
 		}

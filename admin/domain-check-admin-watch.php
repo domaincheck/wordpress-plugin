@@ -16,7 +16,7 @@ class DomainCheckAdminWatch {
 			</h2>
 			<?php
 			DomainCheckAdminHeader::admin_header();
-			DomainCheckAdminSearch::search_box();
+			DomainCheckAdminWatch::watch_search_box();
 			?>
 			<div id="poststuff">
 				<div id="post-body" class="metabox-holder columns-2">
@@ -210,5 +210,23 @@ class DomainCheckAdminWatch {
 		add_screen_option( $option, $args );
 
 		self::$domains_obj = new DomainCheck_Watch_List();
+	}
+
+	public static function watch_search_box() {
+		?>
+		<script type="text/javascript">
+			function domain_check_watch_search_click(evt) {
+				document.getElementById('watch-search-box-form').submit();
+			}
+		</script>
+		<form id="watch-search-box-form" action="" method="GET">
+			<input type="text" name="domain_check_watch" id="domain_check_watch" class="domain-check-admin-search-input">
+			<input type="hidden" name="page" value="domain-check-watch">
+			<div type="button" class="button domain-check-admin-search-input-btn" onclick="domain_check_watch_search_click();">
+				<img src="<?php echo plugins_url('/images/icons/color/207-eye.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-gray">
+				<div style="display: inline-block;">Watch Domains</div>
+			</div>
+		</form>
+		<?php
 	}
 }

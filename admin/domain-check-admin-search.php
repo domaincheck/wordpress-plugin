@@ -47,9 +47,32 @@ class DomainCheckAdminSearch {
 		}
 		$css_class_button = $css_class . '-btn';
 		?>
+		<script type="text/javascript" src="<?php echo plugins_url('/js/punycode/punycode.js', __FILE__); ?>"></script>
 		<script type="text/javascript">
 			function domain_check_search_click(evt) {
 				document.getElementById('domain-check-search-box-form').submit();
+			}
+			function domain_check_search_onkeyup(evt) {
+				var val = document.getElementById('domain_check_search').value;
+
+				for ( var i in val ) {
+					if ( isDoubleByte( val[i] ) ) {
+						var tmpDomainArr = val.split( '.' );
+						for ( var x in tmpDomainArr ) {
+							tmpDomainArr[x] = 'xn--' + punycode.encode( tmpDomainArr[x] );
+							break;
+						}
+						document.getElementById( 'domain_check_search' ).value = tmpDomainArr.join( '.' );
+						break;
+					}
+				}
+
+			}
+			function isDoubleByte(str) {
+			    for (var i = 0, n = str.length; i < n; i++) {
+			        if (str.charCodeAt( i ) > 255) { return true; }
+			    }
+			    return false;
 			}
 		</script>
 		<form id="domain-check-search-box-form" action="" method="GET">

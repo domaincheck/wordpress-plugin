@@ -107,7 +107,9 @@ if(!class_exists('DomainCheckAdmin')) {
 		}
 
 		//includes the necessarry css and js files
-		public function admin_enqueue_scripts($hook) {}
+		public function admin_enqueue_scripts($hook) {
+
+		}
 
 		//updated, error, update-nag
 		public static function admin_notices_add($message = '', $type = 'updated', $options = null, $icon = null) {
@@ -175,13 +177,29 @@ if(!class_exists('DomainCheckAdmin')) {
 
 			$domain_data = null;
 			$domain_extension = null;
+
+			//search
 			if ( isset( $_GET['domain_check_search'] ) ) {
 				DomainCheckSearch::domain_search($_GET['domain_check_search']);
+			}
+
+			if ( isset( $_GET['domain_check_your_domains'] ) ) {
+				DomainCheckSearch::domain_search( $_GET['domain_check_your_domains'], false, true, true);
+			}
+
+			if ( isset( $_GET['domain_check_watch'] ) ) {
+				DomainCheckSearch::domain_search( $_GET['domain_check_watch'], false, false, true);
+				DomainCheckAdmin::admin_notices_add('Started watching <strong>' . $_GET['domain_check_watch'] . '</strong>!', 'updated', null, '208-eye-plus');
 			}
 
 			//SSL CHECK!!!
 			if ( isset( $_GET['domain_check_ssl_search'] ) && strpos( $_GET['domain_check_ssl_search'], '.' ) !== false ) {
 				$this->ssl_check_init();
+			}
+
+			if ( isset( $_GET['domain_check_ssl_watch'] ) && strpos( $_GET['domain_check_ssl_watch'], '.' ) !== false ) {
+				DomainCheckSearch::ssl_search( $_GET['domain_check_ssl_watch'], true );
+				DomainCheckAdmin::admin_notices_add('Started watching SSL expiration for <strong>' . $_GET['domain_check_ssl_watch'] . '</strong>!', 'updated', null, '208-eye-plus');
 			}
 
 			//domain delete
