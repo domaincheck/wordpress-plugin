@@ -7,10 +7,9 @@ class DomainCheckAdminSslProfile {
 			wp_redirect( admin_url( 'admin.php?page=domain-check-ssl-check' ) );
 		}
 		global $wpdb;
-		$domain_to_view = strtolower($_GET['domain']);
-		$domain_content = esc_html($domain_to_view);
-		$domain_attr = esc_attr($domain_to_view);
-		$sql = 'SELECT * FROM ' . DomainCheck::$db_prefix . '_ssl WHERE domain_url ="' . strtolower($domain_to_view) . '"';
+		$domain_sanitized = sanitize_text_field($_GET['domain']);
+		$domain_to_view = strtolower($domain_sanitized);
+		$sql = 'SELECT * FROM ' . DomainCheck::$db_prefix . '_ssl WHERE domain_url ="' . $domain_to_view . '"';
 		$result = $wpdb->get_results( $sql, 'ARRAY_A' );
 		$use_cache = false;
 		$domain_result = null;
@@ -26,16 +25,16 @@ class DomainCheckAdminSslProfile {
 			$icon_fill = 'error';
 			$icon_url = plugins_url('/images/icons/color/lock-unlocked.svg', __FILE__);
 		}
-		$domain_profile = DomainCheckWhois::validdomain($_GET['domain']);
+		$domain_profile = DomainCheckWhois::validdomain($domain_sanitized);
 		?>
 		<div class="wrap">
 			<h2>
 				<a href="admin.php?page=domain-check" class="domain-check-link-icon">
 					<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
 				</a>
-				<img src="<?php echo $icon_url; ?>" class="svg svg-icon-h1 svg-fill-<?php echo $icon_fill; ?>">
+				<img src="<?php echo esc_url($icon_url); ?>" class="svg svg-icon-h1 svg-fill-<?php echo esc_attr($icon_fill); ?>">
 				<span class="hidden-mobile">Domain Check - SSL - </span>
-				<?php echo $domain_content; ?>
+				<?php echo esc_html($domain_to_view); ?>
 			</h2>
 			<?php DomainCheckAdminHeader::admin_header(); ?>
 			<br>
@@ -48,21 +47,21 @@ class DomainCheckAdminSslProfile {
 				?>
 				<div class="setting-div">
 					<div style="display: inline-block; float:left;">
-						<a href="?page=domain-check-ssl-profile&domain=<?php echo $domain_attr; ?>&domain_check_ssl_search=<?php echo $domain_attr; ?>" class="button">
+						<a href="?page=domain-check-ssl-profile&domain=<?php echo esc_attr($domain_to_view); ?>&domain_check_ssl_search=<?php echo esc_attr($domain_to_view); ?>" class="button">
 							<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 							Refresh
 						</a>
-						<a href="?page=domain-check-profile&domain=<?php echo $domain_profile['fqdn']; ?>&domain_check_search=<?php echo $domain_attr; ?>" class="button">
+						<a href="?page=domain-check-profile&domain=<?php echo esc_attr($domain_profile['fqdn']); ?>&domain_check_search=<?php echo esc_attr($domain_to_view); ?>" class="button">
 							<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 							Domain
 						</a>
-						<a href="?page=domain-check-ssl-profile&domain=<?php echo $domain_attr; ?>&domain_check_ssl_delete=<?php echo $domain_attr; ?>" class="button">
+						<a href="?page=domain-check-ssl-profile&domain=<?php echo esc_attr($domain_to_view); ?>&domain_check_ssl_delete=<?php echo esc_attr($domain_to_view); ?>" class="button">
 							<img src="<?php echo plugins_url('/images/icons/color/174-bin2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 							Delete
 						</a>
 						<br>
 						<ul style="display: inline-block; width: 100%; padding-right: 10px;">
-							<!--li><strong>User ID:</strong> <?php echo $domain_result['user_id']; ?></li-->
+							<!--li><strong>User ID:</strong> <?php echo esc_html($domain_result['user_id']); ?></li-->
 							<li class="domain-check-profile-li">
 								<div class="domain-check-profile-li-div-left">
 									<strong>Status:</strong>
@@ -80,7 +79,7 @@ class DomainCheckAdminSslProfile {
 										break;
 									default:
 										?>
-										Unknown (<?php echo $domain_result['status']; ?>)
+										Unknown (<?php echo esc_html($domain_result['status']); ?>)
 										<?php
 										break;
 								}
@@ -106,7 +105,7 @@ class DomainCheckAdminSslProfile {
 										break;
 									default:
 										?>
-										Unknown (<?php echo $domain_result['status']; ?>)
+										Unknown (<?php echo esc_html($domain_result['status']); ?>)
 										<?php
 										break;
 								}
@@ -121,14 +120,14 @@ class DomainCheckAdminSslProfile {
 									<?php
 									if (!$domain_result['domain_watch']) {
 										?>
-										<a href="?page=domain-check-ssl-profile&domain=<?php echo $domain_attr; ?>&domain_check_ssl_watch_start=<?php echo $domain_attr; ?>">
+										<a href="?page=domain-check-ssl-profile&domain=<?php echo esc_attr($domain_to_view); ?>&domain_check_ssl_watch_start=<?php echo esc_attr($domain_to_view); ?>">
 											<img src="<?php echo plugins_url('/images/icons/color/209-eye-minus.svg', __FILE__); ?>" class="svg svg-icon-table svg-fill-disabled">
 											Not Watching
 										</a>
 										<?php
 									} else {
 										?>
-										<a href="?page=domain-check-ssl-profile&domain=<?php echo $domain_attr; ?>&domain_check_ssl_watch_stop=<?php echo $domain_attr; ?>">
+										<a href="?page=domain-check-ssl-profile&domain=<?php echo esc_attr($domain_to_view); ?>&domain_check_ssl_watch_stop=<?php echo esc_attr($domain_to_view); ?>">
 											<img src="<?php echo plugins_url('/images/icons/color/208-eye-plus.svg', __FILE__); ?>" class="svg svg-icon-table svg-fill-gray">
 											Watching
 										</a>
@@ -142,15 +141,16 @@ class DomainCheckAdminSslProfile {
 								<strong>Expires:</strong>
 									<?php
 									if ($domain_result['domain_expires']) {
-										echo date('M-d-Y', $domain_result['domain_expires']);
+										echo esc_html(date('M-d-Y', $domain_result['domain_expires']));
 									} else {
-										echo 'n/a';
+										echo esc_html('n/a');
 									}
 									?>
 								</div>
 								<div class="domain-check-profile-li-div-right">
 									<?php
 									if ($domain_result['domain_expires']) {
+										$expire_image = false;
 										if ($domain_result['domain_expires'] < time()) {
 											$out = 'Expired';
 										} else {
@@ -168,38 +168,43 @@ class DomainCheckAdminSslProfile {
 												if ($days_flat < 3) {
 													$fill = 'red';
 												}
-												$out .= '<img src="' . plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">';
+												$expire_image = '/images/icons/color/clock.svg';
 											}
 											$out .= ' ' . number_format(($domain_result['domain_expires'] - time())/60/60/24, 0) . ' Days';
 										}
-										echo $out;
+										?>
+										<?php if ($expire_image) { ?>
+										<img src="<?php echo plugins_url('/images/icons/color/clock.svg', __FILE__); ?>" class="svg svg-icon-table svg-fill-<?php echo esc_attr($fill); ?>">
+										<?php } ?>
+										<?php echo esc_html($out); ?>
+										<?php
 									}
 									?>
 								</div>
 							</li>
 							<!--li class="domain-check-profile-li">
 								<strong>Created:</strong>
-								<?php echo date('M-d-Y', $domain_result['domain_created']); ?>
+								<?php echo esc_html(date('M-d-Y', $domain_result['domain_created'])); ?>
 							</li-->
-							<li class="domain-check-profile-li"><strong>Last Check:</strong> <?php echo date('M-d-Y', $domain_result['domain_last_check']); ?></li>
-							<!--li class="domain-check-profile-li"><strong>Next Check:</strong> <?php echo date('M-d-Y', $domain_result['domain_next_check']); ?></li-->
-							<!--li class="domain-check-profile-li"><strong>Search Date:</strong> <?php echo date('M-d-Y', $domain_result['search_date']); ?></li-->
-							<li class="domain-check-profile-li"><strong>Date Added:</strong> <?php echo date('M-d-Y', $domain_result['date_added']); ?></li>
+							<li class="domain-check-profile-li"><strong>Last Check:</strong> <?php echo esc_html(date('M-d-Y', $domain_result['domain_last_check'])); ?></li>
+							<!--li class="domain-check-profile-li"><strong>Next Check:</strong> <?php echo esc_html(date('M-d-Y', $domain_result['domain_next_check'])); ?></li-->
+							<!--li class="domain-check-profile-li"><strong>Search Date:</strong> <?php echo esc_html(date('M-d-Y', $domain_result['search_date'])); ?></li-->
+							<li class="domain-check-profile-li"><strong>Date Added:</strong> <?php echo esc_html(date('M-d-Y', $domain_result['date_added'])); ?></li>
 							<li>
 								<h3>Settings</h3>
-								<form action="admin.php?page=domain-check-ssl-profile&domain=<?php echo $domain_result['domain_url']; ?>" method="POST">
+								<form action="admin.php?page=domain-check-ssl-profile&domain=<?php echo esc_attr($domain_result['domain_url']); ?>" method="POST">
 								<ul>
 									<li>
 										<div class="domain-check-profile-li-div-left domain-check-profile-li-div-left-settings">Owner:</div>
 										<div class="domain-check-profile-li-div-right domain-check-profile-li-div-right-settings">
-											<input type="text" name="profile_settings_owner" id="profile_settings_owner" class="domain-check-profile-settings-input domain-check-text-input" value="<?php echo isset($domain_result['owner']) ? $domain_result['owner'] : ''; ?>">
+											<input type="text" name="profile_settings_owner" id="profile_settings_owner" class="domain-check-profile-settings-input domain-check-text-input" value="<?php echo esc_html(isset($domain_result['owner']) ? $domain_result['owner'] : ''); ?>">
 										</div>
 									</li>
 									<li>
 										<input type="submit" class="button" value="Update Settings">
 									</li>
 								</ul>
-								<input type="hidden" name="ssl_profile_settings_update" value="<?php echo $domain_result['domain_url']; ?>" />
+								<input type="hidden" name="ssl_profile_settings_update" value="<?php echo esc_attr($domain_result['domain_url']); ?>" />
 								</form>
 							</li>
 						</ul>
@@ -208,10 +213,10 @@ class DomainCheckAdminSslProfile {
 				<div class="setting-div">
 					<h3>SSL Expiration Alert Email Addresses</h3>
 					(one email address per line)
-					<form action="admin.php?page=domain-check-ssl-profile&domain=<?php echo $domain_result['domain_url']; ?>" method="POST">
+					<form action="admin.php?page=domain-check-ssl-profile&domain=<?php echo esc_attr($domain_result['domain_url']); ?>" method="POST">
 						<textarea name="ssl_watch_email_add" rows="10" cols="40" class="domain-check-text-input domain-check-profile-settings-textarea"><?php
 						if (isset($domain_result['domain_settings']['watch_emails']) && is_array($domain_result['domain_settings']['watch_emails']) && count($domain_result['domain_settings']['watch_emails'])) {
-							echo implode("\n", $domain_result['domain_settings']['watch_emails']);
+							echo esc_textarea(implode("\n", $domain_result['domain_settings']['watch_emails']));
 						}
 							?></textarea>
 					<br>
@@ -220,10 +225,10 @@ class DomainCheckAdminSslProfile {
 				</div>
 				<div class="setting-div" style="display:none;">
 					<strong>Notes</strong>
-						<form action="admin.php?page=domain-check-profile&domain=<?php echo $domain_result['domain_url']; ?>" method="POST">
+						<form action="admin.php?page=domain-check-profile&domain=<?php echo esc_attr($domain_result['domain_url']); ?>" method="POST">
 							<textarea name="notes_add" rows="10" cols="40" class="domain-check-text-input domain-check-profile-settings-textarea"><?php
 							if (isset($domain_result['domain_settings']['notes']) && is_array($domain_result['domain_settings']['notes']) && count($domain_result['domain_settings']['notes'])) {
-								echo implode("\n", $domain_result['domain_settings']['notes']);
+								echo esc_textarea(implode("\n", $domain_result['domain_settings']['notes']));
 							}
 								?></textarea>
 						<br>
@@ -232,9 +237,9 @@ class DomainCheckAdminSslProfile {
 				</div>
 				<div class="setting-div">
 					<h3>SSL Cache</h3>
-					<strong>Last Updated:</strong> <?php echo date('m/d/Y', $domain_result['domain_last_check']); ?>
+					<strong>Last Updated:</strong> <?php echo esc_html(date('m/d/Y', $domain_result['domain_last_check'])); ?>
 					<div>
-						<a href="admin.php?page=domain-check-ssl-profile&domain=<?php echo $domain_attr; ?>&domain_check_ssl_search=<?php echo $domain_attr; ?>" class="button">
+						<a href="admin.php?page=domain-check-ssl-profile&domain=<?php echo esc_attr($domain_to_view); ?>&domain_check_ssl_search=<?php echo esc_attr($domain_to_view); ?>" class="button">
 							<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 						<img src="<?php echo plugins_url('/images/icons/color/lock-locked-yellow.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-update-nag">
 						Refresh SSL
@@ -244,10 +249,9 @@ class DomainCheckAdminSslProfile {
 					<div style="background-color: #FFFFFF;">
 					<pre class="domain-check-profile-code"><?php
 						if (is_array($domain_result['cache'])) {
-
-							echo htmlentities(print_r($domain_result['cache'], true));
+							echo esc_html(print_r($domain_result['cache'], true));
 						} else {
-							echo htmlentities(print_r($domain_result['cache'], true));
+							echo esc_html(print_r($domain_result['cache'], true));
 						}
 						?></pre>
 					</div>
@@ -285,10 +289,11 @@ class DomainCheckAdminSslProfile {
 			$domain_result['cache'] = ($domain_result['cache'] ? json_decode(gzuncompress($domain_result['cache']), true) : null);
 			$domain_result['domain_settings'] = ($domain_result['domain_settings'] ? json_decode(gzuncompress($domain_result['domain_settings']), true) : null);
 			if (array_key_exists('profile_settings_owner', $_POST)) {
-				if (strlen($_POST['profile_settings_owner']) > 255) {
-					$_POST['profile_settings_owner'] = substr($_POST['profile_settings_owner'], 0, 255);
+				$owner_sanitized = sanitize_text_field($_POST['profile_settings_owner']);
+				if (strlen($owner_sanitized) > 255) {
+					$owner_sanitized = substr($owner_sanitized, 0, 255);
 				}
-				$new_settings['owner'] = $_POST['profile_settings_owner'];
+				$new_settings['owner'] = $owner_sanitized;
 			}
 
 			$new_settings['domain_settings'] = gzcompress(json_encode($domain_result['domain_settings']));

@@ -42,7 +42,7 @@ class DomainCheckSearch {
 				}
 			}
 			$message_options['WHOIS'] = 'admin.php?page=domain-check-profile&domain='.$search;
-			$message_options['<img src="' . plugins_url('domain-check/images/icons/external-link.svg') .
+			$message_options['<img src="' . plugins_url('/images/icons/external-link.svg', dirname(__FILE__)) .
 										'" class="svg svg-h2 svg-fill-gray">'] = '//' . $search;
 
 
@@ -60,7 +60,7 @@ class DomainCheckSearch {
 				}
 			}
 			if (isset($_GET['cache'])) {
-				$use_cache = (int)$_GET['cache'];
+				$use_cache = (int)sanitize_text_field($_GET['cache']);
 			}
 			if ($can_cache && $use_cache) {
 				//domain exists in DB...

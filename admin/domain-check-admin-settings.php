@@ -68,7 +68,7 @@ class DomainCheckAdminSettings {
 						These email addresses will automatically be added to any alerts for domains, SSL certificates, or hosting. These email addresses will receive alert emails and can also be individually removed for alerts. Use this to add multiple people, email inboxes, or ticket support systems to alerts. One email address per line.
 					</p>
 					<div class="setting-input">
-						<textarea id="email-additional-emails" class="domain-check-text-input domain-check-profile-settings-textarea" style="width: 100%; height: 200px;"><?php echo $email_additional_emails; ?></textarea>
+						<textarea id="email-additional-emails" class="domain-check-text-input domain-check-profile-settings-textarea" style="width: 100%; height: 200px;"><?php echo esc_textarea($email_additional_emails); ?></textarea>
 					</div>
 					<br>
 					<a class="button" onclick="update_setting('email_additional_emails');">
@@ -80,7 +80,7 @@ class DomainCheckAdminSettings {
 					<p class="p">
 						This is the default email used for all alerts. If you have a separate Technical Contact you may want to set them to this email address.
 					</p>
-					<input type="text" id="email-primary-email" value="<?php echo $admin_email; ?>">
+					<input type="text" id="email-primary-email" value="<?php echo esc_attr($admin_email); ?>">
 					<br><br>
 					<a class="button" onclick="update_setting('email_primary_email');">
 						Update Primary Email Address
@@ -94,7 +94,7 @@ class DomainCheckAdminSettings {
 						</p>
 					</div>
 					<div class="setting-input">
-						<textarea id="domain-extension-favorites" rows="10" class="domain-check-text-input domain-check-profile-settings-textarea" style="width: 100%;"><?php echo $domain_extension_favorites; ?></textarea>
+						<textarea id="domain-extension-favorites" rows="10" class="domain-check-text-input domain-check-profile-settings-textarea" style="width: 100%;"><?php echo esc_textarea($domain_extension_favorites); ?></textarea>
 						<br><br>
 						<a class="button" onclick="update_setting('domain_extension_favorites');">
 							Update Favorite Extensions
@@ -109,7 +109,7 @@ class DomainCheckAdminSettings {
 						</p>
 					</div>
 					<div class="setting-input">
-						<input type="checkbox" id="domain-autosuggest-enabled"<?php echo ($domain_autosuggest_enabled) ? ' checked' : ''; ?>>&nbsp; Domain Autosuggest: <?php echo ($domain_autosuggest_enabled) ? 'Enabled' : 'Disabled'; ?>
+						<input type="checkbox" id="domain-autosuggest-enabled"<?php echo esc_html(($domain_autosuggest_enabled) ? ' checked' : ''); ?>>&nbsp; Domain Autosuggest: <?php echo esc_html(($domain_autosuggest_enabled) ? 'Enabled' : 'Disabled'); ?>
 					</div>
 					<a class="button">
 						Update Autosuggest
@@ -132,7 +132,9 @@ class DomainCheckAdminSettings {
 								$selected = ' selected';
 							}
 							?>
-						<option value="<?php echo $coupon_site; ?>"<?php echo $selected; ?>><?php echo $coupon_site; ?></option>
+						<option value="<?php echo esc_attr($coupon_site); ?>"<?php echo esc_attr($selected); ?>>
+							<?php echo esc_html($coupon_site); ?>
+						</option>
 						<?php } ?>
 						</select>
 						<a class="button"  onclick="update_setting('coupons_primary_site');">
@@ -164,7 +166,7 @@ class DomainCheckAdminSettings {
 						<p class="p"></p>
 					</div>
 					<div class="setting-input">
-						<input type="checkbox" id="domain-autosuggest-enabled"<?php echo ($domain_autosuggest_enabled) ? ' checked' : ''; ?>>&nbsp; Domain Autosuggest: <?php echo ($domain_autosuggest_enabled) ? 'Enabled' : 'Disabled'; ?>
+						<input type="checkbox" id="domain-autosuggest-enabled"<?php echo esc_html(($domain_autosuggest_enabled) ? ' checked' : ''); ?>>&nbsp; Domain Autosuggest: <?php echo esc_html(($domain_autosuggest_enabled) ? 'Enabled' : 'Disabled'); ?>
 					</div>
 					<a class="button">
 						Update Autosuggest

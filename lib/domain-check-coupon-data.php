@@ -128,17 +128,15 @@ class DomainCheckCouponData {
 		//verify actual wordpress site & not a bot
 		$url .= '?verify=' . site_url();
 
+		
+		
+
+
 		$coupons_raw = null;
-		if ( function_exists('curl_init') ) {
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL,$url);
-			curl_setopt($ch, CURLOPT_HEADER, 0);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-			$coupons_raw = curl_exec($ch);
-			curl_close($ch);
-		} else if ( ini_get('allow_url_fopen') ) {
-			$coupons_raw = file_get_contents($url);
+		if ( function_exists('wp_remote_get') ) {
+			// replacing with Wordpress native calls
+			$response = wp_remote_get( $url );
+			$coupons_raw = wp_remote_retrieve_body( $response );
 		} else {
 
 		}

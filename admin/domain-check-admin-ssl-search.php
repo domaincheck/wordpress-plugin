@@ -7,21 +7,21 @@ class DomainCheckAdminSslSearch {
 	public static function ssl_check_init() {
 		global $wpdb;
 
-		return DomainCheckSearch::ssl_search($_GET['domain_check_ssl_search']);
-
+		$domain_sanitized = sanitize_text_field($_GET['domain_check_ssl_search']);
+		return DomainCheckSearch::ssl_search($domain_sanitized);
 
 		$exists_in_db = false;
 		$use_cache = false;
 		$force_return = false;
 		$domain_result = array();
-		$search = parse_url(strtolower($_GET['domain_check_ssl_search']));
+		$search = parse_url(strtolower($domain_sanitized));
 		$search = $search['path'];
 		$search = preg_replace("/[^a-z0-9.-]+/i", '', $search);
 
 		$valarr = array(
 			'ssl_domain_id' => null,
 			'domain_id' => null,
-			'domain_url' => $_GET['domain_check_ssl_search'],
+			'domain_url' => $domain_sanitized,
 			'user_id' => 0,
 			'status' => 0,
 			'date_added' => time(),
@@ -33,11 +33,9 @@ class DomainCheckAdminSslSearch {
 			'cache' => null,
 		);
 
-		if (strpos($_GET['domain_check_ssl_search'], 'http') === false) {
-			$_GET['domain_check_ssl_search'] = 'http://' . $_GET['domain_check_ssl_search'];
+		if (strpos($domain_sanitized, 'http') === false) {
+			$domain_sanitized = 'http://' . $domain_sanitized;
 		}
-
-
 
 		$sql = 'SELECT * FROM ' . DomainCheck::$db_prefix . '_ssl WHERE domain_url ="' . strtolower($search) . '"';
 		$result = $wpdb->get_results( $sql, 'ARRAY_A' );
@@ -52,7 +50,7 @@ class DomainCheckAdminSslSearch {
 			);
 		}
 
-		$orignal_parse = parse_url($_GET['domain_check_ssl_search'], PHP_URL_HOST);
+		$orignal_parse = parse_url($domain_sanitized, PHP_URL_HOST);
 		$search = $orignal_parse;
 		$get = stream_context_create(array("ssl" => array("capture_peer_cert" => TRUE)));
 		try {
@@ -203,9 +201,10 @@ class DomainCheckAdminSslSearch {
 	public static function ssl_delete_init() {
 		global $wpdb;
 
-		$domain = strtolower($_GET['domain_check_ssl_delete']);
-
-		if (!isset($_GET['domain_check_ssl_delete_confirm'])) {
+		$domain_sanitized = sanitize_text_field($_GET['domain_check_ssl_delete']);
+		$domain = strtolower($domain_sanitized);
+		$confirmed = array_key_exists('domain_check_ssl_delete_confirm', $_GET);
+		if (!$confirmed) {
 			$message = 'Are you sure you want to delete <strong> ' . $domain . ' </strong>? It will no longer be watched and may expire! This cannot be undone.';
 			$message_options = array(
 			'Delete' => '?page=domain-check-ssl-check&domain_check_ssl_delete=' . $domain . '&domain_check_ssl_delete_confirm=1',
@@ -237,7 +236,7 @@ class DomainCheckAdminSslSearch {
 			}
 		</script>
 		<form id="domain-check-ssl-search-box-form" action="" method="GET">
-			<input type="text" name="domain_check_ssl_search" id="domain_check_ssl_search" class="<?php echo $css_class; ?>">
+			<input type="text" name="domain_check_ssl_search" id="domain_check_ssl_search" class="<?php echo esc_attr($css_class); ?>">
 			<input type="hidden" name="page" value="domain-check-ssl-check">
 			<?php if ( !$dashboard ) { ?>
 			<div type="button" class="button domain-check-admin-search-input-btn" onclick="domain_check_ssl_search_click();">
@@ -245,7 +244,7 @@ class DomainCheckAdminSslSearch {
 				<div style="display: inline-block;">Check SSL</div>
 			</div>
 			<?php } else { ?>
-			<input type="submit" class="button <?php echo $css_class_button; ?>" value="Check SSL" />
+			<input type="submit" class="button <?php echo esc_attr($css_class_button); ?>" value="Check SSL" />
 			<?php } ?>
 		</form>
 		<?php

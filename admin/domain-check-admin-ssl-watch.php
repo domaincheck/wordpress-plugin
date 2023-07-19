@@ -139,7 +139,8 @@ class DomainCheckAdminSslWatch {
 
 		if (isset($_POST['domain'])) {
 			$ajax = 1;
-			$domain = strtolower($_POST['domain']);
+			$domain_sanitized = sanitize_text_field($_POST['domain']);
+			$domain = strtolower($domain_sanitized);
 		}
 
 		$domain = strtolower($domain);
@@ -193,7 +194,7 @@ class DomainCheckAdminSslWatch {
 			}
 		</script>
 		<form id="domain-check-ssl-watch-box-form" action="" method="GET">
-			<input type="text" name="domain_check_ssl_watch" id="domain_check_ssl_watch" class="<?php echo $css_class; ?>">
+			<input type="text" name="domain_check_ssl_watch" id="domain_check_ssl_watch" class="<?php echo esc_attr($css_class); ?>">
 			<input type="hidden" name="page" value="domain-check-ssl-watch">
 			<?php if ( !$dashboard ) { ?>
 			<div type="button" class="button domain-check-admin-search-input-btn" onclick="domain_check_ssl_watch_click();">
@@ -201,7 +202,7 @@ class DomainCheckAdminSslWatch {
 				<div style="display: inline-block;">Add SSL Alert</div>
 			</div>
 			<?php } else { ?>
-			<input type="submit" class="button <?php echo $css_class_button; ?>" value="Watch SSL" />
+			<input type="submit" class="button <?php echo esc_attr($css_class_button); ?>" value="Watch SSL" />
 			<?php } ?>
 		</form>
 		<?php

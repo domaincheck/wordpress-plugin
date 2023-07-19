@@ -54,7 +54,7 @@ class DomainCheckAdminHelp {
 
 			<?php
 			if (isset($_GET['domain-check-page'])) {
-				self::$current_page = $_GET['domain-check-page'];
+				self::$current_page = sanitize_text_field($_GET['domain-check-page']);
 			} else {
 				self::$current_page = 'help_general';
 			}
@@ -82,7 +82,7 @@ class DomainCheckAdminHelp {
 			}
 
 			if ( $do_return ) {
-				echo '</div>';
+				echo wp_kses_post('</div>');
 				self::admin_header();
 				DomainCheckAdminHeader::admin_header_nav();
 				DomainCheckAdminHeader::footer();
@@ -104,7 +104,7 @@ class DomainCheckAdminHelp {
 					</a>
 				</h3>
 				<p class="p">
-					<?php echo DomainCheckHelp::get_help('page_dashboard'); ?>
+					<?php echo wp_kses_post(DomainCheckHelp::get_help('page_dashboard')); ?>
 				</p>
 				<h3>
 					<a href="admin.php?page=domain-check-your-domains">
@@ -113,7 +113,7 @@ class DomainCheckAdminHelp {
 					</a>
 				</h3>
 				<p class="p">
-					<?php echo DomainCheckHelp::get_help('page_your_domains'); ?>
+					<?php echo wp_kses_post(DomainCheckHelp::get_help('page_your_domains')); ?>
 				</p>
 				<h3>
 					<a href="admin.php?page=domain-check-search">
@@ -122,7 +122,7 @@ class DomainCheckAdminHelp {
 					</a>
 				</h3>
 				<p class="p">
-					<?php echo DomainCheckHelp::get_help('page_domain_search'); ?>
+					<?php echo wp_kses_post(DomainCheckHelp::get_help('page_domain_search')); ?>
 				</p>
 				<h3>
 					<a href="admin.php?page=domain-check-watch">
@@ -131,7 +131,7 @@ class DomainCheckAdminHelp {
 					</a>
 				</h3>
 				<p class="p">
-					<?php echo DomainCheckHelp::get_help('page_domain_watch'); ?>
+					<?php echo wp_kses_post(DomainCheckHelp::get_help('page_domain_watch')); ?>
 				</p>
 			</div>
 			<div class="setting-div">
@@ -142,7 +142,7 @@ class DomainCheckAdminHelp {
 					</a>
 				</h3>
 				<p class="p">
-					<?php echo DomainCheckHelp::get_help('page_ssl_check'); ?>
+					<?php echo wp_kses_post(DomainCheckHelp::get_help('page_ssl_check')); ?>
 				</p>
 				<h3>
 					<a href="admin.php?page=domain-check-ssl-watch">
@@ -151,7 +151,7 @@ class DomainCheckAdminHelp {
 					</a>
 				</h3>
 				<p class="p">
-					<?php echo DomainCheckHelp::get_help('page_ssl_watch'); ?>
+					<?php echo wp_kses_post(DomainCheckHelp::get_help('page_ssl_watch')); ?>
 				</p>
 				<h3>
 					<a href="admin.php?page=domain-check-import-export">
@@ -161,7 +161,7 @@ class DomainCheckAdminHelp {
 					</a>
 				</h3>
 				<p class="p">
-					<?php echo DomainCheckHelp::get_help('page_import_export'); ?>
+					<?php echo wp_kses_post(DomainCheckHelp::get_help('page_import_export')); ?>
 				</p>
 				<h3>
 					<a href="admin.php?page=domain-check-settings">
@@ -170,7 +170,7 @@ class DomainCheckAdminHelp {
 					</a>
 				</h3>
 				<p class="p">
-					<?php echo DomainCheckHelp::get_help('page_settings'); ?>
+					<?php echo wp_kses_post(DomainCheckHelp::get_help('page_settings')); ?>
 				</p>
 				<h3>
 					<a href="admin.php?page=domain-check-coupons">
@@ -179,7 +179,7 @@ class DomainCheckAdminHelp {
 					</a>
 				</h3>
 				<p class="p">
-					<?php echo DomainCheckHelp::get_help('page_coupons'); ?>
+					<?php echo wp_kses_post(DomainCheckHelp::get_help('page_coupons')); ?>
 				</p>
 			</div>
 			<div class="setting-div">
@@ -188,7 +188,7 @@ class DomainCheckAdminHelp {
 					FAQ
 				</h3>
 				<p class="p">
-					<?php echo DomainCheckHelp::get_help('page_faq'); ?>
+					<?php echo wp_kses_post(DomainCheckHelp::get_help('page_faq')); ?>
 				</p>
 			</div>
 			<?php
@@ -205,8 +205,8 @@ class DomainCheckAdminHelp {
 	<div class="setting-div">
 		<h3>Versions</h3>
 		<p>
-			Version: <?php echo DomainCheck::PLUGIN_VERSION; ?><br>
-			Version DB: <?php echo get_option('domain_check_version'); ?>
+			Version: <?php echo esc_html(DomainCheck::PLUGIN_VERSION); ?><br>
+			Version DB: <?php echo esc_html(get_option('domain_check_version')); ?>
 		</p>
 		<h3>Compatibility Checks</h3>
 		<p>
@@ -227,14 +227,14 @@ class DomainCheckAdminHelp {
 					$val = 'No';
 				}
 				?>
-				<?php echo $func_name; ?>(): <?php echo $val; ?><br>
+				<?php echo esc_html($func_name); ?>(): <?php echo esc_html($val); ?><br>
 				<?php
 			}
 			?>
 		</p>
 		<h3>Cron Info</h3>
 		<p>
-			Current Server Time: <?php echo date("F jS, Y l h:i:s A", time() ); ?><br><br>
+			Current Server Time: <?php echo esc_html(date("F jS, Y l h:i:s A", time() )); ?><br><br>
 		<?php
 			$cron_function_exists = 'No';
 			$cron_data = array();
@@ -246,7 +246,6 @@ class DomainCheckAdminHelp {
 				);
 				foreach ( $cron_data as $cron_data_timestamp => $cron_data_items ) {
 					foreach ( $cron_data_items as $cron_data_items_idx => $cron_data_item) {
-						//echo $cron_data_items_idx . '<br>';
 						if ( strpos( $cron_data_items_idx, 'domain_check_' ) === 0 ) {
 							$cron_name = ucwords( str_replace( '_', ' ', $cron_data_items_idx) );
 							$cron_schedule = null;
@@ -258,8 +257,8 @@ class DomainCheckAdminHelp {
 								$cron_schedule = $cron_data_item_hash_data['schedule'];
 								$count++;
 							}
-							echo $cron_name . ': ' . ucwords( $cron_schedule ) . '<br>' . "\n";
-							echo 'Next Run: '. date("F jS, Y l h:i:s A", wp_next_scheduled( $cron_data_items_idx ) ) . "<br><br>" . "\n";
+							echo wp_kses_post($cron_name . ': ' . ucwords( $cron_schedule ) . '<br>' . "\n");
+							echo wp_kses_post('Next Run: '. date("F jS, Y l h:i:s A", wp_next_scheduled( $cron_data_items_idx ) ) . "<br><br>" . "\n");
 
 						}
 					}
@@ -291,10 +290,10 @@ class DomainCheckAdminHelp {
 	<div class="setting-div">
 		<h3>Domain Check PRO</h3>
 		<p>
-			PRO Plugin Directory Exists: <?php echo $pro_directory_exists; ?><br>
-			PRO Plugin Class Exists: <?php echo $pro_class_exists; ?><br>
-			PRO Plugin Is Active: <?php echo $pro_plugin_active; ?><br>
-			PRO Plugin Version: <?php echo $pro_version; ?><br>
+			PRO Plugin Directory Exists: <?php echo esc_html($pro_directory_exists); ?><br>
+			PRO Plugin Class Exists: <?php echo esc_html($pro_class_exists); ?><br>
+			PRO Plugin Is Active: <?php echo esc_html($pro_plugin_active); ?><br>
+			PRO Plugin Version: <?php echo esc_html($pro_version); ?><br>
 		</p>
 	</div>
 		<script type="text/javascript">
@@ -375,7 +374,7 @@ class DomainCheckAdminHelp {
 			<p class="p">
 				Here is the full list of domain extensions recognized by this plugin. Not all of these extensions are working this is simply the list of current know extensions! Remember that domain extensions are also know as top level domains, or TLDs. This is a list of all the top level domains (TLDs) that are currently recognized and that have some known registrar and WHOIS service.
 			</p>
-			<strong><?php echo count($extensions); ?> Total Extensions</strong>
+			<strong><?php echo esc_html(count($extensions)); ?> Total Extensions</strong>
 			<div style="clear: both;"></div>
 			<br>
 			<?php
@@ -403,13 +402,13 @@ class DomainCheckAdminHelp {
 						$expires_color = '#00AA00';
 					}
 					?>
-					<div style="display: inline-block; margin-right: 5px; width: 14px; height: 14px; background-color: <?php echo $available_color; ?>;" alt="Availability Checks Supported" title="Availability Checks Supported"></div>
-					<div style="display: inline-block; margin-right: 5px; width: 14px; height: 14px; background-color: <?php echo $expires_color; ?>;" alt="Expiration Date Supported" title="Expiration Dates Supported"></div>
+					<div style="display: inline-block; margin-right: 5px; width: 14px; height: 14px; background-color: <?php echo esc_attr($available_color); ?>;" alt="Availability Checks Supported" title="Availability Checks Supported"></div>
+					<div style="display: inline-block; margin-right: 5px; width: 14px; height: 14px; background-color: <?php echo esc_attr($expires_color); ?>;" alt="Expiration Date Supported" title="Expiration Dates Supported"></div>
 						<?php
 			//}
 			?>
 					<strong>
-						.<?php echo $extension; ?>
+						.<?php echo esc_html($extension); ?>
 					</strong>
 				</div>
 				<?php
@@ -450,7 +449,7 @@ class DomainCheckAdminHelp {
 		<div class="setting-div">
 			<h3>Email Address Test</h3>
 			<p>
-				This tool will send a sample Domain Check email to any email address from <strong><?php echo get_option('admin_email'); ?></strong>. If you do not get the email check the spam folder and mark the email as Not Spam. <strong>Make sure the email address is set up to accept all emails from <?php echo get_option('admin_email'); ?></strong>.
+				This tool will send a sample Domain Check email to any email address from <strong><?php echo esc_html(get_option('admin_email')); ?></strong>. If you do not get the email check the spam folder and mark the email as Not Spam. <strong>Make sure the email address is set up to accept all emails from <?php echo esc_html(get_option('admin_email')); ?></strong>.
 			</p>
 			<div>
 				<input type="text" id="email-test-email-address" class="domain-check-text-input" style="width: 100%;">

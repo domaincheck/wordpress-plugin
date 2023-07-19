@@ -8,10 +8,8 @@ class DomainCheckAdminProfile {
 			wp_redirect( admin_url( 'admin.php?page=domain-check-search' ) );
 			return;
 		}
-
-		$domain_to_view = strtolower($_GET['domain']);
-		$domain_content = esc_html($domain_to_view);
-		$domain_attr = esc_attr($domain_to_view);
+		$domain_sanitized = sanitize_text_field($_GET['domain']);
+		$domain_to_view = strtolower($domain_sanitized);
 		$domain_result = null;
 		$sql = 'SELECT * FROM ' . DomainCheck::$db_prefix . '_domains WHERE domain_url ="' . strtolower($domain_to_view) . '"';
 		$result = $wpdb->get_results( $sql, 'ARRAY_A' );
@@ -69,9 +67,9 @@ class DomainCheckAdminProfile {
 					}
 				}
 				?>
-				<img src="<?php echo $icon_src; ?>" class="svg svg-icon-h1 svg-fill-<?php echo $icon_fill; ?>">
+				<img src="<?php echo esc_url($icon_src); ?>" class="svg svg-icon-h1 svg-fill-<?php echo esc_attr($icon_fill); ?>">
 				<span class="hidden-mobile">Domain Check - </span>
-				<?php echo $domain_content; ?>
+				<?php echo esc_html($domain_to_view); ?>
 			</h2>
 			<?php DomainCheckAdminHeader::admin_header(); ?>
 			<?php
@@ -82,21 +80,21 @@ class DomainCheckAdminProfile {
 				$domain_result['domain_settings'] = ($domain_result['domain_settings'] ? json_decode(gzuncompress($domain_result['domain_settings']), true) : null);
 				?>
 				<div class="setting-div">
-						<a href="?page=domain-check-profile&domain=<?php echo $domain_attr; ?>&domain_check_search=<?php echo $domain_attr; ?>" class="button">
+						<a href="?page=domain-check-profile&domain=<?php echo esc_attr($domain_to_view); ?>&domain_check_search=<?php echo esc_attr($domain_to_view); ?>" class="button">
 							<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 							Refresh
 						</a>
-						<a href="?page=domain-check-ssl-profile&domain=<?php echo $domain_attr; ?>&domain_check_ssl_search=<?php echo $domain_attr; ?>" class="button">
+						<a href="?page=domain-check-ssl-profile&domain=<?php echo esc_attr($domain_to_view); ?>&domain_check_ssl_search=<?php echo esc_attr($domain_to_view); ?>" class="button">
 							<img src="<?php echo plugins_url('/images/icons/color/lock-locked-yellow.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 							SSL
 						</a>
-						<a href="?page=domain-check-profile&domain=<?php echo $domain_attr; ?>&domain_check_delete=<?php echo $domain_attr; ?>" class="button">
+						<a href="?page=domain-check-profile&domain=<?php echo esc_attr($domain_to_view); ?>&domain_check_delete=<?php echo esc_attr($domain_to_view); ?>" class="button">
 							<img src="<?php echo plugins_url('/images/icons/color/174-bin2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 							Delete
 						</a>
 						<br>
 					<ul style="display: inline-block; width: 100%; padding-right: 10px;">
-						<!--li><strong>User ID:</strong> <?php echo $domain_result['user_id']; ?></li-->
+						<!--li><strong>User ID:</strong> <?php echo esc_html($domain_result['user_id']); ?></li-->
 						<li class="domain-check-profile-li">
 							<div class="domain-check-profile-li-div-left">
 								Extension
@@ -104,7 +102,7 @@ class DomainCheckAdminProfile {
 							<div class="domain-check-profile-li-div-right">
 								<?php
 								if( isset( $domain_result['domain_extension'] ) && $domain_result['domain_extension'] ) {
-									echo '.' . $domain_result['domain_extension'];
+									echo esc_html('.' . $domain_result['domain_extension']);
 								}
 								?>
 							</div>
@@ -131,7 +129,7 @@ class DomainCheckAdminProfile {
 									break;
 								default:
 									?>
-									Unknown (<?php echo $domain_result['status']; ?>)
+									Unknown (<?php echo esc_html($domain_result['status']); ?>)
 									<?php
 									break;
 							}
@@ -149,7 +147,7 @@ class DomainCheckAdminProfile {
 									break;
 								case 1:
 									?>
-									<a href="admin.php?page=domain-check-profile&domain=<?php echo $domain_attr; ?>&domain_check_status_owned=<?php echo $domain_attr; ?>">
+									<a href="admin.php?page=domain-check-profile&domain=<?php echo esc_attr($domain_to_view); ?>&domain_check_status_owned=<?php echo esc_attr($domain_to_view); ?>">
 										<img src="<?php echo plugins_url('/images/icons/color/ban.svg', __FILE__); ?>" class="svg svg-icon-table svg-fill-taken">
 										Taken
 									</a>
@@ -157,7 +155,7 @@ class DomainCheckAdminProfile {
 									break;
 								case 2:
 									?>
-									<a href="admin.php?page=domain-check-profile&domain=<?php echo $domain_attr; ?>&domain_check_status_taken=<?php echo $domain_attr; ?>">
+									<a href="admin.php?page=domain-check-profile&domain=<?php echo esc_attr($domain_to_view); ?>&domain_check_status_taken=<?php echo esc_attr($domain_to_view); ?>">
 										<img src="<?php echo plugins_url('/images/icons/color/flag.svg', __FILE__); ?>" class="svg svg-icon-table svg-fill-owned">
 										Owned
 									</a>
@@ -165,7 +163,7 @@ class DomainCheckAdminProfile {
 									break;
 								default:
 									?>
-									Unknown (<?php echo $domain_result['status']; ?>)
+									Unknown (<?php echo esc_html($domain_result['status']); ?>)
 									<?php
 									break;
 							}
@@ -180,14 +178,14 @@ class DomainCheckAdminProfile {
 								<?php
 								if (!$domain_result['domain_watch']) {
 									?>
-									<a href="?page=domain-check-profile&domain=<?php echo $domain_attr; ?>&domain_check_watch_start=<?php echo $domain_attr; ?>">
+									<a href="?page=domain-check-profile&domain=<?php echo esc_attr($domain_to_view); ?>&domain_check_watch_start=<?php echo esc_attr($domain_to_view); ?>">
 										<img src="<?php echo plugins_url('/images/icons/color/209-eye-minus.svg', __FILE__); ?>" class="svg svg-icon-table svg-fill-error">
 										Not Watching
 									</a>
 									<?php
 								} else {
 									?>
-									<a href="?page=domain-check-profile&domain=<?php echo $domain_attr; ?>&domain_check_watch_stop=<?php echo $domain_attr; ?>">
+									<a href="?page=domain-check-profile&domain=<?php echo esc_attr($domain_to_view); ?>&domain_check_watch_stop=<?php echo esc_attr($domain_to_view); ?>">
 										<img src="<?php echo plugins_url('/images/icons/color/208-eye-plus.svg', __FILE__); ?>" class="svg svg-icon-table svg-fill-updated">
 										Watching
 									</a>
@@ -215,13 +213,21 @@ class DomainCheckAdminProfile {
 									$fill = 'disabled';
 									$alt_text = 'Autorenew is Off. Click to turn On.';
 								}
-								$out .= '<a id="autorenew-link-' . str_replace('.', '-', $domain_result['domain_url']) . '"  alt="'.$alt_text.'" title="'.$alt_text.'" class="autorenew-link" onclick="domain_check_ajax_call({\'action\':\'autorenew_trigger\', \'domain\':\'' . $domain_result['domain_url'] . '\'}, autorenew_trigger_callback);">'
-								. '<img id="autorenew-image-' . str_replace('.', '-', $domain_result['domain_url']) . '" src="' . plugins_url('/images/icons/color/infinity-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-' . $fill . '">'
-								. '<span id="autorenew-text-' . str_replace('.', '-', $domain_result['domain_url']) . '">' . $text . '</span>'
-								. '</a>';
-
-								echo $out;
+								$attr_id = str_replace('.', '-', $domain_result['domain_url']);
 								?>
+								
+								<a id="autorenew-link-<?php echo esc_attr($attr_id); ?>" 
+								alt="<?php echo esc_attr($alt_text); ?>"
+								title="<?php echo esc_attr($alt_text); ?>"
+								class="autorenew-link"
+								onclick="domain_check_ajax_call({'action':'autorenew_trigger', 'domain':'<?php echo esc_attr($domain_result['domain_url']); ?>'}, autorenew_trigger_callback);">
+									<img id="autorenew-image-<?php echo esc_attr($attr_id); ?>"
+									src="<?php echo plugins_url('/images/icons/color/infinity-' . $fill . '.svg', __FILE__); ?>"
+									class="svg svg-icon-table svg-icon-table-links svg-fill-<?php echo esc_attr($fill); ?>">
+									<span id="autorenew-text-<?php echo esc_attr($attr_id); ?>">
+										<?php echo esc_html($text); ?>
+									</span>
+								</a>
 							</div>
 						</li>
 
@@ -230,9 +236,9 @@ class DomainCheckAdminProfile {
 							<strong>Expires:</strong>
 								<?php
 								if ($domain_result['domain_expires']) {
-									echo date('M-d-Y', $domain_result['domain_expires']);
+									echo esc_html(date('M-d-Y', $domain_result['domain_expires']));
 								} else {
-									echo 'n/a';
+									echo esc_html('n/a');
 								}
 								?>
 							</div>
@@ -242,6 +248,7 @@ class DomainCheckAdminProfile {
 									$days = number_format(($domain_result['domain_expires'] - time())/60/60/24, 0);
 									$days_flat = (int)floor(($domain_result['domain_expires'] - time())/60/60/24);
 									$out = '';
+									$expire_image = false;
 									if ($days_flat < 60) {
 										$fill = 'gray';
 										if ($days_flat < 30) {
@@ -253,53 +260,58 @@ class DomainCheckAdminProfile {
 										if ($days_flat < 3) {
 											$fill = 'red';
 										}
-										$out .= '<img src="' . plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">';
+										$expire_image = '/images/icons/color/clock-' . $fill . '.svg';
 									}
 									if ($domain_result['domain_expires'] < time()) {
 										$out .= ' Expired';
 									} else {
 										$out .= ' ' . number_format(($domain_result['domain_expires'] - time())/60/60/24, 0) . ' Days';
 									}
-									echo $out;
+									?>
+									<?php if ($expire_image) { ?>
+										<img src="<?php echo esc_url($expire_image); ?>" class="svg svg-icon-table svg-fill-<?php echo esc_attr($fill); ?>">
+									<?php } ?>
+									<?php echo esc_html($out); ?>
+									<?php
 								}
 								?>
 							</div>
 						</li>
 						<!--li class="domain-check-profile-li">
 							<strong>Created:</strong>
-							<?php echo date('M-d-Y', $domain_result['domain_created']); ?>
+							<?php echo esc_html(date('M-d-Y', $domain_result['domain_created'])); ?>
 						</li-->
-						<li class="domain-check-profile-li"><strong>Last Check:</strong> <?php echo date('M-d-Y', $domain_result['domain_last_check']); ?></li>
-						<!--li class="domain-check-profile-li"><strong>Next Check:</strong> <?php echo date('M-d-Y H:i:s', $domain_result['domain_next_check']); ?></li-->
-						<!--li class="domain-check-profile-li"><strong>Search Date:</strong> <?php echo date('M-d-Y', $domain_result['search_date']); ?></li-->
-						<li class="domain-check-profile-li"><strong>Date Added:</strong> <?php echo date('M-d-Y', $domain_result['date_added']); ?></li>
+						<li class="domain-check-profile-li"><strong>Last Check:</strong> <?php echo esc_html(date('M-d-Y', $domain_result['domain_last_check'])); ?></li>
+						<!--li class="domain-check-profile-li"><strong>Next Check:</strong> <?php echo esc_html(date('M-d-Y H:i:s', $domain_result['domain_next_check'])); ?></li-->
+						<!--li class="domain-check-profile-li"><strong>Search Date:</strong> <?php echo esc_html(date('M-d-Y', $domain_result['search_date'])); ?></li-->
+						<li class="domain-check-profile-li"><strong>Date Added:</strong> <?php echo esc_html(date('M-d-Y', $domain_result['date_added'])); ?></li>
 						<li>
 							<h3>Settings</h3>
-							<form action="admin.php?page=domain-check-profile&domain=<?php echo $domain_result['domain_url']; ?>" method="POST">
+							<form action="admin.php?page=domain-check-profile&domain=<?php echo esc_attr($domain_result['domain_url']); ?>" method="POST">
 							<ul>
 								<li>
 									<div class="domain-check-profile-li-div-left domain-check-profile-li-div-left-settings">Owner:</div>
 									<div class="domain-check-profile-li-div-right domain-check-profile-li-div-right-settings">
-										<input type="text" name="profile_settings_owner" id="profile_settings_owner" class="domain-check-profile-settings-input domain-check-text-input" value="<?php echo isset($domain_result['owner']) ? $domain_result['owner'] : ''; ?>">
+										<input type="text" name="profile_settings_owner" id="profile_settings_owner" class="domain-check-profile-settings-input domain-check-text-input" value="<?php echo esc_attr(isset($domain_result['owner']) ? $domain_result['owner'] : ''); ?>">
 									</div>
 								</li>
 								<li>
 									<div class="domain-check-profile-li-div-left domain-check-profile-li-div-left-settings">Registrar:</div>
 									<div class="domain-check-profile-li-div-right domain-check-profile-li-div-right-settings">
-										<?php echo isset( $domain_result['registrar'] ) ? DomainCheckWhoisData::get_registrar_name( $domain_result['registrar'] ) : ''; ?>
+										<?php echo esc_html(isset( $domain_result['registrar'] ) ? DomainCheckWhoisData::get_registrar_name( $domain_result['registrar'] ) : ''); ?>
 									</div>
 								</li>
 								<li>
 									<div class="domain-check-profile-li-div-left domain-check-profile-li-div-left-settings">Nameserver:</div>
 									<div class="domain-check-profile-li-div-right domain-check-profile-li-div-right-settings">
-										<?php echo isset($domain_result['nameserver']) ? $domain_result['nameserver'] : ''; ?>
+										<?php echo esc_html(isset($domain_result['nameserver']) ? $domain_result['nameserver'] : ''); ?>
 									</div>
 								</li>
 								<li>
 									<input type="submit" class="button" value="Update Settings">
 								</li>
 							</ul>
-							<input type="hidden" name="profile_settings_update" value="<?php echo $domain_result['domain_url']; ?>" />
+							<input type="hidden" name="profile_settings_update" value="<?php echo esc_attr($domain_result['domain_url']); ?>" />
 							</form>
 						</li>
 					</ul>
@@ -307,10 +319,10 @@ class DomainCheckAdminProfile {
 				<div id="domain-check-domain-profile-watch-email" class="setting-div">
 						<h3>Domain Expiration Watch Email Addresses</h3>
 						(one email address per line)
-						<form action="admin.php?page=domain-check-profile&domain=<?php echo $domain_result['domain_url']; ?>" method="POST">
+						<form action="admin.php?page=domain-check-profile&domain=<?php echo esc_attr($domain_result['domain_url']); ?>" method="POST">
 							<textarea name="watch_email_add" rows="10" cols="40" class="domain-check-text-input domain-check-profile-settings-textarea"><?php
 							if (isset($domain_result['domain_settings']['watch_emails']) && is_array($domain_result['domain_settings']['watch_emails']) && count($domain_result['domain_settings']['watch_emails'])) {
-								echo implode("\n", $domain_result['domain_settings']['watch_emails']);
+								echo esc_textarea(implode("\n", $domain_result['domain_settings']['watch_emails']));
 							}
 								?></textarea>
 						<br>
@@ -320,9 +332,9 @@ class DomainCheckAdminProfile {
 				<?php DomainCheck::pro( 'AdminProfile', 'profile_notes_html', $domain_result ); ?>
 				<div id="domain-check-domain-profile-whois" class="setting-box-lg">
 					<h3>WHOIS Cache</h3>
-					<strong>Last Updated:</strong> <?php echo date('m/d/Y', $domain_result['domain_last_check']); ?>
+					<strong>Last Updated:</strong> <?php echo esc_html(date('m/d/Y', $domain_result['domain_last_check'])); ?>
 					<div>
-						<a href="admin.php?page=domain-check-profile&domain=<?php echo $domain_attr; ?>&domain_check_search=<?php echo $domain_attr; ?>" class="button">
+						<a href="admin.php?page=domain-check-profile&domain=<?php echo esc_attr($domain_to_view); ?>&domain_check_search=<?php echo esc_attr($domain_to_view); ?>" class="button">
 							<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 							Refresh
 						</a>
@@ -334,9 +346,9 @@ class DomainCheckAdminProfile {
 								foreach ( $domain_result['cache']['data'] as $idx => $val ) {
 									$domain_result['cache']['data'][$idx] = htmlentities($val);
 								}
-								echo implode('<br>', $domain_result['cache']['data']);
+								echo wp_kses_post(implode('<br>', $domain_result['cache']['data']));
 							} else {
-								echo htmlentities(print_r($domain_result['cache']['data'], true));
+								echo esc_html(print_r($domain_result['cache']['data'], true));
 							}
 							?></pre>
 						</div>
@@ -352,9 +364,9 @@ class DomainCheckAdminProfile {
 					$ssl_domain_result['domain_settings'] = ($ssl_domain_result['domain_settings'] ? json_decode(gzuncompress($ssl_domain_result['domain_settings']), true) : null);
 					?>
 
-					<strong>Last Updated:</strong> <?php echo date('m/d/Y', $ssl_domain_result['domain_last_check']); ?>
+					<strong>Last Updated:</strong> <?php echo esc_html(date('m/d/Y', $ssl_domain_result['domain_last_check'])); ?>
 					<div>
-						<a href="admin.php?page=domain-check-ssl-profile&domain=<?php echo $domain_attr; ?>&domain_check_ssl_search=<?php echo $domain_attr; ?>" class="button">
+						<a href="admin.php?page=domain-check-ssl-profile&domain=<?php echo esc_attr($domain_to_view); ?>&domain_check_ssl_search=<?php echo esc_attr($domain_to_view); ?>" class="button">
 							<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 							<img src="<?php echo plugins_url('/images/icons/color/lock-locked-yellow.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-update-nag">
 							Refresh SSL
@@ -364,10 +376,10 @@ class DomainCheckAdminProfile {
 					<div style="background-color: #FFFFFF;">
 					<pre class="domain-check-profile-code"><?php
 						if (is_array($ssl_domain_result['cache'])) {
-							echo htmlentities(print_r($ssl_domain_result['cache'], true));
+							echo esc_html(print_r($ssl_domain_result['cache'], true));
 							//echo implode('<br>', $ssl_domain_result['cache']);
 						} else {
-							echo htmlentities(print_r($ssl_domain_result['cache'], true));
+							echo esc_html(print_r($ssl_domain_result['cache'], true));
 						}
 						?></pre>
 					<?php
@@ -398,7 +410,7 @@ class DomainCheckAdminProfile {
 		</div>
 		<?php
 	}
-
+	
 	public static function profile_settings_update($domain) {
 		global $wpdb;
 
@@ -427,7 +439,7 @@ class DomainCheckAdminProfile {
 			);
 			foreach ( $profile_domain_arr as $tmp_setting_name ) {
 				if ( array_key_exists( 'profile_settings_' . $tmp_setting_name, $_POST ) ) {
-					$tmp_setting = $_POST['profile_settings_' . $tmp_setting_name];
+					$tmp_setting = sanitize_text_field($_POST['profile_settings_' . $tmp_setting_name]);
 					switch ( $tmp_setting_name ) {
 						case 'owner':
 						case 'registrar':
@@ -472,7 +484,8 @@ class DomainCheckAdminProfile {
 
 		if (isset($_POST['domain'])) {
 			$ajax = 1;
-			$domain = strtolower($_POST['domain']);
+			$domain_sanitized = sanitize_text_field($_POST['domain']);
+			$domain = strtolower($domain_sanitized);
 		}
 
 		$domain = strtolower($domain);

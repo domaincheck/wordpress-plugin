@@ -34,6 +34,7 @@ class DomainCheckAdminDashboard {
 		$result = $wpdb->get_results($sql, 'ARRAY_A');
 		if (count($result)) {
 			foreach ($result as $item) {
+				$expire_image = false;
 				if (isset($item['domain_expires']) && $item['domain_expires']) {
 					$expire_days_number = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0);
 					$expire_days = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0) . ' Days';
@@ -53,7 +54,7 @@ class DomainCheckAdminDashboard {
 						if ($expire_days_number < 0) {
 							$expire_days = 'Expired';
 						}
-						$expire_days = '<img src="' . plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">' . $expire_days;
+						$expire_image = true;
 					}
 				} else {
 					$expire_days = 'n/a';
@@ -63,27 +64,33 @@ class DomainCheckAdminDashboard {
 					$mobile_class = ' hidden-mobile';
 				}
 				?>
-				<tr class="domain-check-dasboard-table-tr<?php echo $mobile_class; ?>">
+				<tr class="domain-check-dasboard-table-tr<?php echo esc_attr($mobile_class); ?>">
 					<td>
 						<strong>
-							<a href="?page=domain-check-profile&domain=<?php echo $item['domain_url']; ?>"><?php echo $item['domain_url']; ?></a>
+							<a href="?page=domain-check-profile&domain=<?php echo esc_attr($item['domain_url']); ?>">
+							<?php echo esc_html($item['domain_url']); ?></a>
 						</strong>
 					</td>
-					<td><?php
-						echo $expire_days;
-						?></td>
+					<td>
+						<?php if ($expire_image) { ?>
+						<img src="<?php echo plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__) ?>" class="svg svg-icon-table svg-fill-<?php echo esc_attr($fill); ?>">
+						<?php echo esc_html($expire_days); ?>
+						<?php } else {?>
+						<?php echo esc_html($expire_days);?>
+						<?php } ?>
+					</td>
 					<td><?php
 						if (isset($item['domain_expires']) && $item['domain_expires']) {
 							$days = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0);
 							$days_flat = (int)floor(($item['domain_expires'] - time()) / 60 / 60 / 24);
 							if ($days_flat < 60) {
 								?>
-								<a href="?page=domain-check&domain_check_search=<?php echo $item['domain_url']; ?>"
+								<a href="?page=domain-check&domain_check_search=<?php echo esc_attr($item['domain_url']); ?>"
 								   class="button">
 									<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>"
 										 class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 								</a>
-								<a class="button" href="<?php echo DomainCheckLinks::homepage($item['domain_url']); ?>"
+								<a class="button" href="<?php echo esc_url(DomainCheckLinks::homepage($item['domain_url'])); ?>"
 								   target="_blank">
 									Renew
 								</a>
@@ -111,6 +118,7 @@ class DomainCheckAdminDashboard {
 		$result = $wpdb->get_results($sql, 'ARRAY_A');
 		if (count($result)) {
 			foreach ($result as $item) {
+				$expire_image = false;
 				if (isset($item['domain_expires']) && $item['domain_expires']) {
 					$expire_days_number = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0);
 					$expire_days = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0) . ' Days';
@@ -130,7 +138,7 @@ class DomainCheckAdminDashboard {
 						if ($expire_days_number < 0) {
 							$expire_days = 'Expired';
 						}
-						$expire_days = '<img src="' . plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">' . $expire_days;
+						$expire_image = true;
 					}
 				} else {
 					$expire_days = 'n/a';
@@ -140,25 +148,33 @@ class DomainCheckAdminDashboard {
 					$mobile_class = ' hidden-mobile';
 				}
 				?>
-				<tr class="domain-check-dasboard-table-tr<?php echo $mobile_class; ?>">
+				<tr class="domain-check-dasboard-table-tr<?php echo esc_attr($mobile_class); ?>">
 					<td>
 						<strong>
-							<a href="?page=domain-check-profile&domain=<?php echo $item['domain_url']; ?>"><?php echo $item['domain_url']; ?></a>
+							<a href="?page=domain-check-profile&domain=<?php echo esc_attr($item['domain_url']); ?>">
+							<?php echo esc_html($item['domain_url']); ?></a>
 						</strong>
 					</td>
-					<td><?php echo $expire_days; ?></td>
+					<td>
+						<?php if ($expire_image) { ?>
+						<img src="<?php echo plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__) ?>" class="svg svg-icon-table svg-fill-<?php echo esc_attr($fill); ?>">
+						<?php echo esc_html($expire_days); ?>
+						<?php } else {?>
+						<?php echo esc_html($expire_days);?>
+						<?php } ?>
+					</td>
 					<td><?php
 						if (isset($item['domain_expires']) && $item['domain_expires']) {
 							$days = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0);
 							$days_flat = (int)floor(($item['domain_expires'] - time()) / 60 / 60 / 24);
 							if ($days_flat < 60) {
 								?>
-								<a href="?page=domain-check&domain_check_search=<?php echo $item['domain_url']; ?>"
+								<a href="?page=domain-check&domain_check_search=<?php echo esc_attr($item['domain_url']); ?>"
 								   class="button">
 									<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>"
 										 class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 								</a>
-								<a href="<?php echo DomainCheckLinks::homepage($item['domain_url']); ?>" class="button"
+								<a href="<?php echo esc_url(DomainCheckLinks::homepage($item['domain_url'])); ?>" class="button"
 								   target="_blank">
 									Renew
 								</a>
@@ -197,10 +213,12 @@ class DomainCheckAdminDashboard {
 		$result = $wpdb->get_results($sql, 'ARRAY_A');
 		if (count($result)) {
 			foreach ($result as $item) {
+				$expire_image = false;
+				$expire_span = false;
 				if (isset($item['domain_expires']) && $item['domain_expires']) {
 					$expire_days_number = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0);
 					$expire_days = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0) . ' Days';
-					$expire_days = '<span class="hidden-desktop"><br /></span>' . $expire_days;
+					$expire_span = true;
 					$days = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0);
 					$days_flat = (int)floor(($item['domain_expires'] - time()) / 60 / 60 / 24);
 					if ($days_flat < 60) {
@@ -216,39 +234,54 @@ class DomainCheckAdminDashboard {
 						}
 						if ($expire_days_number < 0) {
 							$expire_days = 'Expired';
+							$expire_span = false;
 						}
-						$expire_days = '<img src="' . plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">' . $expire_days;
+						$expire_image = '/images/icons/color/clock-' . $fill . '.svg';
 					} else {
-						$expire_days = '<img src="' . plugins_url('/images/icons/color/lock-locked-updated.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-updated">' . $expire_days;
+						$expire_image = '/images/icons/color/lock-locked-updated.svg';
+						$fill = 'updated';
 					}
 				} else {
-					$expire_days = $expire_days = '<img src="' . plugins_url('/images/icons/color/lock-unlocked.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-error"> ' . 'Not Secure';
+					$expire_image = '/images/icons/color/lock-unlocked.svg';
+					$fill = 'error';
+					$expire_days = 'Not Secure';
 				}
 				$mobile_class = '';
 				if ( $expire_days === 'n/a' || $expire_days_number >= 60 ) {
 					$mobile_class = ' hidden-mobile';
 				}
 				?>
-				<tr class="domain-check-dasboard-table-tr<?php echo $mobile_class; ?>">
+				<tr class="domain-check-dasboard-table-tr<?php echo esc_attr($mobile_class); ?>">
 					<td>
 						<strong>
-							<a href="?page=domain-check-ssl-profile&domain=<?php echo $item['domain_url']; ?>">
-								<?php echo $item['domain_url']; ?></a>
+							<a href="?page=domain-check-ssl-profile&domain=<?php echo esc_attr($item['domain_url']); ?>">
+								<?php echo esc_html($item['domain_url']); ?>
+							</a>
 						</strong>
 					</td>
-					<td><?php echo $expire_days; ?></td>
+					<td>
+					<?php if ($expire_image) { ?>
+						<img src="<?php echo plugins_url($expire_image, __FILE__) ?>" class="svg svg-icon-table svg-fill-<?php echo esc_attr($fill); ?>">
+						<?php if ($expire_span) { ?>
+						<span class="hidden-desktop"><br /></span>
+						<?php } ?>
+						<?php echo esc_html($expire_days); ?>
+						<?php } else {?>
+						<?php echo esc_html($expire_days);?>
+						<?php } ?>
+					</td>
 					<td><?php
 						if (isset($item['domain_expires']) && $item['domain_expires']) {
 							$days = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0);
 							$days_flat = (int)floor(($item['domain_expires'] - time()) / 60 / 60 / 24);
 							if ($days_flat < 60) {
 								?>
-								<a href="?page=domain-check&domain_check_ssl_search=<?php echo $item['domain_url']; ?>"
+								<a href="?page=domain-check&domain_check_ssl_search=<?php echo esc_attr($item['domain_url']); ?>"
 								   class="button">
 									<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>"
 										 class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 								</a>
-								<a href="<?php echo DomainCheckLinks::ssl($item['domain_url']); ?>" class="button"
+								<a href="<?php echo esc_url(DomainCheckLinks::ssl($item['domain_url'])); ?>" class="button"
 								   target="_blank">
 									Renew
 								</a>
@@ -256,12 +289,12 @@ class DomainCheckAdminDashboard {
 							}
 						} else {
 							?>
-							<a href="?page=domain-check&domain_check_ssl_search=<?php echo $item['domain_url']; ?>"
+							<a href="?page=domain-check&domain_check_ssl_search=<?php echo esc_attr($item['domain_url']); ?>"
 							   class="button">
 								<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>"
 									 class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 							</a>
-							<a href="<?php echo DomainCheckLinks::ssl($item['domain_url']); ?>" class="button"
+							<a href="<?php echo esc_url(DomainCheckLinks::ssl($item['domain_url'])); ?>" class="button"
 							   target="_blank">
 								Fix
 							</a>
@@ -288,6 +321,7 @@ class DomainCheckAdminDashboard {
 		$result = $wpdb->get_results($sql, 'ARRAY_A');
 		if (count($result)) {
 			foreach ($result as $item) {
+				$expire_image = false;
 				if (isset($item['domain_expires']) && $item['domain_expires']) {
 					$expire_days_number = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0);
 					$expire_days = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0) . ' Days';
@@ -307,39 +341,49 @@ class DomainCheckAdminDashboard {
 						if ($expire_days_number < 0) {
 							$expire_days = 'Expired';
 						}
-						$expire_days = '<img src="' . plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">' . $expire_days;
+						$expire_image = '/images/icons/color/clock-' . $fill . '.svg';
 					} else {
-						$expire_days = '<img src="' . plugins_url('/images/icons/color/lock-locked-updated.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-updated">' . $expire_days;
+						$expire_image = '/images/icons/color/lock-locked-updated.svg';
+						$fill = 'updated';
 					}
-
 				} else {
-					$expire_days = '<img src="' . plugins_url('/images/icons/color/lock-unlocked.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-error">' . 'Not Secure';
+					$expire_image = '/images/icons/color/lock-unlocked.svg';
+					$fill = 'error';
+					$expire_days = 'Not Secure';
 				}
 				$mobile_class = '';
 				if ( $expire_days === 'n/a' || $expire_days_number >= 60 ) {
 					$mobile_class = ' hidden-mobile';
 				}
 				?>
-				<tr class="domain-check-dasboard-table-tr<?php echo $mobile_class; ?>">
+				<tr class="domain-check-dasboard-table-tr<?php echo esc_attr($mobile_class); ?>">
 					<td>
 						<strong>
-							<a href="?page=domain-check-ssl-profile&domain=<?php echo $item['domain_url']; ?>">
-								<?php echo $item['domain_url']; ?></a>
+							<a href="?page=domain-check-ssl-profile&domain=<?php echo esc_attr($item['domain_url']); ?>">
+								<?php echo esc_html($item['domain_url']); ?>
+							</a>
 						</strong>
 					</td>
-					<td><?php echo $expire_days; ?></td>
+					<td>
+						<?php if ($expire_image) { ?>
+						<img src="<?php echo plugins_url($expire_image, __FILE__) ?>" class="svg svg-icon-table svg-fill-<?php echo esc_attr($fill); ?>">
+						<?php echo esc_html($expire_days); ?>
+						<?php } else {?>
+						<?php echo esc_html($expire_days);?>
+						<?php } ?>
+					</td>
 					<td><?php
 						if (isset($item['domain_expires']) && $item['domain_expires']) {
 							$days = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0);
 							$days_flat = (int)floor(($item['domain_expires'] - time()) / 60 / 60 / 24);
 							if ($days_flat < 60) {
 								?>
-								<a href="?page=domain-check&domain_check_ssl_search=<?php echo $item['domain_url']; ?>"
+								<a href="?page=domain-check&domain_check_ssl_search=<?php echo esc_attr($item['domain_url']); ?>"
 								   class="button">
 									<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>"
 										 class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 								</a>
-								<a href="<?php echo DomainCheckLinks::ssl($item['domain_url']); ?>" class="button"
+								<a href="<?php echo esc_url(DomainCheckLinks::ssl($item['domain_url'])); ?>" class="button"
 								   target="_blank">
 									Renew
 								</a>
@@ -347,12 +391,12 @@ class DomainCheckAdminDashboard {
 							}
 						} else {
 							?>
-							<a href="?page=domain-check&domain_check_ssl_search=<?php echo $item['domain_url']; ?>"
+							<a href="?page=domain-check&domain_check_ssl_search=<?php echo esc_attr($item['domain_url']); ?>"
 							   class="button">
 								<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>"
 									 class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 							</a>
-							<a href="<?php echo DomainCheckLinks::ssl($item['domain_url']); ?>" class="button"
+							<a href="<?php echo esc_url(DomainCheckLinks::ssl($item['domain_url'])); ?>" class="button"
 							   target="_blank">
 								Fix
 							</a>
@@ -390,7 +434,7 @@ class DomainCheckAdminDashboard {
 		}
 
 		?>
-					<h3>Coupons Updated: <?php echo $updated_date; ?></h3>
+					<h3>Coupons Updated: <?php echo esc_html($updated_date); ?></h3>
 					<a href="admin.php?page=domain-check&domain_check_coupons_update=1" class="button">
 						<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 						Refresh Coupons
@@ -406,12 +450,12 @@ class DomainCheckAdminDashboard {
 		foreach ($coupons as $coupon_site => $coupon_data) {
 			?>
 					<h3>
-						<a href="admin.php?page=domain-check-coupons&domain_check_coupons_site=<?php echo $coupon_site; ?>">
-						<?php echo ucfirst($coupon_site); ?>
+						<a href="admin.php?page=domain-check-coupons&domain_check_coupons_site=<?php echo esc_attr($coupon_site); ?>">
+						<?php echo esc_html(ucfirst($coupon_site)); ?>
 						<div style="float:right; display: inline-block; font-size: 12px;">More [&raquo;]</div>
 						</a>
 					</h3>
-					<table id="dashboard-coupon-table-<?php echo $coupon_site_counter; ?>" class="dashboard-coupon-table">
+					<table id="dashboard-coupon-table-<?php echo esc_attr($coupon_site_counter); ?>" class="dashboard-coupon-table">
 					<?php
 			if (count($coupon_data['links']['link'])) {
 				$coupon_ads = array();
@@ -447,9 +491,9 @@ class DomainCheckAdminDashboard {
 								<td style="overflow: hidden;">
 							<div class="domain-check-coupon-ad domain-check-coupon-ad-dashboard">
 									<strong>
-									<a href="<?php echo $coupon_link_data['clickUrl']; ?>" target="_blank">
+									<a href="<?php echo esc_url($coupon_link_data['clickUrl']); ?>" target="_blank">
 								<?php
-					echo $coupon_link_data['link-code-html'];
+					echo wp_kses_post($coupon_link_data['link-code-html']);
 					if (isset($coupon_link_data['coupon-code'])
 						&& ((is_array($coupon_link_data['coupon-code']) && count($coupon_link_data['coupon-code'])) || $coupon_link_data['coupon-code'])
 					) {
@@ -460,10 +504,10 @@ class DomainCheckAdminDashboard {
 						</td>
 						<td style="border:1px #000000 dashed; width: 20%;">
 							<div style="text-align: center;">
-								<a href="<?php echo $coupon_link_data['clickUrl']; ?>" style="color:#000000;"
+								<a href="<?php echo esc_url($coupon_link_data['clickUrl']); ?>" style="color:#000000;"
 								   target="_blank">
 									<strong>
-										<?php echo $coupon_link_data['coupon-code']; ?>
+										<?php echo esc_html($coupon_link_data['coupon-code']); ?>
 									</strong>
 								</a>
 							</div>
@@ -486,11 +530,11 @@ class DomainCheckAdminDashboard {
 					?>
 					<tr>
 						<td colspan="1">
-							<div alt="<?php echo htmlentities($coupon_link_data['description']); ?>"
-								 title="<?php echo htmlentities($coupon_link_data['description']); ?>">
-								<a href="<?php echo $coupon_link_data['clickUrl']; ?>" target="_blank">
+							<div alt="<?php echo esc_attr($coupon_link_data['description']); ?>"
+								 title="<?php echo esc_attr($coupon_link_data['description']); ?>">
+								<a href="<?php echo esc_url($coupon_link_data['clickUrl']); ?>" target="_blank">
 									<?php
-									echo $coupon_link_data['link-code-html'];
+									echo wp_kses_post($coupon_link_data['link-code-html']);
 									?>
 								</a>
 							</div>

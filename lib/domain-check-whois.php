@@ -69,7 +69,6 @@ class DomainCheckWhois {
 				return $data;
 			}
 
-			//echo $data;
 			$ret = array(
 				'data' => $data,
 				'extension' => $extension,

@@ -7,7 +7,7 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Tags: admin, multisite, domain, ssl, https, hosting, email, admin, alerts, coupons, deals, dashboard, expiration, alert, notification, dashboard, domain checker, domain search, domain mapping
 Requires at least: 3.8
 Tested up to: 5.8.3
-Stable tag: 1.0.17
+Stable tag: 1.0.18
 
 Domain Check lets you search domain names, check SSL certificates and HTTPS, set email alerts for domain and SSL expiration, and get daily coupons.
 
@@ -101,6 +101,13 @@ A: Please use the email alert tester in the Help section within the plugin. This
 5. See the lastest coupon codes and daily deals from major domain registrars, SSL certificate providers, and hosting companies. No more clicking to shady coupon sites!
 
 == Changelog ==
+
+= 1.0.18 =
+* Bugfix: Use Wordpress remote URL libraries for maximum compatibility
+* Bugfix: Adjustments to import logic regex
+* Bugfix: Improved output escaping
+* Bugfix: Better sanitized domain handling
+* Bugfix: Email uses correct images
 
 = 1.0.17 =
 * PHP 7 update

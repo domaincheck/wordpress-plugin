@@ -2,35 +2,46 @@
 
 class DomainCheckAdminAjax {
 	public static function ajax_domain_search($action = null, $domain = null) {
-		if (isset($_POST['action']) && $_POST['action'] == 'domain_search'
-			&& isset($_POST['domain']) && $_POST['domain']) {
+		$action_sanitized = false;
+		if (isset($_POST['action'])) {
+			$action_sanitized = sanitize_text_field($_POST['action']);
+		}
+		$domain_sanitized = false;
+		if (isset($_POST['domain'])) {
+			$domain_sanitized = sanitize_text_field($_POST['domain']);
+		}
+		if ($action_sanitized == 'domain_search' && $domain_sanitized) {
 			$use_cache = false;
 			if (isset($_POST['cache'])) {
-				$use_cache = $_POST['cache'];
+				$use_cache = sanitize_text_field($_POST['cache']);
 			}
 			$force_owned = false;
 			if (isset($_POST['force_owned'])) {
 				$force_owned = true;
 			}
 			$force_watch = false;
-			if (isset($_POST['force_watch']) && $_POST['force_watch']) {
+			if (isset($_POST['force_watch']) && sanitize_text_field($_POST['force_watch'])) {
 				$force_watch = true;
 			}
 			$ssl = false;
-			if (isset($_POST['force_ssl']) && $_POST['force_ssl']) {
+			if (isset($_POST['force_ssl']) && sanitize_text_field($_POST['force_ssl'])) {
 				$ssl = true;
 			}
 			if ($ssl) {
-				DomainCheckSearch::ssl_search($_POST['domain'], $force_watch, true);
+				DomainCheckSearch::ssl_search($domain_sanitized, $force_watch, true);
 				return;
 			}
-			DomainCheckSearch::domain_search($_POST['domain'], $use_cache, $force_owned, $force_watch, true);
+			DomainCheckSearch::domain_search($domain_sanitized, $use_cache, $force_owned, $force_watch, true);
 		}
 	}
 
 	public static function ajax_settings() {
+		$method_sanitized = false;
 		if (isset($_POST['method'])) {
-			switch($_POST['method']) {
+			$method_sanitized = sanitize_text_field($_POST['method']);
+		}
+		if ($method_sanitized) {
+			switch($method_sanitized) {
 				case 'email_additional_emails':
 					if (isset($_POST['email_additional_emails'])) {
 						//check if emails exist...
@@ -46,17 +57,16 @@ class DomainCheckAdminAjax {
 						if (!is_array($email_arr) || !count($email_arr)) {
 							$email_arr = array();
 						}
-						update_option(DomainCheckConfig::OPTIONS_PREFIX . $_POST['method'], $email_arr);
+						update_option(DomainCheckConfig::OPTIONS_PREFIX . $method_sanitized, $email_arr);
 						self::ajax_success(array('message' => 'Success! Setting updated!'));
 					}
 					break;
 				case 'email_primary_email':
 					if (isset($_POST['email_primary_email'])) {
 						//check if emails exist...
-						$email = $_POST['email_primary_email'];
-						$email = sanitize_email($email);
+						$email = sanitize_email($_POST['email_primary_email']);
 						if (is_email($email)) {
-							update_option(DomainCheckConfig::OPTIONS_PREFIX . $_POST['method'], $email);
+							update_option(DomainCheckConfig::OPTIONS_PREFIX . $method_sanitized, $email);
 							self::ajax_success(array('message' => 'Success! Setting updated!'));
 						} else {
 
@@ -65,7 +75,10 @@ class DomainCheckAdminAjax {
 					break;
 				case 'domain_extension_favorites':
 					if (isset($_POST['domain_extension_favorites'])) {
-						$item_arr = explode("\n", $_POST['domain_extension_favorites']);
+						$item_arr = explode(
+							"\n",
+							sanitize_text_field($_POST['domain_extension_favorites'])
+						);
 						foreach ($item_arr as $item_arr_idx => $item) {
 							if (strpos($item, '.') === 0) {
 								$item = substr($item, 1, strlen($item) - 1);
@@ -80,24 +93,24 @@ class DomainCheckAdminAjax {
 						if (!is_array($item_arr) || !count($item_arr)) {
 							$item_arr = DomainCheckConfig::$options[DomainCheckConfig::OPTIONS_PREFIX . 'settings']['domain_extension_favorites'];
 						}
-						update_option(DomainCheckConfig::OPTIONS_PREFIX . $_POST['method'], $item_arr);
+						update_option(DomainCheckConfig::OPTIONS_PREFIX . $method_sanitized, $item_arr);
 						self::ajax_success(array('message' => 'Success! Setting updated!'));
 					}
 					break;
 				case 'coupons_primary_site':
 					if (isset($_POST['coupons_primary_site'])) {
 						//check if emails exist...
-						$site = $_POST['coupons_primary_site'];
+						$site = sanitize_text_field($_POST['coupons_primary_site']);
 						$data = DomainCheckCouponData::get_data();
 						if (isset($data[$site])) {
-							update_option(DomainCheckConfig::OPTIONS_PREFIX . $_POST['method'], $site);
+							update_option(DomainCheckConfig::OPTIONS_PREFIX . $method_sanitized, $site);
 							self::ajax_success(array('message' => 'Success! Setting updated!'));
 						}
 					}
 					break;
 				case 'email_schedule_cron':
 					if (isset($_POST['email_schedule_cron'])) {
-						$schedule = $_POST['email_schedule_cron'];
+						$schedule = sanitize_text_field($_POST['email_schedule_cron']);
 						$ret = DomainCheckCron::cron_schedule( 'domain_check_cron_email', $schedule );
 						if ( $ret ) {
 							self::ajax_success( array( 'message' => 'Success! Setting updated!' ) );
@@ -108,8 +121,7 @@ class DomainCheckAdminAjax {
 					break;
 				case 'email_test':
 					if (isset($_POST['email_address'])) {
-						$email = trim($_POST['email_address']);
-						$email = sanitize_email($email);
+						$email = trim(sanitize_email($_POST['email_address']));
 						if (is_email($email)) {
 							$ret = DomainCheckEmail::email_test($email);
 							if (!is_array($ret)) {

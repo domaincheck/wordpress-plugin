@@ -304,7 +304,10 @@ class DomainCheck_SSL_Search_List extends WP_List_Table {
 		}
 		$order = '';
 		if (isset($_REQUEST['orderby']) && isset($_REQUEST['order'])) {
-			$order = '&orderby=' . $_REQUEST['orderby'] . '&order=' . $_REQUEST['order'];
+			$order = '&orderby='
+				. sanitize_text_field($_REQUEST['orderby'])
+				. '&order='
+				. sanitize_text_field($_REQUEST['order']);
 		}
 
 		$out = '';
@@ -499,15 +502,16 @@ class DomainCheck_SSL_Search_List extends WP_List_Table {
 	public function process_bulk_action() {
 
 		if (isset($_POST['bulk_domains'])) {
+			$domains_sanitized = sanitize_text_field($_POST['bulk_domains']);
 			switch($this->current_action()) {
 				case 'bulk_delete':
-					DomainCheckAdmin::callInstance('bulk_ssl_delete', $_POST['bulk_domains']);
+					DomainCheckAdmin::callInstance('bulk_ssl_delete', $domains_sanitized);
 					break;
 				case 'bulk_watch_start':
-					DomainCheckAdmin::callInstance('bulk_ssl_watch', $_POST['bulk_domains']);
+					DomainCheckAdmin::callInstance('bulk_ssl_watch', $domains_sanitized);
 					break;
 				case 'bulk_watch_stop':
-					DomainCheckAdmin::callInstance('bulk_ssl_watch_stop', $_POST['bulk_domains']);
+					DomainCheckAdmin::callInstance('bulk_ssl_watch_stop', $domains_sanitized);
 					break;
 			}
 		}

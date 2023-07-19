@@ -47,9 +47,9 @@ class DomainCheckAdminImportExport {
 
 				function import_text_get_domains(import_data) {
 					//a little sensitive but works...
-					var regex_all_domains = eval("/([a-zA-Z0-9][-a-zA-Z0-9]*[a-zA-Z0-9]|[a-zA-Z0-9])\\.(([a-zA-Z]{2,4}|[a-zA-Z]{2,10}.[a-zA-Z0-9]{2,10}))(?![-0-9a-zA-Z])(?!\\.[a-zA-Z0-9])/gi");
-
-					var import_data_domains = import_data.match(regex_all_domains);
+					var import_data_domains = import_data.match(
+						/([a-zA-Z0-9][-a-zA-Z0-9]*[a-zA-Z0-9]|[a-zA-Z0-9])\.(([a-zA-Z]{2,4}|[a-zA-Z]{2,10}.[a-zA-Z0-9]{2,10}))(?![-0-9a-zA-Z])(?!\.[a-zA-Z0-9])/gi
+					);
 					if (import_data_domains) {
 						import_data_domains = unique_domains(strip(import_data_domains)).sort();
 					} else {
@@ -253,7 +253,7 @@ class DomainCheckAdminImportExport {
 							?><tr><?php
 						}
 						$homepage_link = DomainCheckLinks::homepage(site_url(), $coupon_site);
-						?><td><strong><a href="<?php echo $homepage_link; ?>" target="_blank"><?php echo ucfirst($coupon_site); ?></a></strong></td><?php
+						?><td><strong><a href="<?php echo esc_url($homepage_link); ?>" target="_blank"><?php echo esc_html(ucfirst($coupon_site)); ?></a></strong></td><?php
 						if (($coupon_site_counter % 3) == 2) {
 							?></tr><?php
 						}

@@ -76,7 +76,7 @@ class DomainCheckAdminSearch {
 			}
 		</script>
 		<form id="domain-check-search-box-form" action="" method="GET">
-			<input type="text" name="domain_check_search" id="domain_check_search" class="<?php echo $css_class; ?>" />
+			<input type="text" name="domain_check_search" id="domain_check_search" class="<?php echo esc_attr($css_class); ?>" />
 			<input type="hidden" name="page" value="domain-check-search" />
 			<?php if ( !$dashboard ) { ?>
 			<div type="button" class="button domain-check-admin-search-input-btn" onclick="domain_check_search_click();">
@@ -84,7 +84,7 @@ class DomainCheckAdminSearch {
 				<div style="display: inline-block;">Search Domain Name</div>
 			</div>
 			<?php } else { ?>
-			<input type="submit" class="<?php echo $css_class_button; ?> button" value="Search Domain" />
+			<input type="submit" class="<?php echo esc_attr($css_class_button); ?> button" value="Search Domain" />
 			<?php } ?>
 		</form>
 		<?php

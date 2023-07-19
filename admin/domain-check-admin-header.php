@@ -629,7 +629,7 @@ class DomainCheckAdminHeader {
 		</script>
 
 		<?php
-		if (class_exists('DomainCheckDebug') && isset($_GET['test_ftue'])) {
+		if (class_exists('DomainCheckDebug') && array_key_exists('test_ftue', $_GET)) {
 			DomainCheckDebug::debug();
 		}
 		if ( function_exists( 'get_option' ) && function_exists('get_current_screen') ) {
@@ -670,7 +670,7 @@ class DomainCheckAdminHeader {
 				}
 				?>
 				<div class="updated domain-check-notice">
-				<?php echo $message; ?>
+				<?php echo wp_kses_post($message); ?>
 				</div>
 				<?php
 			}
@@ -784,17 +784,17 @@ class DomainCheckAdminHeader {
 		}
 
 		?>
-		<div id="domain-check-admin-nav-mobile-<?php echo self::$m_navCount; ?>" class="domain-check-admin-nav-mobile" onclick="showHide('domain-check-admin-nav-<?php echo self::$m_navCount; ?>');">
+		<div id="domain-check-admin-nav-mobile-<?php echo esc_attr(self::$m_navCount); ?>" class="domain-check-admin-nav-mobile" onclick="showHide('domain-check-admin-nav-<?php echo esc_attr(self::$m_navCount); ?>');">
 			<button class="btn btn-default button button-default domain-check-admin-nav-button domain-check-admin-nav-header-button">
 				<img src="<?php echo plugins_url('/images/icons/color/menu.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray domain-check-link-icon" />
-				<?php echo $section; ?>
+				<?php echo esc_html($section); ?>
 			</button>
 		</div>
-		<div id="domain-check-admin-nav-<?php echo self::$m_navCount; ?>" class="domain-check-nav-div-dashboard">
+		<div id="domain-check-admin-nav-<?php echo esc_attr(self::$m_navCount); ?>" class="domain-check-nav-div-dashboard">
 		<?php
 
-		if ( $current_page === null && isset( $_GET['page'] ) ) {
-			$current_page = $_GET['page'];
+		if ( $current_page === null && array_key_exists('page', $_GET)) {
+			$current_page = sanitize_text_field($_GET['page']);
 		}
 
 		foreach ($nav_pages as $nav_page_idx => $nav_data) {
@@ -817,9 +817,9 @@ class DomainCheckAdminHeader {
 			}
 
 			?>
-			<a href="admin.php?page=<?php echo $nav_page; ?>" class="<?php echo $css_class; ?> domain-check-admin-nav-button">
+			<a href="admin.php?page=<?php echo esc_attr($nav_page); ?>" class="<?php echo esc_attr($css_class); ?> domain-check-admin-nav-button">
 				<img src="<?php echo plugins_url('/images/icons/' . $nav_data[2] . '.svg', __FILE__); ?>" class="svg svg-fill svg-icon-table svg-icon-table-links svg-fill-gray">
-				<?php echo $nav_data[1]; ?>
+				<?php echo esc_html($nav_data[1]); ?>
 			</a>
 			<?php
 		}

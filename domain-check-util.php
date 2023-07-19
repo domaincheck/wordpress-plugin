@@ -11,7 +11,7 @@ if(!class_exists('DomainCheckUtil')) {
 		public function __construct() {}
 
 		public static function cli($message) {
-			echo $message . "\n";
+			echo wp_kses_post($message) . "\n";
 		}
 
 		public static function debug($message, $data = 'domaincheckdefault' ) {

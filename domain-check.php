@@ -3,7 +3,7 @@
 Plugin Name: Domain Check
 Plugin URI: http://domaincheckplugin.com
 Description: Domain Check lets you search domain names in your admin using your Wordpress blog, set domain expiration reminders for yourself or multiple email addresses, check SSL certificates, and set SSL expiration reminders. Get email reminders when domains expire or SSL certificates expire and set multiple emails for domain expiration reminders. Watch domain names on your own domain watch list and do your own domain lookups! Get the latest daily coupon codes from all the major domain registrars, SSL certificate providers, and hosting companies right in your Wordpress admin!
-Version: 1.0.17
+Version: 1.0.18
 Author: Domain Check
 Author URI: http://domaincheckplugin.com
 
@@ -52,7 +52,7 @@ if(!class_exists('DomainCheck')) {
 		const PLUGIN_CLASSNAME = 'DomainCheck';
 		const PLUGIN_NAME = 'domain-check';
 		const PLUGIN_OPTION_PREFIX = 'domain_check';
-		const PLUGIN_VERSION = '1.0.17';
+		const PLUGIN_VERSION = '1.0.18';
 
 		public static $db_table; //db table (has to be dynamic for wp prefix)
 
@@ -133,20 +133,20 @@ if(!class_exists('DomainCheck')) {
 			if ( ( ! defined( 'WP_INSTALLING' ) || WP_INSTALLING === false ) && is_admin() ) {
 				$pluginAdminDir = dirname(__FILE__) . '/admin/';
 				require_once($pluginAdminDir . self::PLUGIN_NAME . '-admin.php');
-
-				if (class_exists('DomainCheckDebug') && isset($_GET['test_cron'])) {
+				
+				if (class_exists('DomainCheckDebug') && array_key_exists('test_cron', $_GET) && sanitize_text_field($_GET['test_cron'])) {
 					DomainCheckDebug::debug();
 				}
 
-				if (class_exists('DomainCheckDebug') && isset($_GET['test_update'])) {
+				if (class_exists('DomainCheckDebug') && array_key_exists('test_update', $_GET) && sanitize_text_field($_GET['test_update'])) {
 					DomainCheckDebug::debug();
 				}
 
 			}
-			if (class_exists('DomainCheckDebug') && isset($_GET['test_option'])) {
+			if (class_exists('DomainCheckDebug') && array_key_exists('test_option', $_GET) && sanitize_text_field($_GET['test_option'])) {
 				DomainCheckDebug::debug();
 			}
-			if (class_exists('DomainCheckDebug') && isset($_GET['test_show_option'])) {
+			if (class_exists('DomainCheckDebug') && array_key_exists('test_show_options', $_GET) && sanitize_text_field($_GET['test_show_option'])) {
 				DomainCheckDebug::debug();
 			}
 		}
@@ -331,7 +331,7 @@ if(!class_exists('DomainCheck')) {
 				if ( count($email_domains['owned']) ) {
 					//$send_email = true;
 					$subject .= ' - ' . count($email_domains['owned']) . ' Expiring Domains';
-					$message .= '<h2><img src="' . plugins_url('domain-check/images/icons/flag-blue-24x24.png') . '">Your Expiring Domains</h2>' . "\n";
+					$message .= '<h2><img src="' . plugins_url('/images/icons/flag-blue-24x24.png', __FILE__) . '">Your Expiring Domains</h2>' . "\n";
 					$message .= '<table>';
 					foreach ($email_domains['owned'] as $result_idx => $domain_result_idx) {
 						if (isset($domain_result[$domain_result_idx]['domain_expires']) && $domain_result[$domain_result_idx]['domain_expires']) {
@@ -381,7 +381,7 @@ if(!class_exists('DomainCheck')) {
 				if ( count($email_domains['ssl']) ) {
 					//$send_email = true;
 					$subject .= ' - ' . count($email_domains['ssl']) . ' Expiring SSL Certificates';
-					$message .= '<h2><img src="' . plugins_url('domain-check/images/icons/lock-locked-yellow-24x24.png') . '">Your Expiring SSL Certificates</h2>' . "\n";
+					$message .= '<h2><img src="' . plugins_url('/images/icons/lock-locked-yellow-24x24.png', __FILE__) . '">Your Expiring SSL Certificates</h2>' . "\n";
 					$message .= '<table>';
 					$counter = 0;
 					foreach ($email_domains['ssl'] as $result_idx => $domain_result_idx) {
@@ -436,7 +436,7 @@ if(!class_exists('DomainCheck')) {
 				if ( count($email_domains['taken']) ) {
 					//$send_email = true;
 					$subject .= ' - ' . count($email_domains['taken']) . ' Expiring Watched Domains';
-					$message .= '<h2><img src="' . plugins_url('domain-check/images/icons/eye-24x24.png') . '">Your Expiring Watched Domains</h2>' . "\n";
+					$message .= '<h2><img src="' . plugins_url('/images/icons/eye-24x24.png', __FILE__) . '">Your Expiring Watched Domains</h2>' . "\n";
 					$message .= '<table>';
 					$counter = 0;
 					foreach ($email_domains['taken'] as $result_idx => $domain_result_idx) {
@@ -489,7 +489,7 @@ if(!class_exists('DomainCheck')) {
 
 				/*
 				//coupons make the email go to the Updates tab in Gmail, its annoying I don't like it, make it a setting
-				$message .= '<h2><img src="' . plugins_url('domain-check/images/icons/tags-green-24x24.png') . '">Daily Coupons and Deals</h2>' . "\n";
+				$message .= '<h2><img src="' . plugins_url('/images/icons/tags-green-24x24.png', __FILE__) . '">Daily Coupons and Deals</h2>' . "\n";
 				$coupons = DomainCheckCouponData::get_data();
 				$coupons  = $coupons[DomainCheckLinks::$primary_domain];
 				$coupon_ads = array();

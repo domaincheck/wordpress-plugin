@@ -4,15 +4,24 @@ class DomainCheckAdminCoupons {
 
 	public static function coupons() {
 		global $wpdb;
+		$domain_check_coupons_site = false;
+		if (array_key_exists('domain_check_coupons_site', $_GET)) {
+			$domain_check_coupons_site = sanitize_text_field($_GET['domain_check_coupons_site']);
+		}
 
-		if (isset($_GET['domain_check_coupons_site']) && DomainCheckCouponData::valid_site($_GET['domain_check_coupons_site'])) {
+		if ($domain_check_coupons_site && DomainCheckCouponData::valid_site($domain_check_coupons_site)) {
 			self::coupons_site();
 			return;
 		}
 
 		$coupons = null;
-		if (isset($_GET['domain_check_coupons_search']) && $_GET['domain_check_coupons_search']) {
-			$coupons = DomainCheckCouponData::search($_GET['domain_check_coupons_search']);
+		$domain_check_coupons_search = false;
+		if (array_key_exists('domain_check_coupons_search', $_GET)) {
+			$domain_check_coupons_search = sanitize_text_field($_GET['domain_check_coupons_search']);
+		}
+		
+		if ($domain_check_coupons_search) {
+			$coupons = DomainCheckCouponData::search($domain_check_coupons_search);
 			$found = 0;
 			foreach ($coupons as $coupon_site => $coupon_data) {
 				if (isset($coupon_data['links']['link'])) {
@@ -46,7 +55,7 @@ class DomainCheckAdminCoupons {
 					$updated_date = 'Today!';
 				}
 			?>
-				<h3>Coupons Last Updated: </strong> <?php echo $updated_date; ?></h3>
+				<h3>Coupons Last Updated: </strong> <?php echo esc_html($updated_date); ?></h3>
 			<?php
 			}
 			?>
@@ -59,8 +68,8 @@ class DomainCheckAdminCoupons {
 				?>
 				<div style="clear:both;">
 					<h3>
-						<a href="admin.php?page=domain-check-coupons&domain_check_coupons_site=<?php echo $coupon_site; ?>">
-						<?php echo ucfirst($coupon_site); ?>
+						<a href="admin.php?page=domain-check-coupons&domain_check_coupons_site=<?php echo esc_attr($coupon_site); ?>">
+						<?php echo esc_html(ucfirst($coupon_site)); ?>
 						</a>
 					</h3>
 					<?php
@@ -95,20 +104,19 @@ class DomainCheckAdminCoupons {
 							<div class="domain-check-coupon-ad">
 								<p style="text-align: left;">
 									<strong>
-										<a href="<?php echo $coupon_link_data['clickUrl']; ?>" target="_blank">
-										<?php echo $coupon_link_data['link-code-html']; ?>
-											</a>
+										<a href="<?php echo esc_url($coupon_link_data['clickUrl']); ?>" target="_blank">
+											<?php echo wp_kses_post($coupon_link_data['link-code-html']); ?>
+										</a>
 									</strong>
 								</p>
-
 								<p style="text-align: center;">
 									<div style="text-align: center;">
 										<h3>Coupon Code: </h3>
 									</div>
 									<div style="text-align: center;">
-										<a href="<?php echo $coupon_link_data['clickUrl']; ?>" target="_blank" style="background-color: #00AA00; color: #FFFFFF; font-size: 20px; margin: 10px; padding: 10px;">
+										<a href="<?php echo esc_url($coupon_link_data['clickUrl']); ?>" target="_blank" style="background-color: #00AA00; color: #FFFFFF; font-size: 20px; margin: 10px; padding: 10px;">
 											<strong>
-												<?php echo $coupon_link_data['coupon-code']; ?>
+												<?php echo esc_html($coupon_link_data['coupon-code']); ?>
 											</strong>
 										</a>
 									</div>
@@ -127,11 +135,9 @@ class DomainCheckAdminCoupons {
 						}
 						$coupon_link_data = $coupon_data['links']['link'][$coupon_link_idx];
 						?>
-						<div style="margin: 5px; padding: 5px; background-color: #ffffff; width: 40%; display: inline-block;" alt="<?php echo htmlentities($coupon_link_data['description']); ?>" title="<?php echo htmlentities($coupon_link_data['description']); ?>">
-							<a href="<?php echo $coupon_link_data['clickUrl']; ?>" target="_blank">
-							<?php
-							echo $coupon_link_data['link-code-html'];
-							?>
+						<div style="margin: 5px; padding: 5px; background-color: #ffffff; width: 40%; display: inline-block;" alt="<?php echo esc_attr($coupon_link_data['description']); ?>" title="<?php echo esc_attr($coupon_link_data['description']); ?>">
+							<a href="<?php echo esc_url($coupon_link_data['clickUrl']); ?>" target="_blank">
+							<?php echo wp_kses_post($coupon_link_data['link-code-html']); ?>
 							</a>
 						</div>
 						<?php
@@ -148,12 +154,22 @@ class DomainCheckAdminCoupons {
 		global $wpdb;
 
 		$site = 'GoDaddy.com';
-		if (isset($_GET['domain_check_coupons_site']) && DomainCheckCouponData::valid_site($_GET['domain_check_coupons_site'])) {
-			$site = $_GET['domain_check_coupons_site'];
+		$domain_check_coupons_site = false;
+		if (array_key_exists('domain_check_coupons_site', $_GET)) {
+			$domain_check_coupons_site = sanitize_text_field($_GET['domain_check_coupons_site']);
+		}
+		$coupon_search = false;
+		if (array_key_exists('coupon_search', $_GET)) {
+			$coupon_search = sanitize_text_field($_GET['coupon_search']);
 		}
 
-		if (isset($_GET['coupon_search']) && $_GET['coupon_search']) {
-			$coupons = DomainCheckCouponData::search($_GET['coupon_search']);
+		
+		if ($domain_check_coupons_site && DomainCheckCouponData::valid_site($domain_check_coupons_site)) {
+			$site = $domain_check_coupons_site;
+		}
+
+		if ($coupon_search) {
+			$coupons = DomainCheckCouponData::search($coupon_search);
 			$found = 0;
 			foreach ($coupons as $coupon_site => $coupon_data) {
 				if ($coupon_site == $site) {
@@ -176,16 +192,16 @@ class DomainCheckAdminCoupons {
 		<div class="wrap">
 			<h2>
 				<img src="<?php echo plugins_url('/images/icons/color/055-price-tags.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-updated">
-				<?php echo $_GET['domain_check_coupons_site']; ?> Coupons
+				<?php echo esc_html($domain_check_coupons_site); ?> Coupons
 			</h2>
 			<?php
 			$coupon_last_updated = DomainCheckCouponData::last_updated();
 			foreach ($coupons as $coupon_site => $coupon_data) {
 				?>
 				<div style="clear:both;">
-				<h3><?php echo ucfirst($coupon_site); ?></h3>
+				<h3><?php echo esc_html(ucfirst($coupon_site)); ?></h3>
 					<?php if ($coupon_last_updated) { ?>
-					<h4>Updated: <?php echo date('m-d-Y', $coupon_last_updated); ?></h4>
+					<h4>Updated: <?php echo esc_html(date('m-d-Y', $coupon_last_updated)); ?></h4>
 					<?php } ?>
 				<?php
 				if (isset($coupon_data['links']['link']) && is_array($coupon_data['links']['link'])) {
@@ -218,9 +234,9 @@ class DomainCheckAdminCoupons {
 							<div class="domain-check-coupon-ad">
 								<p style="text-align: left;">
 									<strong>
-										<a href="<?php echo $coupon_link_data['clickUrl']; ?>" target="_blank">
+										<a href="<?php echo esc_url($coupon_link_data['clickUrl']); ?>" target="_blank">
 								<?php
-								echo $coupon_link_data['link-code-html'];
+								echo wp_kses_post($coupon_link_data['link-code-html']);
 								?>
 								</a>
 								<?php
@@ -234,9 +250,9 @@ class DomainCheckAdminCoupons {
 									<h3>Coupon Code:<h3>
 									</div>
 									<div style="text-align: center;">
-									<a href="<?php echo $coupon_link_data['clickUrl']; ?>" target="_blank" style="background-color: #00AA00; color: #FFFFFF; font-size: 20px; margin: 10px; padding: 10px;">
+									<a href="<?php echo esc_url($coupon_link_data['clickUrl']); ?>" target="_blank" style="background-color: #00AA00; color: #FFFFFF; font-size: 20px; margin: 10px; padding: 10px;">
 										<strong>
-											<?php echo $coupon_link_data['coupon-code']; ?>
+											<?php echo esc_html($coupon_link_data['coupon-code']); ?>
 										</strong>
 									</a>
 									</div>
@@ -254,11 +270,9 @@ class DomainCheckAdminCoupons {
 					foreach ($text_ads as $coupon_link_idx) {
 						$coupon_link_data = $coupon_data['links']['link'][$coupon_link_idx];
 						?>
-						<div style="margin: 5px; padding: 5px; background-color: #ffffff; width: 40%; display: inline-block;" alt="<?php echo htmlentities($coupon_link_data['description']); ?>" title="<?php echo htmlentities($coupon_link_data['description']); ?>">
-							<a href="<?php echo $coupon_link_data['clickUrl']; ?>" target="_blank">
-							<?php
-							echo $coupon_link_data['link-code-html'];
-							?>
+						<div style="margin: 5px; padding: 5px; background-color: #ffffff; width: 40%; display: inline-block;" alt="<?php echo esc_attr($coupon_link_data['description']); ?>" title="<?php echo esc_attr($coupon_link_data['description']); ?>">
+							<a href="<?php echo esc_url($coupon_link_data['clickUrl']); ?>" target="_blank">
+							<?php echo wp_kses_post($coupon_link_data['link-code-html']); ?>
 							</a>
 						</div>
 						<?php
@@ -271,9 +285,7 @@ class DomainCheckAdminCoupons {
 						$coupon_link_data = $coupon_data['links']['link'][$coupon_link_idx];
 						?>
 						<div class="domain-check-img-ad">
-							<?php
-							echo $coupon_link_data['link-code-html'];
-							?>
+							<?php echo wp_kses_post($coupon_link_data['link-code-html']); ?>
 						</div>
 						<?php
 					}
@@ -296,15 +308,24 @@ class DomainCheckAdminCoupons {
 	}
 
 	public static function coupons_init() {
-		if (isset($_GET['domain_check_coupons_update'])) {
+		$domain_check_coupons_update = false;
+		if (array_key_exists('domain_check_coupons_update', $_GET)) {
+			$domain_check_coupons_update = sanitize_text_field($_GET['domain_check_coupons_update']);
+		}
+		$domain_check_coupons_search = false;
+		if (array_key_exists('domain_check_coupons_search', $_GET)) {
+			$domain_check_coupons_search = sanitize_text_field($_GET['domain_check_coupons_search']);
+		}
+
+		if (isset($domain_check_coupons_update)) {
 			if (DomainCheckCouponData::update()) {
 				DomainCheckAdmin::admin_notices_add('Coupons updated!', 'updated', null, '055-price-tags');
 			} else {
 				DomainCheckAdmin::admin_notices_add('Coupon update failure.', 'error', null, '055-price-tags');
 			}
 		}
-		if (isset($_GET['domain_check_coupons_search']) && $_GET['domain_check_coupons_search']) {
-			$coupons = DomainCheckCouponData::search($_GET['domain_check_coupons_search']);
+		if ($domain_check_coupons_search) {
+			$coupons = DomainCheckCouponData::search($domain_check_coupons_search);
 			$found = 0;
 			foreach ($coupons as $coupon_site => $coupon_data) {
 				if (isset($coupon_data['links']['link'])) {
@@ -312,7 +333,7 @@ class DomainCheckAdminCoupons {
 				}
 			}
 			if ($found) {
-				$message = 'Success! Found ' . $found . ' Coupons for "' . htmlentities($_GET['domain_check_coupons_search']) . '"!';
+				$message = 'Success! Found ' . $found . ' Coupons for "' . htmlentities($domain_check_coupons_search) . '"!';
 				DomainCheckAdmin::admin_notices_add(
 					$message,
 					'updated',
@@ -320,7 +341,7 @@ class DomainCheckAdminCoupons {
 					'055-price-tags'
 				);
 			} else {
-				$message = 'No Coupons found for "' . htmlentities($_GET['domain_check_coupons_search']) . '"!';
+				$message = 'No Coupons found for "' . htmlentities($domain_check_coupons_search) . '"!';
 				DomainCheckAdmin::admin_notices_add(
 					$message,
 					'error',
@@ -344,7 +365,7 @@ class DomainCheckAdminCoupons {
 			}
 		</script>
 		<form id="domain-check-coupon-search-box-form" action="" method="GET">
-			<input type="text" name="domain_check_coupons_search" id="domain_check_coupons_search" class="<?php echo $css_class; ?>">
+			<input type="text" name="domain_check_coupons_search" id="domain_check_coupons_search" class="<?php echo esc_attr($css_class); ?>">
 			<input type="hidden" name="page" value="domain-check-coupons">
 			<?php if ( !$dashboard ) { ?>
 			<div type="button" class="button domain-check-admin-search-input-btn" onclick="domain_check_coupon_search_click();">
@@ -352,7 +373,7 @@ class DomainCheckAdminCoupons {
 				<div style="display: inline-block;">Search Coupons</div>
 			</div>
 			<?php } else { ?>
-			<input type="submit" class="button" value="Search Coupons" class="<?php echo $css_class_button; ?>" />
+			<input type="submit" class="button" value="Search Coupons" class="<?php echo esc_attr($css_class_button); ?>" />
 			<?php } ?>
 		</form>
 		<?php

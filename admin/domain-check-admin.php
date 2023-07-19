@@ -131,7 +131,7 @@ if(!class_exists('DomainCheckAdmin')) {
 						}
 						if ($option_name == 'Launch [&raquo]') {
 							$message .= '<a href="http://'.$option_url.'" target="_blank">'.$option_name.'</a>';
-						} else if ($option_name == '<img src="' . plugins_url('domain-check/images/icons/external-link.svg') . '" class="svg svg-h2 svg-fill-gray">') {
+						} else if ($option_name == '<img src="' . plugins_url('/images/icons/external-link.svg', __FILE__) . '" class="svg svg-h2 svg-fill-gray">') {
 							$message .= '<a href="http://'.$option_url.'" target="_blank">'.$option_name.'</a>';
 						} else {
 							$message .= '<a href="'.$option_url.'">'.$option_name.'</a>';
@@ -154,8 +154,8 @@ if(!class_exists('DomainCheckAdmin')) {
 					$admin_notice_data['type'] = 'updated notice-' . $admin_notice_data['type'];
 				}
 				?>
-			<div class="<?php echo $admin_notice_data['type']; ?> domain-check-notice">
-				<p><?php echo $admin_notice_data['message']; ?></p>
+			<div class="<?php echo esc_attr($admin_notice_data['type']); ?> domain-check-notice">
+				<p><?php echo wp_kses_post($admin_notice_data['message']); ?></p>
 			</div>
 		<?php
 			}
@@ -183,79 +183,84 @@ if(!class_exists('DomainCheckAdmin')) {
 
 			//search
 			if ( isset( $_GET['domain_check_search'] ) ) {
-				DomainCheckSearch::domain_search($_GET['domain_check_search']);
+				DomainCheckSearch::domain_search(sanitize_text_field($_GET['domain_check_search']));
 			}
 
 			if ( isset( $_GET['domain_check_your_domains'] ) ) {
-				DomainCheckSearch::domain_search( $_GET['domain_check_your_domains'], false, true, true);
+				DomainCheckSearch::domain_search(sanitize_text_field($_GET['domain_check_your_domains']), false, true, true);
 			}
 
 			if ( isset( $_GET['domain_check_watch'] ) ) {
-				DomainCheckSearch::domain_search( $_GET['domain_check_watch'], false, false, true);
+				DomainCheckSearch::domain_search(sanitize_text_field($_GET['domain_check_watch']), false, false, true);
 				DomainCheckAdmin::admin_notices_add('Started watching <strong>' . $_GET['domain_check_watch'] . '</strong>!', 'updated', null, '208-eye-plus');
 			}
 
 			//SSL CHECK!!!
-			if ( isset( $_GET['domain_check_ssl_search'] ) && strpos( $_GET['domain_check_ssl_search'], '.' ) !== false ) {
+			if ( isset( $_GET['domain_check_ssl_search'] ) && strpos(sanitize_text_field($_GET['domain_check_ssl_search']), '.' ) !== false ) {
 				$this->ssl_check_init();
 			}
 
-			if ( isset( $_GET['domain_check_ssl_watch'] ) && strpos( $_GET['domain_check_ssl_watch'], '.' ) !== false ) {
-				DomainCheckSearch::ssl_search( $_GET['domain_check_ssl_watch'], true );
-				DomainCheckAdmin::admin_notices_add('Started watching SSL expiration for <strong>' . $_GET['domain_check_ssl_watch'] . '</strong>!', 'updated', null, '208-eye-plus');
+			if ( isset( $_GET['domain_check_ssl_watch'] ) && strpos(sanitize_text_field($_GET['domain_check_ssl_watch']), '.' ) !== false ) {
+				DomainCheckSearch::ssl_search( sanitize_text_field($_GET['domain_check_ssl_watch']), true );
+				DomainCheckAdmin::admin_notices_add(
+					'Started watching SSL expiration for <strong>'
+					. sanitize_text_field($_GET['domain_check_ssl_watch'])
+					. '</strong>!', 'updated', null, '208-eye-plus');
 			}
 
 			//domain delete
-			if ( isset($_GET['domain_check_delete']) && strpos( $_GET['domain_check_delete'], '.' ) !== false ) {
+			if ( isset($_GET['domain_check_delete']) && strpos(sanitize_text_field($_GET['domain_check_delete']), '.' ) !== false ) {
 				$this->delete_init();
 			}
 
 			//domain status
-			if ( isset($_GET['domain_check_status_owned']) && strpos( $_GET['domain_check_status_owned'], '.' ) !== false ) {
-				$this->status_owned($_GET['domain_check_status_owned']);
+			if ( isset($_GET['domain_check_status_owned']) && strpos(sanitize_text_field($_GET['domain_check_status_owned']), '.' ) !== false ) {
+				$this->status_owned(sanitize_text_field($_GET['domain_check_status_owned']));
 			}
-			if ( isset($_GET['domain_check_status_taken']) && strpos( $_GET['domain_check_status_taken'], '.' ) !== false ) {
-				$this->status_taken($_GET['domain_check_status_taken']);
+			if ( isset($_GET['domain_check_status_taken']) && strpos(sanitize_text_field($_GET['domain_check_status_taken']), '.' ) !== false ) {
+				$this->status_taken(sanitize_text_field($_GET['domain_check_status_taken']));
 			}
 
 			//domain watch
-			if ( isset($_GET['domain_check_watch_start']) && strpos( $_GET['domain_check_watch_start'], '.' ) !== false ) {
-				$this->watch_start($_GET['domain_check_watch_start']);
+			if ( isset($_GET['domain_check_watch_start']) && strpos(sanitize_text_field($_GET['domain_check_watch_start']), '.' ) !== false ) {
+				$this->watch_start(sanitize_text_field($_GET['domain_check_watch_start']));
 			}
-			if ( isset($_GET['domain_check_watch_stop']) && strpos( $_GET['domain_check_watch_stop'], '.' ) !== false ) {
-				$this->watch_stop($_GET['domain_check_watch_stop']);
+			if ( isset($_GET['domain_check_watch_stop']) && strpos(sanitize_text_field($_GET['domain_check_watch_stop']), '.' ) !== false ) {
+				$this->watch_stop(sanitize_text_field($_GET['domain_check_watch_stop']));
 			}
 			if ( isset($_POST['watch_email_add']) ) {
-				$this->watch_email_add($_GET['domain'], $_POST['watch_email_add']);
+				$this->watch_email_add(sanitize_text_field($_GET['domain']), sanitize_text_field($_POST['watch_email_add']));
 			}
 			if ( isset($_POST['profile_settings_update']) ) {
-				$this->profile_settings_update($_GET['domain']);
+				$this->profile_settings_update(sanitize_text_field($_GET['domain']));
 			}
 
 			//ssl delete
-			if ( isset($_GET['domain_check_ssl_delete']) && strpos( $_GET['domain_check_ssl_delete'], '.' ) !== false ) {
+			if ( isset($_GET['domain_check_ssl_delete']) && strpos(sanitize_text_field($_GET['domain_check_ssl_delete']), '.' ) !== false ) {
 				$this->ssl_delete_init();
 			}
 
 			//ssl watch
-			if ( isset($_GET['domain_check_ssl_watch_start']) && strpos( $_GET['domain_check_ssl_watch_start'], '.' ) !== false ) {
-				$this->ssl_watch_start($_GET['domain_check_ssl_watch_start']);
+			if ( isset($_GET['domain_check_ssl_watch_start']) && strpos(sanitize_text_field($_GET['domain_check_ssl_watch_start']), '.' ) !== false ) {
+				$this->ssl_watch_start(sanitize_text_field($_GET['domain_check_ssl_watch_start']));
 			}
-			if ( isset($_GET['domain_check_ssl_watch_stop']) && strpos( $_GET['domain_check_ssl_watch_stop'], '.' ) !== false ) {
-				$this->ssl_watch_stop($_GET['domain_check_ssl_watch_stop']);
+			if ( isset($_GET['domain_check_ssl_watch_stop']) && strpos(sanitize_text_field($_GET['domain_check_ssl_watch_stop']), '.' ) !== false ) {
+				$this->ssl_watch_stop(sanitize_text_field($_GET['domain_check_ssl_watch_stop']));
 			}
 			if ( isset($_POST['ssl_watch_email_add']) ) {
-				$this->ssl_watch_email_add($_GET['domain'], $_POST['ssl_watch_email_add']);
+				$this->ssl_watch_email_add(
+					sanitize_text_field($_GET['domain']),
+					sanitize_text_field($_POST['ssl_watch_email_add']));
 			}
 			if ( isset($_POST['ssl_profile_settings_update']) ) {
-				$this->ssl_profile_settings_update($_GET['domain']);
+				$this->ssl_profile_settings_update(sanitize_text_field($_GET['domain']));
 			}
 
 			//coupons
-			if ( isset($_GET['domain_check_coupons_search']) && $_GET['domain_check_coupons_search']) {
-				DomainCheckAdminCoupons::coupons_init($_GET['domain_check_coupons_search']);
+			if ( isset($_GET['domain_check_coupons_search']) && sanitize_text_field($_GET['domain_check_coupons_search'])) {
+				DomainCheckAdminCoupons::coupons_init(sanitize_text_field($_GET['domain_check_coupons_search']));
 			}
-			if ( isset($_GET['domain_check_coupons_update']) && $_GET['domain_check_coupons_update']) {
+			if ( isset($_GET['domain_check_coupons_update']) && sanitize_text_field($_GET['domain_check_coupons_update'])) {
 				DomainCheckAdminCoupons::coupons_init();
 			}
 
@@ -595,9 +600,14 @@ if(!class_exists('DomainCheckAdmin')) {
 		public function delete_init() {
 			global $wpdb;
 
-			$domain = strtolower($_GET['domain_check_delete']);
+			$domain_sanitized = sanitize_text_field($_GET['domain_check_delete']);
+			$domain = strtolower($domain_sanitized);
+			$confirmed = array_key_exists('domain_check_delete_confirm', $_GET);
+			if ($confirmed) {
+				$confirmed = sanitize_text_field($_GET['domain_check_delete_confirm']);
+			}
 
-			if (!isset($_GET['domain_check_delete_confirm'])) {
+			if (!$confirmed) {
 				$message = 'Are you sure you want to delete <strong> ' . $domain . ' </strong>? It will no longer be watched and may expire! This cannot be undone.';
 				$message_options = array(
 					'Delete' => '?page=domain-check-search&domain_check_delete=' . $domain . '&domain_check_delete_confirm=' . $domain,
@@ -605,7 +615,7 @@ if(!class_exists('DomainCheckAdmin')) {
 				);
 				DomainCheckAdmin::admin_notices_add($message, 'error', $message_options, '174-bin2');
 			} else {
-				if ($_GET['domain_check_delete_confirm'] == $_GET['domain_check_delete']) {
+				if ($confirmed == $domain_sanitized) {
 					$wpdb->delete(
 						DomainCheck::$db_prefix . '_domains',
 						array(
@@ -802,7 +812,8 @@ if(!class_exists('DomainCheckAdmin')) {
 
 			if (isset($_POST['domain'])) {
 				$ajax = 1;
-				$domain = strtolower($_POST['domain']);
+				$domain_sanitized = sanitize_text_field($_POST['domain']);
+				$domain = strtolower($domain_sanitized);
 			}
 
 			$domain = strtolower($domain);

@@ -83,14 +83,12 @@ class DomainCheckAdminWatch {
 
 	public static function watch_profile() {
 		global $wpdb;
-
-		$domain_to_view = strtolower($_GET['domain']);
-		$domain_content = esc_html($domain_to_view);
-		$domain_attr = esc_attr($domain_to_view);
+		$domain_sanitized = sanitize_text_field($_GET['domain']);
+		$domain_to_view = strtolower($domain_sanitized);
 		?>
 		<div class="wrap">
-			<h2><?php echo $domain_content; ?></h2>
-			<a href="?page=domain-check-ssl-profile&domain=<?php echo $domain_attr; ?>&domain_check_ssl_search=<?php echo $domain_attr; ?>">Refresh</a><br>
+			<h2><?php echo esc_html($domain_to_view); ?></h2>
+			<a href="?page=domain-check-ssl-profile&domain=<?php echo esc_attr($domain_to_view); ?>&domain_check_ssl_search=<?php echo esc_attr($domain_to_view); ?>">Refresh</a><br>
 			<?php
 			$sql = 'SELECT * FROM ' . DomainCheck::$db_prefix . '_domain WHERE domain_url ="' . strtolower($domain_to_view) . '"';
 			$result = $wpdb->get_results( $sql, 'ARRAY_A' );
@@ -157,7 +155,8 @@ class DomainCheckAdminWatch {
 
 		if (isset($_POST['domain'])) {
 			$ajax = 1;
-			$domain = strtolower($_POST['domain']);
+			$domain_sanitized = sanitize_text_field($_POST['domain']);
+			$domain = strtolower($domain_sanitized);
 		}
 
 		$domain = strtolower($domain);

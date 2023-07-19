@@ -77,7 +77,7 @@ class DomainCheckEmail {
 			if (count($email_domains['owned'])) {
 				//$send_email = true;
 				$subject .= ' - ' . count($email_domains['owned']) . ' Expiring Domains';
-				$message .= '<h2><img src="' . plugins_url('domain-check/images/icons/flag-blue-24x24.png') . '">Your Expiring Domains</h2>' . "\n";
+				$message .= '<h2><img src="' . plugins_url('/images/icons/flag-blue-24x24.png', dirname(__FILE__)) . '">Your Expiring Domains</h2>' . "\n";
 				$message .= '<table>';
 				foreach ($email_domains['owned'] as $result_idx => $domain_result_idx) {
 					if (isset($domain_result[$domain_result_idx]['domain_expires']) && $domain_result[$domain_result_idx]['domain_expires']) {
@@ -127,7 +127,7 @@ class DomainCheckEmail {
 			if (count($email_domains['ssl'])) {
 				//$send_email = true;
 				$subject .= ' - ' . count($email_domains['ssl']) . ' Expiring SSL Certificates';
-				$message .= '<h2><img src="' . plugins_url('domain-check/images/icons/lock-locked-yellow-24x24.png') . '">Your Expiring SSL Certificates</h2>' . "\n";
+				$message .= '<h2><img src="' . plugins_url('/images/icons/lock-locked-yellow-24x24.png', dirname(__FILE__)) . '">Your Expiring SSL Certificates</h2>' . "\n";
 				$message .= '<table>';
 				$counter = 0;
 				foreach ($email_domains['ssl'] as $result_idx => $domain_result_idx) {
@@ -182,7 +182,7 @@ class DomainCheckEmail {
 			if (count($email_domains['taken'])) {
 				//$send_email = true;
 				$subject .= ' - ' . count($email_domains['taken']) . ' Expiring Watched Domains';
-				$message .= '<h2><img src="' . plugins_url('domain-check/images/icons/eye-24x24.png') . '">Your Expiring Watched Domains</h2>' . "\n";
+				$message .= '<h2><img src="' . plugins_url('/images/icons/eye-24x24.png', dirname(__FILE__)) . '">Your Expiring Watched Domains</h2>' . "\n";
 				$message .= '<table>';
 				$counter = 0;
 				foreach ($email_domains['taken'] as $result_idx => $domain_result_idx) {
@@ -235,7 +235,7 @@ class DomainCheckEmail {
 
 			/*
 			//coupons make the email go to the Updates tab in Gmail, its annoying I don't like it, make it a setting
-			$message .= '<h2><img src="' . plugins_url('domain-check/images/icons/tags-green-24x24.png') . '">Daily Coupons and Deals</h2>' . "\n";
+			$message .= '<h2><img src="' . plugins_url('/images/icons/tags-green-24x24.png', dirname(__FILE__)) . '">Daily Coupons and Deals</h2>' . "\n";
 			$coupons = DomainCheckCouponData::get_data();
 			$coupons  = $coupons[DomainCheckLinks::$primary_domain];
 			$coupon_ads = array();
