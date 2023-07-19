@@ -438,11 +438,7 @@ class DomainCheckAdminProfile {
 				}
 			}
 
-			DomainCheckUtil::debug( 'profilearr yeah', $new_settings );
-
 			$new_settings = DomainCheck::pro( 'AdminProfile', 'profile_settings_update', $new_settings );
-
-			DomainCheckUtil::debug( 'profilearr yeah', $new_settings );
 
 			//some "settings" are actually just in the settings data blob, deal with these
 			//right now we haven't put any new settings in to the blob so we don't really have to change that...

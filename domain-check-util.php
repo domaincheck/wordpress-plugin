@@ -15,6 +15,11 @@ if(!class_exists('DomainCheckUtil')) {
 		}
 
 		public static function debug($message, $data = 'domaincheckdefault' ) {
+
+			if ( !class_exists('DomainCheckDebug') ) {
+				return;
+			}
+
 			if ( $data === 'domaincheckdefault' ) {
 				$data = null;
 			}
