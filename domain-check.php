@@ -52,7 +52,7 @@ if(!class_exists('DomainCheck')) {
 		const PLUGIN_CLASSNAME = 'DomainCheck';
 		const PLUGIN_NAME = 'domain-check';
 		const PLUGIN_OPTION_PREFIX = 'domain_check';
-		const PLUGIN_VERSION = '0.1';
+		const PLUGIN_VERSION = '1.0.1';
 
 		public static $db_table; //db table (has to be dynamic for wp prefix)
 
@@ -629,6 +629,8 @@ if(!class_exists('DomainCheck')) {
 		private function update() {
 			global $wpdb;
 			//no updates yet
+
+			update_option(DomainCheckConfig::OPTIONS_PREFIX . 'version', static::PLUGIN_VERSION);
 		}
 
 		//activate
@@ -656,6 +658,8 @@ if(!class_exists('DomainCheck')) {
 			if (!wp_get_schedule('domain_check_cron_email')) {
 				wp_schedule_event(time() + 600, 'daily', 'domain_check_cron_email');
 			}
+
+			$this->domain_check_cron_coupons();
 
 
 			//upgrade!
@@ -711,6 +715,9 @@ if(!class_exists('DomainCheck')) {
 
 			//add wp-plugin options...
 			foreach(DomainCheckConfig::$options as $key => $value) {
+				if ($key == DomainCheckConfig::OPTIONS_PREFIX . 'version') {
+					$value = static::PLUGIN_VERSION;
+				}
 				add_option($key, $value);
 			}
 

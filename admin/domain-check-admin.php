@@ -131,7 +131,7 @@ if(!class_exists('DomainCheckAdmin')) {
 					$admin_notice_data['type'] = 'updated notice-' . $admin_notice_data['type'];
 				}
 				?>
-			<div class="<?php echo $admin_notice_data['type']; ?>">
+			<div class="<?php echo $admin_notice_data['type']; ?> domain-check-admin-notice">
 				<p><?php echo $admin_notice_data['message']; ?></p>
 			</div>
 		<?php
@@ -242,6 +242,46 @@ if(!class_exists('DomainCheckAdmin')) {
 			var jqueryReady = false;
 			jQuery(document).ready(function($) {
 				jqueryReady = true;
+
+				jQuery('.updated').each(function(){
+					var classList = jQuery(this).attr('class').split(/\s+/);
+					var plugin_notice = false;
+					for (var i in classList) {
+						if (classList[i] == 'domain-check-notice') {
+							plugin_notice = true;
+						}
+					}
+					if (!plugin_notice) {
+						jQuery(this).css('display', 'hidden');
+					}
+				});
+
+				jQuery('.update-nag').each(function(){
+					var classList = jQuery(this).attr('class').split(/\s+/);
+					var plugin_notice = false;
+					for (var i in classList) {
+						if (classList[i] == 'domain-check-notice') {
+							plugin_notice = true;
+						}
+					}
+					if (!plugin_notice) {
+						jQuery(this).css('display', 'none');
+					}
+				});
+
+				jQuery('.error').each(function(){
+					var classList = jQuery(this).attr('class').split(/\s+/);
+					var plugin_notice = false;
+					for (var i in classList) {
+						if (classList[i] == 'domain-check-notice') {
+							plugin_notice = true;
+						}
+					}
+					if (!plugin_notice) {
+						jQuery(this).css('display', 'none');
+					}
+				});
+
 				jQuery('img.svg').each(function(){
 				var $img = jQuery(this);
 				var imgID = $img.attr('id');
@@ -293,7 +333,7 @@ if(!class_exists('DomainCheckAdmin')) {
 								//create div
 								//append to page...
 								if (response.hasOwnProperty('error')) {
-									jQuery('#domain-check-wrapper').append('<div class="notice error">').append('<p>' + response.error + '</p>');
+									jQuery('#domain-check-wrapper').append('<div class="notice error domain-check-notice">').append('<p>' + response.error + '</p>');
 								}
 								callback(response);
 							}
@@ -305,13 +345,13 @@ if(!class_exists('DomainCheckAdmin')) {
 				var htmlDomain = data.domain.replace(/\./g, '-');
 				var iconDir = '<?php echo plugins_url('domain-check/images/icons/'); ?>';
 				if (data.watch) {
-					jQuery('#domain-check-admin-notices').append('<div class="notice updated"><p>' + data.message + '</p></div>');
+					jQuery('#domain-check-admin-notices').append('<div class="notice updated domain-check-notice"><p>' + data.message + '</p></div>');
 					//jQuery('#watch-link-' + htmlDomain).text('Stop Watching');
 
 					var replace = '<img id="watch-image-' + htmlDomain + '" src="' + iconDir + '207-eye.svg" class="svg svg-icon-table svg-icon-table-links svg-fill-gray" onload="paint_svg(\'watch-image-' + htmlDomain + '\')">';
 					jQuery('#watch-image-' + htmlDomain).replaceWith(replace);
 				} else {
-					jQuery('#domain-check-admin-notices').append('<div class="notice error"><p>' + data.message + '</p></div>');
+					jQuery('#domain-check-admin-notices').append('<div class="notice error domain-check-notice"><p>' + data.message + '</p></div>');
 					//jQuery('#watch-link-' + htmlDomain).text('Watch');
 					var replace = '<img id="watch-image-' + htmlDomain + '" src="' + iconDir + '207-eye.svg" class="svg svg-icon-table svg-icon-table-links svg-fill-disabled" onload="paint_svg(\'watch-image-' + htmlDomain + '\')">';
 					jQuery('#watch-image-' + htmlDomain).replaceWith(replace);
@@ -322,11 +362,11 @@ if(!class_exists('DomainCheckAdmin')) {
 				var htmlDomain = data.domain.replace(/\./g, '-');
 				var iconDir = '<?php echo plugins_url('domain-check/images/icons/'); ?>';
 				if (data.watch) {
-					jQuery('#domain-check-admin-notices').append('<div class="notice updated"><p>' + data.message + '</p></div>');
+					jQuery('#domain-check-admin-notices').append('<div class="notice updated domain-check-notice"><p>' + data.message + '</p></div>');
 					var replace = '<img id="watch-image-' + htmlDomain + '" src="' + iconDir + 'bell.svg" class="svg svg-icon-table svg-icon-table-links svg-fill-gray" onload="paint_svg(\'watch-image-' + htmlDomain + '\')">';
 					jQuery('#watch-image-' + htmlDomain).replaceWith(replace);
 				} else {
-					jQuery('#domain-check-admin-notices').append('<div class="notice error"><p>' + data.message + '</p></div>');
+					jQuery('#domain-check-admin-notices').append('<div class="notice error domain-check-notice"><p>' + data.message + '</p></div>');
 					var replace = '<img id="watch-image-' + htmlDomain + '" src="' + iconDir + 'bell.svg" class="svg svg-icon-table svg-icon-table-links svg-fill-disabled" onload="paint_svg(\'watch-image-' + htmlDomain + '\')">';
 					jQuery('#watch-image-' + htmlDomain).replaceWith(replace);
 				}
@@ -335,10 +375,10 @@ if(!class_exists('DomainCheckAdmin')) {
 			function status_trigger_callback(data) {
 				var htmlDomain = data.domain.replace('.', '-');
 				if (data.status == 2) {
-					jQuery('#domain-check-admin-notices').append('<div class="notice updated"><p>' + data.message + '</p></div>');
+					jQuery('#domain-check-admin-notices').append('<div class="notice updated domain-check-notice"><p>' + data.message + '</p></div>');
 					jQuery('#status-link-' + htmlDomain).text('Owned');
 				} else if (data.status == 1) {
-					jQuery('#domain-check-admin-notices').append('<div class="notice error"><p>' + data.message + '</p></div>');
+					jQuery('#domain-check-admin-notices').append('<div class="notice error domain-check-notice"><p>' + data.message + '</p></div>');
 					jQuery('#status-link-' + htmlDomain).text('Taken');
 				}
 			}
@@ -2162,8 +2202,9 @@ if(!class_exists('DomainCheckAdmin')) {
 					.domain-check-import-left {
 						max-width: 350px;
 						min-width: 350px;
+						min-height: 650px;
 						display: inline-block;
-						float: left;
+						vertical-align: top;
 						padding: 10px;
 						margin: 10px;
 						background-color: #ffffff;
@@ -2184,11 +2225,10 @@ if(!class_exists('DomainCheckAdmin')) {
 							Copy and paste any text in to here to find any domain names! Extract domain names from any text, HTML, email, and anything you can copy & paste!
 						</p>
 						<textarea id="import_text" style="width: 100%; height: 200px;" onclick='if (this.value == "Copy and paste any text here and get the domains!") {this.value="";}'>Copy and paste any text here and get the domains!</textarea>
-							<br>
-							<input type="button" class="button" value="Find Domains" onclick="import_text_raw_init();"/>
+						<br>
+						<input type="button" class="button" value="Find Domains" onclick="import_text_raw_init();"/>
 					</div>
-					<div style="min-height: 30px; text-align: center;">
-					</div>
+					<div style="min-height: 30px; text-align: center;"></div>
 					<h3>File Import</h3>
 					<p class="p">
 						Upload any CSV or XML file! If you have an XLS file please save your file as a CSV (comma delimitted) file and upload!
@@ -2198,10 +2238,9 @@ if(!class_exists('DomainCheckAdmin')) {
 							<input type="file" name="domain_check_your_domains_import" id="domain_check_your_domains_import">
 						</form>
 					</div>
-			</div>
-				</div>
-
-				<div class="domain-check-import-left">
+				</div><?php
+				//spacer
+				?><div class="domain-check-import-left">
 					<h2>Step 2</h2>
 					<h3>Domains to Import</h3>
 					<a href="#" class="button" value="Search" onclick="import_text_search();">
@@ -2213,15 +2252,15 @@ if(!class_exists('DomainCheckAdmin')) {
 					<input type="checkbox" id="force_watch">&nbsp;-&nbsp;Watch All Domains<br>
 					</div>
 					<textarea id="found_domains" style="width: 100%; height: 350px;"></textarea>
-				</div>
-				<div class="domain-check-import-left">
+				</div><?php
+				//spacer
+				?><div class="domain-check-import-left">
 					<h2>Step 3</h2>
 					<h3>Domain Import Results</h3>
 					<div id="import-text-results-wrapper" name="import-text-results-wrapper">
 						<table id="import-text-results-table" name="import-text-results-table" style="width: 100%;"></table>
 					</div>
 				</div>
-
 			</div>
 			<script type="text/javascript">
 				import_text_file_init();

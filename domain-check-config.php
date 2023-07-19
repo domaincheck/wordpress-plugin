@@ -12,7 +12,7 @@ if(!class_exists('DomainCheckConfig')) {
 		const OPTIONS_PREFIX = 'domain_check_';
 
 		static public $options = array(
-			'version' => '0.1',
+			'version' => '1.0.0',
 			'coupons_update' => 0,
 			'settings' => array(
 				'email_additional_emails' => array(),
