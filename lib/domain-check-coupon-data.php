@@ -9,6 +9,8 @@ class DomainCheckCouponData {
 	private static $data = array();
 	public static $class_init = false;
 	public static $api_url = 'http://static.domaincheckplugin.com/';
+	public static $updating = false;
+	public static $update_start = 0;
 
 	public static function get_data() {
 		static::init();
@@ -112,15 +114,30 @@ class DomainCheckCouponData {
 	public static function update() {
 		global $wpdb;
 
+		if (static::$updating || (static::$update_start !== 0 && static::$update_start < (time() - 10))) {
+			return false;
+		}
+
+		static::$updating = true;
+		static::$update_start = time();
+
 		//curl to get coupon data from S3...
 		$url = static::$api_url . 'coupons.json';
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL,$url);
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-		$coupons_raw = curl_exec($ch);
-		curl_close($ch);
+
+		$coupons_raw = null;
+		if ( function_exists('curl_init') ) {
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL,$url);
+			curl_setopt($ch, CURLOPT_HEADER, 0);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+			$coupons_raw = curl_exec($ch);
+			curl_close($ch);
+		} else if ( ini_get('allow_url_fopen') ) {
+			$coupons_raw = file_get_contents($url);
+		} else {
+
+		}
 
 		$coupons_json = json_decode($coupons_raw, true);
 		if ($coupons_json && count($coupons_json)) {
@@ -131,7 +148,21 @@ class DomainCheckCouponData {
 			//fclose($fp);
 
 			//clear DB
-			$wpdb->query('DELETE FROM ' . DomainCheck::$db_prefix . '_coupons');
+			$sql = 'DELETE FROM ' . DomainCheck::$db_prefix . '_coupons';
+
+			/*
+			$sql = $wpdb->prepare(
+				'DELETE FROM ' . DomainCheck::$db_prefix . '_coupons
+				 WHERE coupon_site != %s',
+				array(
+					'0'
+				)
+			);
+			*/
+			$del_res = $wpdb->query($sql);
+			$wpdb->flush();
+
+
 			$coupon_count = 0;
 			foreach ($coupons_json as $coupon_idx => $coupon_data) {
 				$coupon_data['updated'] = time();
@@ -156,9 +187,10 @@ class DomainCheckCouponData {
 			} else {
 				add_option(DomainCheckConfig::OPTIONS_PREFIX . 'coupons_updated', time());
 			}
-
+			static::$updating = false;
 			return true;
 		}
+		static::$updating = false;
 		return false;
 	}
 

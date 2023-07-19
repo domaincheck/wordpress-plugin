@@ -6,8 +6,8 @@ License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 Tags: admin, multisite, domain, ssl, https, hosting, email, admin, alerts, coupons, deals, dashboard, expiration, alert, notification, dashboard
 Requires at least: 3.8
-Tested up to: 4.4
-Stable tag: 1.0.2
+Tested up to: 4.4.1
+Stable tag: 1.0.4
 
 Domain Check lets you search domain names, check SSL certificates and HTTPS, set email alerts for domain and SSL expiration, and get daily coupons.
 
@@ -91,6 +91,18 @@ A: No. Domain Check does the opposite and allows you to do all your domain name 
 
 == Changelog ==
 
+= 1.0.4 =
+* Critical database issue fixed for alternate Wordpress DB_PREFIX settings
+* Navigation added within plugin to help blogs with long admin menus
+* FTUE messaging added to help new installs
+* Improved UX for Import section
+
+= 1.0.3 =
+* Compatible with Wordpress 4.4.1
+* Full PHP 5.3.x testing and all 5.3.x issues fixed
+* Fallback for using file_get_contents if curl is not installed
+* Remoed errors during plugin activation (double activation calls caused a race condition)
+
 = 1.0.2 =
 * Plugin was breaking on PHP 5.3.x installs on activation, has been fixed
 * Plugin versioning was incorrect because the developer is a n00b
@@ -98,7 +110,7 @@ A: No. Domain Check does the opposite and allows you to do all your domain name 
 = 1.0.1 =
 * Better handling of admin notices
 * Better handling of SSL lookups
-* Correctly upgrades versions of Domain Checkin the database
+* Correctly upgrades versions of Domain Check in the database
 * Updates coupons on activation
 
 = 1.0.0 =

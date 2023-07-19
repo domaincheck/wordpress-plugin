@@ -44,9 +44,9 @@ class DomainCheck_SSL_List extends WP_List_Table {
         $sql = 'SELECT * FROM ' . DomainCheck::$db_prefix . '_ssl';
         if ( ! empty( $_REQUEST['orderby'] ) ) {
             $sql .= ' ORDER BY ' . esc_sql( $_REQUEST['orderby'] );
-            $sql .= ! empty( $_REQUEST['order'] ) ? ' ' . esc_sql( $_REQUEST['order'] ) : ' ASC, domain_url ASC';
+            $sql .= ! empty( $_REQUEST['order'] ) ? ' ' . esc_sql( $_REQUEST['order'] ) : ' ASC, search_date DESC';
         } else {
-            $sql .= ' ORDER BY domain_url ASC';
+            $sql .= ' ORDER BY search_date DESC';
         }
         $sql .= " LIMIT $per_page";
         $sql .= ' OFFSET ' . ( $page_number - 1 ) * $per_page;

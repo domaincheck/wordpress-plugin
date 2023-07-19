@@ -170,7 +170,7 @@ class DomainCheckSearch {
 						}
 
 						$wpdb->insert(
-							'wp_domain_check_domains',
+							DomainCheck::$db_prefix . '_domains',
 							$valarr
 						);
 					} else {
@@ -381,7 +381,7 @@ class DomainCheckSearch {
 			);
 		} else {
 			$wpdb->insert(
-				'wp_domain_check_ssl',
+				DomainCheck::$db_prefix . '_ssl',
 				$valarr
 			);
 		}
