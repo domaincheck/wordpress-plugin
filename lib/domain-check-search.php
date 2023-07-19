@@ -368,14 +368,6 @@ class DomainCheckSearch {
 				}
 				$ajax_response = array('message' => $message, 'status' => 1, 'domain' => $search);
 			}
-		} else {
-			if ($ajax) {
-				if (class_exists('DomainCheckAdmin')) {
-					$ajax_response['domain'] = $search;
-					DomainCheckAdmin::ajax_error($ajax_response);
-				}
-			}
-			return;
 		}
 
 		if ($exists_in_db) {

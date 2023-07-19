@@ -7,13 +7,13 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Tags: admin, multisite, domain, ssl, https, hosting, email, admin, alerts, coupons, deals, dashboard, expiration, alert, notification, dashboard
 Requires at least: 3.8
 Tested up to: 4.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 
 Domain Check lets you search domain names, check SSL certificates and HTTPS, set email alerts for domain and SSL expiration, and get daily coupons.
 
 == Description ==
 
-Domains / Dashboard
+**Domains / Dashboard**
 
 Domain Check allows you to see what domains and SSL certificates are coming up for expiration and to quickly locate the coupons, coupon codes, and deals from your favorite sites before renewing. Add any email addresses and have multiple people get alerts for upcoming domain renewals or SSL certificate expiration.  You can also search for new domain names using hundreds of supported extensions and even check if your SSL certificates are working on a number of sites. All this plus bulk importing makes Domain Check the ultimate domain management tool.
 
@@ -90,6 +90,12 @@ A: No. Domain Check does the opposite and allows you to do all your domain name 
 5. See the lastest coupon codes and daily deals from major domain registrars, SSL certificate providers, and hosting companies. No more clicking to shady coupon sites!
 
 == Changelog ==
+
+= 1.0.1 =
+* Better handling of admin notices
+* Better handling of SSL lookups
+* Correctly upgrades versions of Domain Checkin the database
+* Updates coupons on activation
 
 = 1.0.0 =
 * Initial release. Posted to wordpress.org.
