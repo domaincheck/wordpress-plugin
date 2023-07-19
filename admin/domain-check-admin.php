@@ -110,6 +110,8 @@ if(!class_exists('DomainCheckAdmin')) {
 						}
 						if ($option_name == 'Launch [&raquo]') {
 							$message .= '<a href="http://'.$option_url.'" target="_blank">'.$option_name.'</a>';
+						} else if ($option_name == '<img src="' . plugins_url('domain-check/images/icons/external-link.svg') . '" class="svg svg-h2 svg-fill-gray">') {
+							$message .= '<a href="http://'.$option_url.'" target="_blank">'.$option_name.'</a>';
 						} else {
 							$message .= '<a href="'.$option_url.'">'.$option_name.'</a>';
 						}
