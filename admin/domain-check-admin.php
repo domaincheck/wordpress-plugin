@@ -66,7 +66,7 @@ if(!class_exists('DomainCheckAdmin')) {
 
 			//filters
 			if (function_exists('add_filter')) {
-				add_filter( 'set-screen-option', [ __CLASS__, 'set_screen' ], 10, 3 );
+				add_filter( 'set-screen-option', array( __CLASS__, 'set_screen' ), 10, 3 );
 				add_filter( 'plugin_action_links_' . DomainCheck::$basename, array( $this, 'add_action_links' ), 10, 2 );
 
 				//add_filter( 'plugin_action_links_domaincheck', array( $this, 'add_action_link' ), 10, 2 );
@@ -504,7 +504,7 @@ if(!class_exists('DomainCheckAdmin')) {
 				),
 				DomainCheckAdmin::$admin_icon //'dashicons-admin-site'
 			);
-			//add_action( 'load-' . $hook, [ $this, 'screen_option' ] );
+			//add_action( 'load-' . $hook, array( $this, 'screen_option' ) );
 
 			//add submenu items
 			$hook = add_submenu_page(
@@ -518,7 +518,7 @@ if(!class_exists('DomainCheckAdmin')) {
 					'your_domains'
 				)
 			);
-			add_action( 'load-' . $hook, [ $this, 'your_domains_screen_option' ] );
+			add_action( 'load-' . $hook, array( $this, 'your_domains_screen_option' ) );
 
 			//add submenu items
 			$hook = add_submenu_page(
@@ -532,7 +532,7 @@ if(!class_exists('DomainCheckAdmin')) {
 					'search'
 				)
 			);
-			add_action( 'load-' . $hook, [ $this, 'search_screen_option' ] );
+			add_action( 'load-' . $hook, array( $this, 'search_screen_option' ) );
 
 			//add fancy designs sub menu page to products menu
 			$hook = add_submenu_page(
@@ -546,7 +546,7 @@ if(!class_exists('DomainCheckAdmin')) {
 					'watch'
 				)
 			);
-			add_action( 'load-' . $hook, [ $this, 'watch_screen_option' ] );
+			add_action( 'load-' . $hook, array( $this, 'watch_screen_option' ) );
 
 			//add fancy designs sub menu page to products menu
 			$hook = add_submenu_page(
@@ -560,7 +560,7 @@ if(!class_exists('DomainCheckAdmin')) {
 					'ssl_check'
 				)
 			);
-			add_action( 'load-' . $hook, [ $this, 'ssl_check_screen_option' ] );
+			add_action( 'load-' . $hook, array( $this, 'ssl_check_screen_option' ) );
 
 			//add fancy designs sub menu page to products menu
 			$hook = add_submenu_page(
@@ -574,7 +574,7 @@ if(!class_exists('DomainCheckAdmin')) {
 					'ssl_watch'
 				)
 			);
-			add_action( 'load-' . $hook, [ $this, 'ssl_watch_screen_option' ] );
+			add_action( 'load-' . $hook, array( $this, 'ssl_watch_screen_option' ) );
 
 			/*
 			//add fancy designs sub menu page to products menu
@@ -2802,11 +2802,11 @@ if(!class_exists('DomainCheckAdmin')) {
 		 */
 		public function search_screen_option() {
 			$option = 'per_page';
-			$args   = [
+			$args   = array(
 				'label'   => 'Domain Search',
 				'default' => 100,
 				'option'  => 'domains_per_page'
-			];
+			);
 
 			add_screen_option( $option, $args );
 
@@ -2818,11 +2818,11 @@ if(!class_exists('DomainCheckAdmin')) {
 		 */
 		public function screen_option() {
 			$option = 'per_page';
-			$args   = [
+			$args   = array(
 				'label'   => 'Domains',
 				'default' => 100,
 				'option'  => 'domains_per_page'
-			];
+			);
 
 			add_screen_option( $option, $args );
 
@@ -3209,11 +3209,11 @@ if(!class_exists('DomainCheckAdmin')) {
 		 */
 		public function ssl_check_screen_option() {
 			$option = 'per_page';
-			$args   = [
+			$args   = array(
 				'label'   => 'SSL Check',
 				'default' => 100,
 				'option'  => 'domains_per_page'
-			];
+			);
 
 			add_screen_option( $option, $args );
 
@@ -3591,11 +3591,11 @@ if(!class_exists('DomainCheckAdmin')) {
 		 */
 		public function ssl_watch_screen_option() {
 			$option = 'per_page';
-			$args   = [
+			$args   = array(
 				'label'   => 'SSL Expiration Alerts',
 				'default' => 100,
 				'option'  => 'domains_per_page'
-			];
+			);
 
 			add_screen_option( $option, $args );
 
@@ -3985,11 +3985,11 @@ if(!class_exists('DomainCheckAdmin')) {
 		 */
 		public function watch_screen_option() {
 			$option = 'per_page';
-			$args   = [
+			$args   = array(
 				'label'   => 'Domain Watch',
 				'default' => 100,
 				'option'  => 'domains_per_page'
-			];
+			);
 
 			add_screen_option( $option, $args );
 
@@ -4035,11 +4035,11 @@ if(!class_exists('DomainCheckAdmin')) {
 		 */
 		public function your_domains_screen_option() {
 			$option = 'per_page';
-			$args   = [
+			$args   = array(
 				'label'   => 'Your Domains',
 				'default' => 100,
 				'option'  => 'domains_per_page'
-			];
+			);
 
 			add_screen_option( $option, $args );
 
