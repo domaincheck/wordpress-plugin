@@ -92,14 +92,14 @@ class DomainCheckSearch {
 					$ajax_response = DomainCheckAdmin::ajax_success(array('message' => $message, 'status' => 0, 'domain' => $search));
 				} else {
 					if ($domain_result['status'] == 2) {
-						$message = 'Success, you already own <strong><a href="admin.php?page=domain-check-profile&domain=' . $search . '">' . $search . '</a></strong>!';
+						$message = 'Success! You already own <strong><a href="admin.php?page=domain-check-profile&domain=' . $search . '">' . $search . '</a></strong>!';
 						if (class_exists('DomainCheckAdmin')) {
 							DomainCheckAdmin::admin_notices_add($message, 'owned', $message_options, 'flag');
 						}
 						$ajax_response = array('message' => $message, 'status' => 2, 'domain' => $search, 'domain' => $search);
 					} else {
 						$status = 1;
-						$message = 'Sorry, <strong><a href="admin.php?page=domain-check-profile&domain=' . $search . '">' . $search . '</a></strong> is not an available domain and is taken.';
+						$message = '<strong><a href="admin.php?page=domain-check-profile&domain=' . $search . '">' . $search . '</a></strong> <span class="hidden-mobile">is not available and </span>is taken.';
 						if (class_exists('DomainCheckAdmin')) {
 							DomainCheckAdmin::admin_notices_add($message, 'error', $message_options, 'ban');
 						}
@@ -146,7 +146,7 @@ class DomainCheckSearch {
 							$ajax_response = array('message' => $message, 'status' => 2, 'domain' => $search);
 						} else {
 							$status = 1;
-							$message = 'Sorry, <strong><a href="admin.php?page=domain-check-profile&domain=' . $search . '">' . $search . '</a></strong> is not an available domain and is taken.';
+							$message = '<strong><a href="admin.php?page=domain-check-profile&domain=' . $search . '">' . $search . '</a></strong> <span class="hidden-mobile">is not available and </span>is taken.';
 							if (class_exists('DomainCheckAdmin')) {
 								DomainCheckAdmin::admin_notices_add($message, 'error', $message_options, 'ban');
 							}
@@ -332,7 +332,7 @@ class DomainCheckSearch {
 		}
 
 		if (!$read && !$force_return) {
-			$message = 'Unable to read SSL certificate for <strong>' . $search . '</strong>';
+			$message = 'Unable to read SSL<span class="hidden-mobile"> Certificate</span> for <strong>' . $search . '</strong>';
 			if (class_exists('DomainCheckAdmin')) {
 				DomainCheckAdmin::admin_notices_add($message, 'error', null, '145-unlocked');
 			}
@@ -348,7 +348,7 @@ class DomainCheckSearch {
 		}
 
 		if (!isset($certinfo['validFrom_time_t']) && !$force_return) {
-			$message = 'Certificate found but no expiration date given for <strong>' . $search . '</strong>';
+			$message = 'SSL<span class="hidden-mobile"> Certificate</span> found but no expiration date<span class="hidden-mobile"> given</span> for <strong>' . $search . '</strong>';
 			if (class_exists('DomainCheckAdmin')) {
 				DomainCheckAdmin::admin_notices_add($message, 'error', null, '145-unlocked');
 			}
@@ -358,11 +358,13 @@ class DomainCheckSearch {
 		}
 
 		if (!$force_return) {
-			$valarr['cache'] = gzcompress(json_encode($certinfo));
+
+
+			$valarr['cache'] = gzcompress(json_encode(self::utf8Array($certinfo)));
 			if ($certinfo['validFrom_time_t'] > time() || $certinfo['validTo_time_t'] < time() ) {
 				$valarr['domain_expires'] = $certinfo['validTo_time_t'];
 				$valarr['status'] = 0;
-				$message = 'SSL certificate for <strong>' . $search . '</strong> is not valid. Expires ' . date('m/d/Y H:i:s', $certinfo['validTo_time_t']);
+				$message = 'SSL<span class="hidden-mobile"> Certificate</span> for <strong>' . $search . '</strong> is not valid. Expired ' . date('m/d/Y', $certinfo['validTo_time_t']);
 				if (class_exists('DomainCheckAdmin')) {
 					DomainCheckAdmin::admin_notices_add($message, 'error', null, '145-unlocked');
 				}
@@ -370,7 +372,7 @@ class DomainCheckSearch {
 			} else {
 				$valarr['domain_expires'] = $certinfo['validTo_time_t'];
 				$valarr['status'] = 1;
-				$message = 'Yes! SSL Certificate for <strong>' . $search . '</strong> is valid!';
+				$message = 'Yes! SSL<span class="hidden-mobile"> Certificate</span> for <strong>' . $search . '</strong> is valid!';
 				if (class_exists('DomainCheckAdmin')) {
 					DomainCheckAdmin::admin_notices_add($message, 'updated', null, '144-lock');
 				}
@@ -402,5 +404,16 @@ class DomainCheckSearch {
 				DomainCheckAdmin::ajax_error($ajax_response);
 			}
 		}
+	}
+
+	public static function utf8Array($arr) {
+		foreach ($arr as $arr_idx => $arr_val) {
+			if ( is_array( $arr_val ) ) {
+				$arr[$arr_idx] = self::utf8Array( $arr_val );
+			} else {
+				$arr[$arr_idx] = utf8_encode($arr_val);
+			}
+		}
+		return $arr;
 	}
 }

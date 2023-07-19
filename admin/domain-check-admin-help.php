@@ -33,7 +33,8 @@ class DomainCheckAdminHelp {
 		);
 		DomainCheckAdminHeader::admin_header_nav(
 			$nav_pages,
-			self::$current_page
+			self::$current_page,
+			'Help'
 		);
 	}
 
@@ -41,9 +42,11 @@ class DomainCheckAdminHelp {
 		?>
 		<div class="wrap">
 			<h2>
-				<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<a href="admin.php?page=domain-check" class="domain-check-link-icon">
+					<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				</a>
 				<img src="<?php echo plugins_url('/images/icons/color/266-question.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
-				Domain Check - Help
+				<span class="hidden-mobile">Domain Check - </span>Help
 			</h2>
 			<?php
 			DomainCheckAdminHeader::admin_header(true, null, 'domain-check-help');
@@ -379,7 +382,7 @@ class DomainCheckAdminHelp {
 				This tool will send a sample Domain Check email to any email address from <strong><?php echo get_option('admin_email'); ?></strong>. If you do not get the email check the spam folder and mark the email as Not Spam. <strong>Make sure the email address is set up to accept all emails from <?php echo get_option('admin_email'); ?></strong>.
 			</p>
 			<div>
-				<input type="text" id="email-test-email-address" style="width: 100%;">
+				<input type="text" id="email-test-email-address" class="domain-check-text-input" style="width: 100%;">
 				<br><br>
 				<a href="#" class="button-primary" onclick="email_test('email_test');">Send Test Email</a>
 			</div>

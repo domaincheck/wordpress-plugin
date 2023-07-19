@@ -5,27 +5,10 @@ class DomainCheckAdminDashboard {
 		global $wpdb;
 		DomainCheckAdminHeader::admin_header(false);
 		?>
-				<style type="text/css">
-					.domain-check-admin-dashboard-search-box {
-						max-width: 450px;
-						min-width: 350px;
-						display: inline-block;
-						float: left;
-						background-color: #ffffff;
-						padding:10px;
-						margin:10px;
-					}
-					.domain-check-dasboard-table-tr {
-						height: 28px;
-					}
-					.domain-check-admin-search-input {
-						font-size: 18px;
-					}
-				</style>
 				<div class="wrap">
 					<h2>
 						<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
-						Domain Check - Domains
+						Domain Check - Dashboard
 					</h2>
 					<div class="domain-check-dasboard-wrap">
 					<?php DomainCheckAdminHeader::admin_header_nav(null, 'domain-check'); ?>
@@ -52,6 +35,7 @@ class DomainCheckAdminDashboard {
 		if (count($result)) {
 			foreach ($result as $item) {
 				if (isset($item['domain_expires']) && $item['domain_expires']) {
+					$expire_days_number = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0);
 					$expire_days = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0) . ' Days';
 					$days = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0);
 					$days_flat = (int)floor(($item['domain_expires'] - time()) / 60 / 60 / 24);
@@ -66,7 +50,7 @@ class DomainCheckAdminDashboard {
 						if ($days_flat < 3) {
 							$fill = 'red';
 						}
-						if ($expire_days < 0) {
+						if ($expire_days_number < 0) {
 							$expire_days = 'Expired';
 						}
 						$expire_days = '<img src="' . plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">' . $expire_days;
@@ -74,15 +58,18 @@ class DomainCheckAdminDashboard {
 				} else {
 					$expire_days = 'n/a';
 				}
+				$mobile_class = '';
+				if ( $expire_days === 'n/a' || $expire_days_number >= 60 ) {
+					$mobile_class = ' hidden-mobile';
+				}
 				?>
-				<tr class="domain-check-dasboard-table-tr">
+				<tr class="domain-check-dasboard-table-tr<?php echo $mobile_class; ?>">
 					<td>
 						<strong>
 							<a href="?page=domain-check-profile&domain=<?php echo $item['domain_url']; ?>"><?php echo $item['domain_url']; ?></a>
 						</strong>
 					</td>
-					<td>
-						<?php
+					<td><?php
 						echo $expire_days;
 						?></td>
 					<td><?php
@@ -125,6 +112,7 @@ class DomainCheckAdminDashboard {
 		if (count($result)) {
 			foreach ($result as $item) {
 				if (isset($item['domain_expires']) && $item['domain_expires']) {
+					$expire_days_number = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0);
 					$expire_days = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0) . ' Days';
 					$days = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0);
 					$days_flat = (int)floor(($item['domain_expires'] - time()) / 60 / 60 / 24);
@@ -139,7 +127,7 @@ class DomainCheckAdminDashboard {
 						if ($days_flat < 3) {
 							$fill = 'red';
 						}
-						if ($expire_days < 0) {
+						if ($expire_days_number < 0) {
 							$expire_days = 'Expired';
 						}
 						$expire_days = '<img src="' . plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">' . $expire_days;
@@ -147,8 +135,12 @@ class DomainCheckAdminDashboard {
 				} else {
 					$expire_days = 'n/a';
 				}
+				$mobile_class = '';
+				if ( $expire_days === 'n/a' || $expire_days_number >= 60 ) {
+					$mobile_class = ' hidden-mobile';
+				}
 				?>
-				<tr class="domain-check-dasboard-table-tr">
+				<tr class="domain-check-dasboard-table-tr<?php echo $mobile_class; ?>">
 					<td>
 						<strong>
 							<a href="?page=domain-check-profile&domain=<?php echo $item['domain_url']; ?>"><?php echo $item['domain_url']; ?></a>
@@ -206,7 +198,9 @@ class DomainCheckAdminDashboard {
 		if (count($result)) {
 			foreach ($result as $item) {
 				if (isset($item['domain_expires']) && $item['domain_expires']) {
+					$expire_days_number = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0);
 					$expire_days = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0) . ' Days';
+					$expire_days = '<span class="hidden-desktop"><br /></span>' . $expire_days;
 					$days = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0);
 					$days_flat = (int)floor(($item['domain_expires'] - time()) / 60 / 60 / 24);
 					if ($days_flat < 60) {
@@ -220,7 +214,7 @@ class DomainCheckAdminDashboard {
 						if ($days_flat < 3) {
 							$fill = 'red';
 						}
-						if ($expire_days < 0) {
+						if ($expire_days_number < 0) {
 							$expire_days = 'Expired';
 						}
 						$expire_days = '<img src="' . plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">' . $expire_days;
@@ -228,10 +222,14 @@ class DomainCheckAdminDashboard {
 						$expire_days = '<img src="' . plugins_url('/images/icons/color/lock-locked-updated.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-updated">' . $expire_days;
 					}
 				} else {
-					$expire_days = $expire_days = '<img src="' . plugins_url('/images/icons/color/lock-unlocked.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-error">' . 'Not Secure';
+					$expire_days = $expire_days = '<img src="' . plugins_url('/images/icons/color/lock-unlocked.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-error"> ' . 'Not Secure';
+				}
+				$mobile_class = '';
+				if ( $expire_days === 'n/a' || $expire_days_number >= 60 ) {
+					$mobile_class = ' hidden-mobile';
 				}
 				?>
-				<tr class="domain-check-dasboard-table-tr">
+				<tr class="domain-check-dasboard-table-tr<?php echo $mobile_class; ?>">
 					<td>
 						<strong>
 							<a href="?page=domain-check-ssl-profile&domain=<?php echo $item['domain_url']; ?>">
@@ -291,6 +289,7 @@ class DomainCheckAdminDashboard {
 		if (count($result)) {
 			foreach ($result as $item) {
 				if (isset($item['domain_expires']) && $item['domain_expires']) {
+					$expire_days_number = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0);
 					$expire_days = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0) . ' Days';
 					$days = number_format(($item['domain_expires'] - time()) / 60 / 60 / 24, 0);
 					$days_flat = (int)floor(($item['domain_expires'] - time()) / 60 / 60 / 24);
@@ -305,7 +304,7 @@ class DomainCheckAdminDashboard {
 						if ($days_flat < 3) {
 							$fill = 'red';
 						}
-						if ($expire_days < 0) {
+						if ($expire_days_number < 0) {
 							$expire_days = 'Expired';
 						}
 						$expire_days = '<img src="' . plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">' . $expire_days;
@@ -316,8 +315,12 @@ class DomainCheckAdminDashboard {
 				} else {
 					$expire_days = '<img src="' . plugins_url('/images/icons/color/lock-unlocked.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-error">' . 'Not Secure';
 				}
+				$mobile_class = '';
+				if ( $expire_days === 'n/a' || $expire_days_number >= 60 ) {
+					$mobile_class = ' hidden-mobile';
+				}
 				?>
-				<tr class="domain-check-dasboard-table-tr">
+				<tr class="domain-check-dasboard-table-tr<?php echo $mobile_class; ?>">
 					<td>
 						<strong>
 							<a href="?page=domain-check-ssl-profile&domain=<?php echo $item['domain_url']; ?>">
@@ -379,11 +382,15 @@ class DomainCheckAdminDashboard {
 		$coupon_last_updated = DomainCheckCouponData::last_updated();
 		if ($coupon_last_updated) {
 			$updated_date = date('m-d-Y', $coupon_last_updated);
+			if ( date('m-d-Y', $coupon_last_updated) === date('m-d-Y') ) {
+				$updated_date = 'Today!';
+			}
 		} else {
 			$updated_date = 'EXPIRED. Please Refresh.';
 		}
+
 		?>
-					<h4>Updated: <?php echo $updated_date; ?></h4>
+					<h3>Coupons Updated: <?php echo $updated_date; ?></h3>
 					<a href="admin.php?page=domain-check&domain_check_coupons_update=1" class="button">
 						<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 						Refresh Coupons
@@ -438,7 +445,7 @@ class DomainCheckAdminDashboard {
 					?>
 							<tr style="background-color: #FFFFFF; color: #FFFFFF;">
 								<td style="overflow: hidden;">
-							<div class="domain-check-coupon-ad">
+							<div class="domain-check-coupon-ad domain-check-coupon-ad-dashboard">
 									<strong>
 									<a href="<?php echo $coupon_link_data['clickUrl']; ?>" target="_blank">
 								<?php

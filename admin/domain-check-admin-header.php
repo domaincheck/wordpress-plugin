@@ -1,9 +1,16 @@
 <?php
 
 class DomainCheckAdminHeader {
+
+	private static $m_navCount = 0;
+
 	public static function admin_header($nav = true, $nav_pages = null, $current_page = null) {
 		?>
 		<style type="text/css">
+			.domain-check-link-icon {
+				text-underline: none !important;
+				text-decoration: none !important;
+			}
 			.svg-fill-red path {
 				fill: #ff0000;
 			}
@@ -24,7 +31,7 @@ class DomainCheckAdminHeader {
 			.svg-fill-error path,
 			.svg-fill-status-1 path,
 			.svg-fill-taken path {
-					fill: #dd3d36;
+				fill: #dd3d36;
 			}
 			.svg-fill-success path,
 			.svg-fill-updated path,
@@ -88,8 +95,18 @@ class DomainCheckAdminHeader {
 			}
 
 			.setting-div {
-				max-width: 450px;
-				min-width: 350px;
+				max-width: 44%;
+				min-width: 44%;
+				padding: 10px;
+				margin: 10px;
+				background-color: #ffffff;
+				display: inline-block;
+				vertical-align: top;
+			}
+
+			.setting-box-lg {
+				max-width: 90%;
+				min-width: 90%;
 				padding: 10px;
 				margin: 10px;
 				background-color: #ffffff;
@@ -132,8 +149,186 @@ class DomainCheckAdminHeader {
 
 			}
 			#poststuff #post-body.columns-2 {
-			    margin-right: 0px;
+				margin-right: 0px;
 			}
+
+			.domain-check-admin-nav-mobile {
+				display: none;
+			}
+
+			a.domain-check-admin-nav-button {
+				display: inline-block;
+				margin-right: 3px !important;
+				margin-top: 5px !important;
+			}
+
+			.domain-check-footer-container {
+				width: 100%;
+				margin-top: 30px;
+				float: left;
+			}
+
+			.domain-check-footer-col {
+				width: 30%;
+				vertical-align: middle;
+				text-align: center;
+				display: inline-block;
+			}
+
+			.domain-check-coupon-ad {
+				display: inline-block;
+				margin: 5px;
+				padding: 10px;
+				background-color: #ffffff;
+				width: 20%;
+				float: left;
+				border: 2px black dashed;
+			}
+
+			.domain-check-coupon-ad-dashboard {
+				width: 80%;
+			}
+
+			.domain-check-img-ad {
+				display: inline-block;
+				margin: 5px;
+				padding: 5px;
+				background-color: #ffffff;
+				max-width: 100%;
+				overflow: hidden;
+				float: left;
+			}
+
+			.domain-check-admin-dashboard-search-box {
+				width: 44%;
+				display: inline-block;
+				float: left;
+				background-color: #ffffff;
+				padding:10px;
+				margin:10px;
+			}
+
+			.domain-check-dasboard-table-tr {
+				height: 28px;
+			}
+
+			.domain-check-admin-search-input {
+				font-size: 30px;
+			}
+
+			.domain-check-profile-code {
+				white-space: pre-wrap;
+				word-wrap: break-word;
+			}
+
+			.domain-check-profile-li {
+				width: 100%;
+			}
+			.domain-check-profile-li:hover{
+				background-color: #F4F4F4;
+			}
+			.domain-check-profile-li-div-left {
+				width: 48%;
+				text-align: left;
+				display: inline-block;
+				height: 100%;
+			}
+			.domain-check-profile-li-div-right {
+				width: 45%;
+				display: inline-block;
+				padding-right: 10px;
+				height: 100%;
+			}
+
+			.domain-check-text-input {
+				font-size: 18px;
+			}
+
+			.domain-check-profile-settings-input {
+				width: 100%;
+			}
+			.domain-check-profile-settings-textarea {
+				width: 100%;
+			}
+
+			@media (min-width: 782px) {
+				.hidden-desktop {
+					display: none;
+				}
+			}
+
+			@media (max-width: 782px) {
+
+				.column-links {
+					text-align: left;
+				}
+
+				.setting-div {
+					max-width: 90%;
+					min-width: 90%;
+				}
+
+				.domain-check-admin-search-input {
+					width: 100%;
+				}
+
+				.domain-check-title-text {
+					display: none;
+				}
+
+				.domain-check-nav-div-dashboard {
+					display: none;
+				}
+
+				.domain-check-admin-nav-mobile {
+					display: inline-block;
+					cursor: pointer;
+					width: 48%;
+				}
+
+				a.domain-check-admin-nav-button,
+				div.domain-check-admin-nav-button,
+				button.domain-check-admin-nav-button
+				{
+					width: 100%;
+				}
+
+				a.domain-check-admin-nav-header-button,
+				button.domain-check-admin-nav-header-button {
+					width: 100%;
+				}
+
+				.domain-check-footer-col {
+					width: 100%;
+					padding: 10px;
+				}
+
+				.domain-check-coupon-ad {
+					width: auto;
+					min-height: initial;
+				}
+
+				.domain-check-admin-dashboard-search-box {
+					min-width: 90%;
+					max-width: 90%;
+				}
+
+				.domain-check-profile-li-div-left-settings {
+					display: block;
+					width: 100%;
+				}
+
+				.domain-check-profile-li-div-right-settings {
+					display: block;
+					width: 100%
+				}
+
+				.hidden-mobile {
+					display: none;
+				}
+
+			}
+
 		</style>
 		<script type="text/javascript">
 		/*
@@ -293,8 +488,6 @@ class DomainCheckAdminHeader {
 
 		function paint_svg(elem_id) {
 
-
-
 			var $img = jQuery('#' + elem_id);
 
 			//does not have the class set, already colored
@@ -334,7 +527,19 @@ class DomainCheckAdminHeader {
 				}
 			);
 		}
+
+		function showHide( elemId, displayStyle ) {
+			if ( typeof displayStyle === 'undefined' || !displayStyle ) {
+				displayStyle = 'block';
+			}
+			if ( document.getElementById( elemId ).style.display === 'none' || !document.getElementById( elemId ).style.display ) {
+				document.getElementById( elemId ).style.display = displayStyle;
+			} else {
+				document.getElementById( elemId ).style.display = 'none';
+			}
+		}
 		</script>
+
 		<?php
 		if (class_exists('DomainCheckDebug') && isset($_GET['test_ftue'])) {
 			DomainCheckDebug::debug();
@@ -406,28 +611,24 @@ class DomainCheckAdminHeader {
 			}
 		}
 		?>
+		<div id="domain-check-admin-notices"></div>
 		<?php
 		if ($nav) {
 			self::admin_header_nav($nav_pages, $current_page);
 		}
 		?>
-		<div id="domain-check-admin-notices"></div>
 		<?php
 	}
 
-	public static function admin_header_nav($nav_pages = null, $current_page = null) {
+	public static function admin_header_nav( $nav_pages = null, $current_page = null, $section = 'Domain Check' ) {
 		//[0] - text name
 		//[1] - icon name
 		//[2] - sub page
-
-		?>
-		<div class="domain-check-nav-div-dashboard">
-		<?php
 		if (!$nav_pages || !is_array($nav_pages)) {
 			$nav_pages = array(
 				array(
 					'domain-check',
-					'Domains',
+					'Dashboard',
 					'circle-www2'
 				),
 				array(
@@ -478,6 +679,32 @@ class DomainCheckAdminHeader {
 			);
 		}
 
+		//find page for mobile nav
+		foreach ($nav_pages as $nav_page_idx => $nav_data) {
+			$nav_page = $nav_data[0];
+
+			if ($current_page && $current_page == $nav_page) {
+				$current_page_name = $nav_data[1];
+			}
+
+			//extra route
+			if (isset($nav_data[3])) {
+				if ($current_page && $current_page == $nav_data[3]) {
+					$current_page_name = $nav_data[1];
+				}
+			}
+		}
+
+		?>
+		<div id="domain-check-admin-nav-mobile-<?php echo self::$m_navCount; ?>" class="domain-check-admin-nav-mobile" onclick="showHide('domain-check-admin-nav-<?php echo self::$m_navCount; ?>');">
+			<button class="btn btn-default button button-default domain-check-admin-nav-button domain-check-admin-nav-header-button">
+				<img src="<?php echo plugins_url('/images/icons/color/menu.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray domain-check-link-icon" />
+				<?php echo $section; ?>
+			</button>
+		</div>
+		<div id="domain-check-admin-nav-<?php echo self::$m_navCount; ?>" class="domain-check-nav-div-dashboard">
+		<?php
+
 		if ( $current_page === null && isset( $_GET['page'] ) ) {
 			$current_page = $_GET['page'];
 		}
@@ -502,7 +729,7 @@ class DomainCheckAdminHeader {
 			}
 
 			?>
-			<a href="admin.php?page=<?php echo $nav_page; ?>" class="<?php echo $css_class; ?>" style="display: inline-block; margin-right: 3px; margin-top: 5px;">
+			<a href="admin.php?page=<?php echo $nav_page; ?>" class="<?php echo $css_class; ?> domain-check-admin-nav-button">
 				<img src="<?php echo plugins_url('/images/icons/' . $nav_data[2] . '.svg', __FILE__); ?>" class="svg svg-fill svg-icon-table svg-icon-table-links svg-fill-gray">
 				<?php echo $nav_data[1]; ?>
 			</a>
@@ -510,26 +737,13 @@ class DomainCheckAdminHeader {
 		}
 		?>
 		</div>
-		<div style="clear:both;" />
+		<div class="hidden-mobile" style="clear:both;"></div>
 		<?php
+		self::$m_navCount += 1;
 	}
 
 	public static function footer() {
 		?>
-		<style type="text/css">
-			.domain-check-footer-container {
-				width: 100%;
-				margin-top: 30px;
-				float: left;
-			}
-
-			.domain-check-footer-col {
-				width: 30%;
-				vertical-align: middle;
-				text-align: center;
-				display: inline-block;
-			}
-		</style>
 		<div style="clear:both;"></div>
 		<div class="domain-check-footer-container">
 			<div class="domain-check-footer-col">

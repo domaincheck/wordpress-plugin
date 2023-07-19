@@ -148,10 +148,18 @@ class DomainCheckWhois {
 				$domain_extension = DomainCheckWhois::getextension( $domain_parse );
 				$domain_preface = str_replace( '.' . $domain_extension, '', $domain_parse );
 				if ($domain_extension && $domain_preface && $domain_preface != '.' && $domain_preface != '-' && $domain_preface != '' ) {
+
+					$fqdn = str_replace('.' . $domain_extension, '', $domain_parse);
+					$fqdn = explode('.', $fqdn);
+					$fqdn = $fqdn[(count($fqdn) - 1)] . '.' . $domain_extension;
+
+					$domain_root = $fqdn;
 					$valid_domain = array(
 						'domain_extension' => $domain_extension,
-						'domain' => $domain_parse
+						'domain' => $domain_parse,
+						'fqdn' => $fqdn
 					);
+
 				}
 			}
 		}

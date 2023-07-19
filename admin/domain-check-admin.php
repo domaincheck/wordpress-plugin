@@ -27,7 +27,7 @@ require_once( dirname(__FILE__) . '/domain-check-admin-your-domains.php' );
 
 if (php_sapi_name() !== 'cli') {
 	require_once( dirname(__FILE__) . '/domain-check-admin-search-list.php' );
-	require_once( dirname(__FILE__) . '/domain-check-admin-ssl-list.php' );
+	require_once( dirname(__FILE__) . '/domain-check-admin-ssl-search-list.php' );
 	require_once( dirname(__FILE__) . '/domain-check-admin-ssl-watch-list.php' );
 	require_once( dirname(__FILE__) . '/domain-check-admin-watch-list.php' );
 	require_once( dirname(__FILE__) . '/domain-check-admin-your-domains-list.php' );
@@ -118,7 +118,7 @@ if(!class_exists('DomainCheckAdmin')) {
 					$message = '<h2>' . $message . '</h2>';
 				}
 				if ($options && is_array($options) && count($options)) {
-					$message .= '<br><br>' . "\n";
+					$message .= '<span class="hidden-mobile"><br><br></span>' . "\n";
 					$first = true;
 					foreach($options as $option_name => $option_url) {
 						if (!$first) {

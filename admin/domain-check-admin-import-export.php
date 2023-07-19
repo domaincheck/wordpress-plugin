@@ -7,10 +7,12 @@ class DomainCheckAdminImportExport {
 		?>
 		<div class="wrap">
 			<h2>
-				<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<a href="admin.php?page=domain-check" class="domain-check-link-icon">
+					<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				</a>
 				<img src="<?php echo plugins_url('/images/icons/color/data-transfer-upload.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
 				<img src="<?php echo plugins_url('/images/icons/color/data-transfer-download.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
-				Domain Check - Import / Export
+				<span class="hidden-mobile">Domain Check - </span>Import / Export
 			</h2>
 			<?php DomainCheckAdminHeader::admin_header(); ?>
 			<script type="text/javascript">

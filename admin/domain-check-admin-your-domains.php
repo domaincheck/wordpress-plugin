@@ -14,9 +14,11 @@ class DomainCheckAdminYourDomains {
 		?>
 		<div class="wrap">
 			<h2>
-				<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<a href="admin.php?page=domain-check" class="domain-check-link-icon">
+					<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				</a>
 				<img src="<?php echo plugins_url('/images/icons/color/flag.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-owned">
-				Domain Check - Your Domains
+				<span class="hidden-mobile">Domain Check - </span>Your Domains
 			</h2>
 			<?php DomainCheckAdminHeader::admin_header(true, null, 'domain-check-your-domains'); ?>
 			<?php self::your_domains_search_box(); ?>

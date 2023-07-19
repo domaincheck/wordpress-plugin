@@ -71,7 +71,18 @@ class DomainCheckAdminSslSearch {
 
 		if (!$read && !$force_return) {
 			DomainCheckAdmin::admin_notices_add(
-				'Unable to read SSL certificate for <strong>' . $search . '</strong>',
+				'Unable to read SSL<span class="hidden-mobile"> Certificate</span> for <strong>' . $search . '</strong>',
+				'error',
+				null,
+				'145-unlocked'
+			);
+			$force_return = true;
+			//return;
+		}
+
+		if (!$read) {
+			DomainCheckAdmin::admin_notices_add(
+				'No SSL<span class="hidden-mobile"> Certificate</span> for <strong>' . $search . '</strong>',
 				'error',
 				null,
 				'145-unlocked'
@@ -87,7 +98,7 @@ class DomainCheckAdminSslSearch {
 
 		if (!isset($certinfo['validFrom_time_t']) && !$force_return) {
 			DomainCheckAdmin::admin_notices_add(
-				'Certificate found but no expiration date given for <strong>' . $search . '</strong>',
+				'SSL<span class="hidden-mobile"> Certificate</span> found but no expiration date<span class="hidden-mobile"> given</span> for <strong>' . $search . '</strong>',
 				'error',
 				null,
 				'145-unlocked'
@@ -102,7 +113,7 @@ class DomainCheckAdminSslSearch {
 				$valarr['domain_expires'] = $certinfo['validTo_time_t'];
 				$valarr['status'] = 0;
 				DomainCheckAdmin::admin_notices_add(
-					'SSL certificate for <strong>' . $search . '</strong> is not valid. Expires ' . date('m/d/Y H:i:s', $certinfo['validTo_time_t']),
+					'SSL<span class="hidden-mobile"> Certificate</span> for <strong>' . $search . '</strong> is not valid. Expires ' . date('m/d/Y', $certinfo['validTo_time_t']),
 					'error',
 					null,
 					'145-unlocked'
@@ -111,7 +122,7 @@ class DomainCheckAdminSslSearch {
 				$valarr['domain_expires'] = $certinfo['validTo_time_t'];
 				$valarr['status'] = 1;
 				DomainCheckAdmin::admin_notices_add(
-					'Yes! SSL Certificate for <strong>' . $search . '</strong> is valid!',
+					'Yes! SSL<span class="hidden-mobile"> Certificate</span> for <strong>' . $search . '</strong> is valid!',
 					'updated',
 					null,
 					'144-lock'
@@ -140,9 +151,11 @@ class DomainCheckAdminSslSearch {
 		?>
 		<div class="wrap">
 			<h2>
-				<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<a href="admin.php?page=domain-check" class="domain-check-link-icon">
+					<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				</a>
 				<img src="<?php echo plugins_url('/images/icons/color/lock-locked-yellow.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-update-nag">
-				Domain Check - SSL Check
+				<span class="hidden-mobile">Domain Check - </span>SSL Check
 			</h2>
 			<?php
 			DomainCheckAdminHeader::admin_header();
@@ -184,7 +197,7 @@ class DomainCheckAdminSslSearch {
 
 		add_screen_option( $option, $args );
 
-		self::$domains_obj = new DomainCheck_SSL_List();
+		self::$domains_obj = new DomainCheck_SSL_Search_List();
 	}
 
 	public static function ssl_delete_init() {

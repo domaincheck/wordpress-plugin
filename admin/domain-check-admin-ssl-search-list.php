@@ -1,5 +1,4 @@
 <?php
-
 //wp-plugin can be a url, no no!
 if (!defined('ABSPATH') && php_sapi_name() !== 'cli') {
 	die();
@@ -18,19 +17,19 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  * @package MyStyle
  * @since 0.1.0
  */
-class DomainCheck_Search_List extends WP_List_Table {
+class DomainCheck_SSL_Search_List extends WP_List_Table {
 	/**
 	* Constructor.
 	*/
 	public function __construct() {
 		parent::__construct( array(
 			'singular' => __( 'Domains', 'sp' ), //singular name of the listed records
-			'plural'   => __( 'Domains', 'sp' ), //plural name of the listed records
+			'plural'	=> __( 'Domains', 'sp' ), //plural name of the listed records
 			'ajax'	=> false //should this table support ajax?
 		) );
 	}
 	/**
-	* Retrieve domains from the database.
+	* Retrieve designs from the database.
 	* 
 	* This function is called by the prepare_items() function below.
 	*
@@ -42,7 +41,7 @@ class DomainCheck_Search_List extends WP_List_Table {
 	*/
 	public static function get_domains( $per_page = 100, $page_number = 1 ) {
 		global $wpdb;
-		$sql = 'SELECT * FROM ' . DomainCheck::$db_prefix . '_domains WHERE search_date > 0';
+		$sql = 'SELECT * FROM ' . DomainCheck::$db_prefix . '_ssl';
 		if ( ! empty( $_REQUEST['orderby'] ) ) {
 			$sql .= ' ORDER BY ' . esc_sql( $_REQUEST['orderby'] );
 			$sql .= ! empty( $_REQUEST['order'] ) ? ' ' . esc_sql( $_REQUEST['order'] ) : ' ASC, search_date DESC';
@@ -87,7 +86,7 @@ class DomainCheck_Search_List extends WP_List_Table {
 	*/
 	public static function record_count() {
 		global $wpdb;
-		$sql = "SELECT COUNT(domain_id) FROM " . DomainCheck::$db_prefix . '_domains';
+		$sql = "SELECT COUNT(domain_id) FROM " . DomainCheck::$db_prefix . '_ssl';
 		return $wpdb->get_var( $sql );
 	}
 	
@@ -99,7 +98,7 @@ class DomainCheck_Search_List extends WP_List_Table {
 	* @todo add unit testing
 	*/
 	public function no_items() {
-	 _e( 'No domains added.', 'sp' );
+	_e( 'No domains added.', 'sp' );
 	}
 	
 	/**
@@ -122,53 +121,52 @@ class DomainCheck_Search_List extends WP_List_Table {
 	* @todo add unit testing
 	*/
 	function column_domain_url( $item ) {
-
 		$out = '';
 
+		$status = 0;
 		if (array_key_exists('status', $item)) {
 			$status = $item['status'];
 		}
 		switch ($status) {
 			case 0:
-				$out .= '<img id="status-image-' . str_replace('.', '-', $item['domain_url']) . '" src="' . plugins_url('/images/icons/color/circle-check.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-available hidden-desktop">';
+				$out .= '<img src="' . plugins_url('/images/icons/color/lock-unlocked.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-error hidden-desktop">';
 			break;
 			case 1:
-				$out .= '<img id="status-image-' . str_replace('.', '-', $item['domain_url']) . '" src="' . plugins_url('/images/icons/color/ban.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-taken hidden-desktop">';
+				$out .= '<img src="' . plugins_url('/images/icons/color/lock-locked.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-success hidden-desktop">';
 			break;
 			case 2:
-				$out .= '<img id="status-image-' . str_replace('.', '-', $item['domain_url']) . '" src="' . plugins_url('/images/icons/color/flag.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-owned hidden-desktop">';
+				//$out .= '<img src="' . plugins_url('/images/icons/color/flag.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-owned hidden-desktop">';
 			break;
 			default:
-				//$out .= '<a id="status-link-' . str_replace('.', '-', $item['domain_url']) . '" class="domain-check-status-link hidden-desktop" href="#">Available [&raquo;]</a>';
+				//$out .= '<a id="status-link-' . str_replace('.', '-', $item['domain_url']) . '" href="#">Available [&raquo;]</a>';
 			break;
 		}
 
-		$out .= ' <a href="?page=domain-check-profile&domain='.$item['domain_url'].'"><strong>'.$item['domain_url'].'</strong></a>&nbsp;&nbsp;'
-			. '<a href="//' . $item['domain_url'] . '" target="_blank">'
+		$out .= ' <a href="?page=domain-check-ssl-profile&domain='.$item['domain_url'].'"><strong>'.$item['domain_url'].'</strong></a>&nbsp;&nbsp;'
+			. '<a href="https://' . $item['domain_url'] . '" target="_blank" class="hidden-mobile" >'
 			. '<img src="' . plugins_url('/images/icons/color/external-link.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-small svg-fill-gray">'
 			. '</a>';
-		return $out;
-	}
 
-	/**
-	* Method for thumbnail column
-	*
-	* @param array $item An array of DB data for the row.
-	* @return string Returns the content for the column cell.
-	* @todo add unit testing
-	*/
-	function column_search_date( $item ) {
-		$timediff = number_format((time() - $item['search_date'])/60/60/24, 0);
-		if ($timediff < 1) {
-			$out = 'Today';
-		} else if ($timediff == 1) {
-			$out = '1 Day';
-		} else {
-			$out =  $timediff . ' Days';
+		if ( $item['domain_expires'] && $status == 1 ) {
+			$days = number_format(($item['domain_expires'] - time())/60/60/24, 0);
+			$days_flat = (int)floor(($item['domain_expires'] - time())/60/60/24);
+			if ($days_flat < 60) {
+				$fill = 'gray';
+				if ($days_flat < 30) {
+					$fill = 'update-nag';
+				}
+				if ($days_flat < 10) {
+					$fill = 'error';
+				}
+				if ($days_flat < 3) {
+					$fill = 'red';
+				}
+				$out .= ' <img src="' . plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . ' hidden-desktop">';
+			}
 		}
+
 		return $out;
 	}
-
 
 	/**
 	* Method for thumbnail column
@@ -178,7 +176,7 @@ class DomainCheck_Search_List extends WP_List_Table {
 	* @todo add unit testing
 	*/
 	function column_domain_root( $item ) {
-		$out = '<a href="//' . $item['domain_root'] . '" target="_blank">' . $item['domain_root'] . '</a>';
+		$out = '<a href="https://' . $item['domain_root'] . '" target="_blank">' . $item['domain_root'] . '</a>';
 		return $out;
 	}
 
@@ -200,17 +198,13 @@ class DomainCheck_Search_List extends WP_List_Table {
 				}
 				$out .= '<img src="' . plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">';
 			}
-			if ($days_flat < 0) {
+			if ($item['domain_expires'] < time()) {
 				$out .= 'Expired';
 			} else {
 				$out .= ' ' . number_format(($item['domain_expires'] - time())/60/60/24, 0) . ' Days';
 			}
 			if ($days_flat < 60) {
-				if ($item['status'] == 2) {
-					$out .= '&nbsp;&nbsp;<a href="' . DomainCheckLinks::homepage($item['domain_url']) . '" class="button" target="_blank">Renew</a>';
-				} else {
-					$out .= '&nbsp;&nbsp;<a href="' . DomainCheckLinks::homepage($item['domain_url']) . '" class="button" target="_blank">Backorder</a>';
-				}
+				$out .= '&nbsp;&nbsp;<a href="' . DomainCheckLinks::ssl($item['domain_url']) . '" class="button" target="_blank">Renew</a>';
 			}
 		} else {
 			$out = 'n/a';
@@ -219,43 +213,59 @@ class DomainCheck_Search_List extends WP_List_Table {
 		return $out;
 	}
 
-	/**
-	 * Method for thumbnail column
-	 *
-	 * @param array $item An array of DB data for the row.
-	 * @return string Returns the content for the column cell.
-	 * @todo add unit testing
-	 */
-		function column_status( $item ) {
-			$status = 0;
-			if (array_key_exists('status', $item)) {
-				$status = $item['status'];
+	function column_search_date( $item ) {
+		if ($item['search_date']) {
+			$timediff = number_format((time() - $item['search_date'])/60/60/24, 0);
+			if ($timediff < 1) {
+				$out = 'Today';
+			} else if ($timediff == 1) {
+				$out = '1 Day';
+			} else {
+				$out =  $timediff . ' Days';
 			}
-			switch ($status) {
-				case 0:
-					$out = '<a id="status-link-' . str_replace('.', '-', $item['domain_url']) . '" class="domain-check-status-link" href="#">'
-					. '<img id="status-image-' . str_replace('.', '-', $item['domain_url']) . '" src="' . plugins_url('/images/icons/color/circle-check.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-available">'
-					. ' Available</a>'
-					. '&nbsp;&nbsp;<a href="' . DomainCheckLinks::homepage($item['domain_url']) . '" class="button" target="_blank">Get It!</a>';
-				break;
-				case 1:
-					$out = 'Taken';
-					$out = '<a id="status-link-' . str_replace('.', '-', $item['domain_url']) . '" class="domain-check-status-link" onclick="domain_check_ajax_call({\'action\':\'status_trigger\', \'domain\':\'' . $item['domain_url'] . '\'}, status_trigger_callback);">'
-						. '<img id="status-image-' . str_replace('.', '-', $item['domain_url']) . '" src="' . plugins_url('/images/icons/color/ban.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-taken">'
-						. ' ' . $out . '</a>';
-				break;
-				case 2:
-					$out = 'Owned';
-					$out = '<a id="status-link-' . str_replace('.', '-', $item['domain_url']) . '" class="domain-check-status-link" onclick="domain_check_ajax_call({\'action\':\'status_trigger\', \'domain\':\'' . $item['domain_url'] . '\'}, status_trigger_callback);">'
-							. '<img id="status-image-' . str_replace('.', '-', $item['domain_url']) . '" src="' . plugins_url('/images/icons/color/flag.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-owned">'
-							. ' ' . $out . '</a>';
-				break;
-				default:
-					$out = '<a id="status-link-' . str_replace('.', '-', $item['domain_url']) . '" class="domain-check-status-link" href="#">Available [&raquo;]</a>';
-				break;
-			}
-			return $out;
+		} else {
+			$out = 'Unknown';
 		}
+		return $out;
+	}
+
+	/**
+	* Method for thumbnail column
+	*
+	* @param array $item An array of DB data for the row.
+	* @return string Returns the content for the column cell.
+	* @todo add unit testing
+	*/
+	function column_status( $item ) {
+		$status = 0;
+		if (array_key_exists('status', $item)) {
+			$status = $item['status'];
+		}
+		switch ($status) {
+			case 0:
+				$out = '<a id="status-link-' . str_replace('.', '-', $item['domain_url']) . '" href="#">'
+				. '<img src="' . plugins_url('/images/icons/color/lock-unlocked.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-error">'
+				. ' Not Secure</a>'
+				. '&nbsp;&nbsp;<a href="' . DomainCheckLinks::ssl($item['domain_url']) . '" class="button" target="_blank">Fix It!</a>';
+			break;
+			case 1:
+				$out = 'Secure';
+				$out = '<a id="status-link-' . str_replace('.', '-', $item['domain_url']) . '" onclick="domain_check_ajax_call({\'action\':\'status_trigger\', \'domain\':\'' . $item['domain_url'] . '\'}, status_trigger_callback);">'
+					. '<img src="' . plugins_url('/images/icons/color/lock-locked.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-success">'
+					. ' ' . $out . '</a>';
+			break;
+			case 2:
+				$out = 'Owned';
+				$out = '<a id="status-link-' . str_replace('.', '-', $item['domain_url']) . '" onclick="domain_check_ajax_call({\'action\':\'status_trigger\', \'domain\':\'' . $item['domain_url'] . '\'}, status_trigger_callback);">'
+						. '<img src="' . plugins_url('/images/icons/color/flag.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-owned">'
+						. ' ' . $out . '</a>';
+			break;
+			default:
+				$out = '<a id="status-link-' . str_replace('.', '-', $item['domain_url']) . '" href="#">Available [&raquo;]</a>';
+			break;
+		}
+		return $out;
+	}
 
 
 	
@@ -267,6 +277,16 @@ class DomainCheck_Search_List extends WP_List_Table {
 	* @todo add unit testing
 	*/
 	function column_links( $item ) {
+		if ($item['domain_watch']) {
+			$text = 'Stop Watching';
+		} else {
+			$text = 'Watch';
+		}
+
+		$out = '';
+		$out .= '<a id="watch-link-' . str_replace('.', '-', $item['domain_url']) . '" onclick="domain_check_ajax_call({\'action\':\'ssl_watch_trigger\', \'domain\':\'' . $item['domain_url'] . '\'}, ssl_watch_trigger_callback);">' . $text . '</a>';
+		$out .= ' | <a href="?page=domain-check-ssl-check&domain_check_ssl_delete=' . $item['domain_url']  . '">Delete</a>';
+
 		//build the url to the customizer including the product id and design id
 		//$customize_page_id = MyStyle_Customize_Page::get_id();
 		//Other files
@@ -288,17 +308,17 @@ class DomainCheck_Search_List extends WP_List_Table {
 		}
 
 		$out = '';
-		$out .= '<a href="?page=domain-check-search&domain_check_search=' . $item['domain_url']  . $paged . $order . '" alt="Refresh" title="Refresh">'
+		$out .= '<a href="?page=domain-check-ssl-check&domain_check_ssl_search=' . $item['domain_url']  . $paged . $order . '" alt="Refresh" title="Refresh">'
 			. '<img src="' . plugins_url('/images/icons/color/303-loop2.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">'
 			//. ' Refresh'
 			. '</a>';
 
-		$out .= '<a id="watch-link-' . str_replace('.', '-', $item['domain_url']) . '"  alt="'.$text.'" title="'.$text.'" onclick="domain_check_ajax_call({\'action\':\'watch_trigger\', \'domain\':\'' . $item['domain_url'] . '\'}, watch_trigger_callback);">'
-			. '<img id="watch-image-' . str_replace('.', '-', $item['domain_url']) . '" src="' . plugins_url('/images/icons/color/207-eye-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-' . $fill . '">'
+		$out .= '<a id="watch-link-' . str_replace('.', '-', $item['domain_url']) . '"  alt="'.$text.'" title="'.$text.'" onclick="domain_check_ajax_call({\'action\':\'ssl_watch_trigger\', \'domain\':\'' . $item['domain_url'] . '\'}, ssl_watch_trigger_callback);">'
+			. '<img id="watch-image-' . str_replace('.', '-', $item['domain_url']) . '" src="' . plugins_url('/images/icons/color/bell-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-' . $fill . '">'
 			//. $text
 			. '</a>';
 
-		$out .= '<a href="?page=domain-check-search&domain_check_delete=' . $item['domain_url']  . $paged . $order . '" alt="Delete" title="Delete">'
+		$out .= '<a href="?page=domain-check-ssl-check&domain_check_ssl_delete=' . $item['domain_url']  . $paged . $order . '" alt="Delete" title="Delete">'
 			. '<img src="' . plugins_url('/images/icons/color/174-bin2.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">'
 			//. ' Delete'
 			. '</a>';
@@ -337,17 +357,17 @@ class DomainCheck_Search_List extends WP_List_Table {
 			case 'ssl_last_check':
 			case 'ssl_next_check':
 			case 'ssl_expires':
-		  	case 'links':
+				case 'links':
 				return $item[ $column_name ];
 			default:
 				return 'Debug from column_default function: ' . print_r( $item, true ); //Show the whole array for troubleshooting purposes
 		}
 	}
-	
+
 	function column_cb($item) {
 		return '<input type="checkbox" name="bulk_domains[]" value="' . htmlentities($item['domain_url']) . '" />';
 	}
-
+	
 	/**
 	* Associative array of columns
 	*
@@ -365,7 +385,7 @@ class DomainCheck_Search_List extends WP_List_Table {
 			'domain_url'	=> __('Domain', 'sp'),
 			'domain_expires' => __('Expires', 'sp'),
 			'status' => __('Status', 'sp'),
-			'search_date'   => __('Last Searched', 'sp'),
+			'search_date' => __('Last Checked', 'sp'),
 			'owner' => __('Owner', 'sp'),
 			//'domain_check' => __('Domain', 'sp'),
 			//'ssl_check' => __('SSL', 'sp'),
@@ -386,33 +406,16 @@ class DomainCheck_Search_List extends WP_List_Table {
 	public function get_sortable_columns() {
 		$sortable_columns = array();
 		
-	  $sortable_columns = array(
-		  'domain_id' => array( 'domain_id', true ),
-		  //'domain_root' => array( 'domain_root', true ),
-		  'domain_url' => array( 'domain_url', true ),
-		  'domain_expires' => array( 'domain_expires', true ),
-		  'owner' => array ('owner', true),
-		  'status' => array( 'status', true ),
-	  );
+		$sortable_columns = array(
+			'domain_id' => array( 'domain_id', true ),
+			//'domain_root' => array( 'domain_root', true ),
+			'domain_url' => array( 'domain_url', true ),
+			'domain_expires' => array( 'domain_expires', true ),
+			'owner' => array( 'owner', true),
+			'status' => array( 'status', true ),
+		);
  
 		return $sortable_columns;
-	}
-
-	/**
-	* Force columns to be hidden on first load...
-	*
-	*/
-	public function set_hidden_columns() {
-
-		$hidden = get_user_option( 'manage' . $this->screen->id . 'columnshidden' );
-
-		$use_defaults = ! is_array( $hidden );
-
-		if ($use_defaults) {
-			$hidden = array( 'owner' );
-			update_user_option( get_current_user_id(), 'manage' . $this->screen->id . 'columnshidden', $hidden, true );
-		}
-
 	}
 	
 	/**
@@ -434,6 +437,23 @@ class DomainCheck_Search_List extends WP_List_Table {
 		//$actions = array();
  
 		return $actions;
+	}
+
+	/**
+	* Force columns to be hidden on first load...
+	*
+	*/
+	public function set_hidden_columns() {
+
+		$hidden = get_user_option( 'manage' . $this->screen->id . 'columnshidden' );
+
+		$use_defaults = ! is_array( $hidden );
+
+		if ($use_defaults) {
+			$hidden = array( 'owner' );
+			update_user_option( get_current_user_id(), 'manage' . $this->screen->id . 'columnshidden', $hidden, true );
+		}
+
 	}
 	
 	/**
@@ -481,13 +501,13 @@ class DomainCheck_Search_List extends WP_List_Table {
 		if (isset($_POST['bulk_domains'])) {
 			switch($this->current_action()) {
 				case 'bulk_delete':
-					DomainCheckAdmin::callInstance('bulk_domain_delete', $_POST['bulk_domains']);
+					DomainCheckAdmin::callInstance('bulk_ssl_delete', $_POST['bulk_domains']);
 					break;
 				case 'bulk_watch_start':
-					DomainCheckAdmin::callInstance('bulk_domain_watch', $_POST['bulk_domains']);
+					DomainCheckAdmin::callInstance('bulk_ssl_watch', $_POST['bulk_domains']);
 					break;
 				case 'bulk_watch_stop':
-					DomainCheckAdmin::callInstance('bulk_domain_watch_stop', $_POST['bulk_domains']);
+					DomainCheckAdmin::callInstance('bulk_ssl_watch_stop', $_POST['bulk_domains']);
 					break;
 			}
 		}

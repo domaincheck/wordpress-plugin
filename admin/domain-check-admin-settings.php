@@ -98,9 +98,11 @@ class DomainCheckAdminSettings {
 		</script>
 		<div class="wrap">
 			<h2>
-				<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<a href="admin.php?page=domain-check" class="domain-check-link-icon">
+					<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				</a>
 				<img src="<?php echo plugins_url('/images/icons/color/cog.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
-				Domain Check - Settings
+				<span class="hidden-mobile">Domain Check - </span>Settings
 			</h2>
 			<?php DomainCheckAdminHeader::admin_header(); ?>
 			<div class="setting-wrapper">
@@ -110,7 +112,7 @@ class DomainCheckAdminSettings {
 						These email addresses will automatically be added to any alerts for domains, SSL certificates, or hosting. These email addresses will receive alert emails and can also be individually removed for alerts. Use this to add multiple people, email inboxes, or ticket support systems to alerts. One email address per line.
 					</p>
 					<div class="setting-input">
-						<textarea id="email-additional-emails" style="width: 100%; height: 200px;"><?php echo $email_additional_emails; ?></textarea>
+						<textarea id="email-additional-emails" class="domain-check-text-input domain-check-profile-settings-textarea" style="width: 100%; height: 200px;"><?php echo $email_additional_emails; ?></textarea>
 					</div>
 					<br>
 					<a class="button" onclick="update_setting('email_additional_emails');">
@@ -136,7 +138,7 @@ class DomainCheckAdminSettings {
 						</p>
 					</div>
 					<div class="setting-input">
-						<textarea id="domain-extension-favorites" style="width: 100%; height: 150px;"><?php echo $domain_extension_favorites; ?></textarea>
+						<textarea id="domain-extension-favorites" rows="10" class="domain-check-text-input domain-check-profile-settings-textarea" style="width: 100%;"><?php echo $domain_extension_favorites; ?></textarea>
 						<br><br>
 						<a class="button" onclick="update_setting('domain_extension_favorites');">
 							Update Favorite Extensions
@@ -185,7 +187,7 @@ class DomainCheckAdminSettings {
 
 				<div class="setting-div" style="display: none;">
 					<div class="setting-label">
-						<h3>Favorite Domain Registrars:</h3>
+						<h4>Favorite Domain Registrars:</h4>
 						<p class="p">
 							Choose which domain registrar is your primary registrar and list your favorite registrars to get coupons for the sites you use. Your primary domain registrar controls links in domain searches, domain expiration alerts, email links, and dashboard links. The primary domain registrar is set to GoDaddy by default.
 						</p>
@@ -195,7 +197,6 @@ class DomainCheckAdminSettings {
 						<p class="p">
 							Most people and organizations have domains at multiple registrars and use many different domain registration sites. Check all the domain registrars listed below that you use to see more coupons, deals, and links for your favorite domain registrars.
 						</p>
-						<textarea id="default-domain-extensions" cols="25" rows="15"><?php echo $domain_extension_favorites; ?></textarea>
 						<a class="button">
 							Update Favorite Registrars
 						</a>

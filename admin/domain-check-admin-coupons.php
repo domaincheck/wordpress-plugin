@@ -27,41 +27,29 @@ class DomainCheckAdminCoupons {
 
 		$coupon_last_updated = DomainCheckCouponData::last_updated();
 		?>
-		<style type="text/css">
-			.domain-check-coupon-ad {
-				display: inline-block;
-				margin: 5px;
-				padding: 10px;
-				background-color: #ffffff;
-				width: 10%;
-				min-height: 200px;
-				float: left;
-				border: 2px black dashed;
-			}
-			.domain-check-img-ad {
-				display: inline-block;
-				margin: 5px;
-				padding: 5px;
-				background-color: #ffffff;
-				max-width: 100%;
-				overflow: hidden;
-				float: left;
-			}
-		</style>
 		<div class="wrap">
 			<h2>
-				<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<a href="admin.php?page=domain-check" class="domain-check-link-icon">
+					<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				</a>
 				<img src="<?php echo plugins_url('/images/icons/color/055-price-tags.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-updated">
-				Domain Check - Coupons &amp; Deals
+				<span class="hidden-mobile">Domain Check - </span>Coupons &amp; Deals
 			</h2>
 			<?php
 			DomainCheckAdminHeader::admin_header();
 			self::coupons_search_box();
 			?>
-			<?php if ($coupon_last_updated) { ?>
-				<strong>Last Updated: </strong> <?php echo date('m-d-Y H:i:s', $coupon_last_updated); ?>
-				<br>
-			<?php } ?>
+			<?php
+			if ($coupon_last_updated) {
+				$updated_date = date('m-d-Y H:i:s', $coupon_last_updated);
+				if ( date('m-d-Y', $coupon_last_updated) === date('m-d-Y') ) {
+					$updated_date = 'Today!';
+				}
+			?>
+				<h3>Coupons Last Updated: </strong> <?php echo $updated_date; ?></h3>
+			<?php
+			}
+			?>
 			<a href="admin.php?page=domain-check-coupons&domain_check_coupons_update=1" class="button">
 				<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 				Refresh Coupons
@@ -114,17 +102,16 @@ class DomainCheckAdminCoupons {
 								</p>
 
 								<p style="text-align: center;">
-
-								<div style="text-align: center;">
-									Coupon Code:
-								</div>
-								<div style="text-align: center;">
-									<a href="<?php echo $coupon_link_data['clickUrl']; ?>" target="_blank" style="background-color: #00AA00; color: #FFFFFF; font-size: 20px; margin: 10px; padding: 10px;">
-										<strong>
-											<?php echo $coupon_link_data['coupon-code']; ?>
-										</strong>
-									</a>
-								</div>
+									<div style="text-align: center;">
+										<h3>Coupon Code: </h3>
+									</div>
+									<div style="text-align: center;">
+										<a href="<?php echo $coupon_link_data['clickUrl']; ?>" target="_blank" style="background-color: #00AA00; color: #FFFFFF; font-size: 20px; margin: 10px; padding: 10px;">
+											<strong>
+												<?php echo $coupon_link_data['coupon-code']; ?>
+											</strong>
+										</a>
+									</div>
 								</p>
 							</div>
 						<?php } ?>
@@ -186,27 +173,6 @@ class DomainCheckAdminCoupons {
 
 		DomainCheckAdminHeader::admin_header();
 		?>
-		<style type="text/css">
-			.domain-check-coupon-ad {
-				display: inline-block;
-				margin: 5px;
-				padding: 10px;
-				background-color: #ffffff;
-				width: 10%;
-				min-height: 200px;
-				float: left;
-				border: 2px black dashed;
-			}
-			.domain-check-img-ad {
-				display: inline-block;
-				margin: 5px;
-				padding: 5px;
-				background-color: #ffffff;
-				max-width: 100%;
-				overflow: hidden;
-				float: left;
-			}
-		</style>
 		<div class="wrap">
 			<h2>
 				<img src="<?php echo plugins_url('/images/icons/color/055-price-tags.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-updated">
@@ -265,7 +231,7 @@ class DomainCheckAdminCoupons {
 								</p>
 								<p style="text-align: center;">
 									<div style="text-align: center;">
-									Coupon Code:
+									<h3>Coupon Code:<h3>
 									</div>
 									<div style="text-align: center;">
 									<a href="<?php echo $coupon_link_data['clickUrl']; ?>" target="_blank" style="background-color: #00AA00; color: #FFFFFF; font-size: 20px; margin: 10px; padding: 10px;">

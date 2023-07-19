@@ -7,7 +7,7 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Tags: admin, multisite, domain, ssl, https, hosting, email, admin, alerts, coupons, deals, dashboard, expiration, alert, notification, dashboard, domain checker, domain search, domain mapping
 Requires at least: 3.8
 Tested up to: 4.7.2
-Stable tag: 1.0.11
+Stable tag: 1.0.12
 
 Domain Check lets you search domain names, check SSL certificates and HTTPS, set email alerts for domain and SSL expiration, and get daily coupons.
 
@@ -98,6 +98,15 @@ A: Please use the email alert tester in the Help section within the plugin. This
 
 == Changelog ==
 
+= 1.0.12 =
+* Mobile UI / UX responsive overhaul! Now awesome and responsive! You can easily use Domain Check on your iPhone, iPad, or Android!
+* Better database performance on table queries
+* Bugfix: counts always display proper number of domains
+* Bugfix: pagination always displays proper number of pages
+* Bugfix: missing icons introduced in 1.0.11 fixed
+* Bugfix: missing icon coloring introduced in 1.0.11 fixed
+* Bugfix: coupons UI displaying oddly fixed
+
 = 1.0.11 =
 * Major upgrades for domain lookups and WHOIS server data
 * Better checking for domain availability
@@ -122,7 +131,7 @@ A: Please use the email alert tester in the Help section within the plugin. This
 * Bugfixes
 
 = 1.0.8 =
-* Added setting the domain and SSL owner! Use the Screen Options to show the column in the table views.
+* Added setting the domain and SSL owner! Use the Screen Options to show the column in the table views
 * Improved PHP 5.3.x compatibility
 * Improved updating functionality
 

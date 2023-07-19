@@ -9,11 +9,13 @@ class DomainCheckAdminSearch {
 		?>
 		<div id="domain-check-wrapper" class="wrap">
 			<h2>
-				<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<a href="admin.php?page=domain-check" class="domain-check-link-icon">
+					<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				</a>
 				<img src="<?php echo plugins_url('/images/icons/color/magnifying-glass.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
-				Domain Check - Domain Search
+				<span class="domain-check-title-text">Domain Check - </span>Domain Search
 			</h2>
-			<?php echo DomainCheckAdminHeader::admin_header(); ?>
+			<?php DomainCheckAdminHeader::admin_header(); ?>
 			<?php self::search_box(); ?>
 			<div id="poststuff">
 				<div id="post-body" class="metabox-holder columns-2">
