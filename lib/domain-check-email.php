@@ -322,7 +322,7 @@ class DomainCheckEmail {
 			If you have questions or would like to unsubscribe from some some of these alerts please log in to <a href="' . $site_url . '">' . $blog_name . '</a> or contact the ' . $blog_name . ' administrators at <a href="mailto:' . $admin_email . '">' . $admin_email . '</a>.
 			</p>' . "\n";
 			$message .= '<p>
-			This email generated automatically is using a Wordpress plugin called <a href="#">Domain Check</a> that <a href="' . $site_url . '">' . $blog_name . '</a> uses to monitor expiring domains and expiring SSL certificates.
+			This email is generated automatically using a Wordpress plugin called <a href="http://domaincheckplugin.com">Domain Check</a> that <a href="' . $site_url . '">' . $blog_name . '</a> uses to help you monitor expiring domains and expiring SSL certificates.
 			</p>' . "\n";
 			$message .= '</html>';
 

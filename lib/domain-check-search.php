@@ -355,7 +355,7 @@ class DomainCheckSearch {
 			$valarr['cache'] = gzcompress(json_encode($certinfo));
 			if ($certinfo['validFrom_time_t'] > time() || $certinfo['validTo_time_t'] < time() ) {
 				$valarr['domain_expires'] = $certinfo['validTo_time_t'];
-				$valarr['status'] = 1;
+				$valarr['status'] = 0;
 				$message = 'SSL certificate for <strong>' . $search . '</strong> is not valid. Expires ' . date('m/d/Y H:i:s', $certinfo['validTo_time_t']);
 				if (class_exists('DomainCheckAdmin')) {
 					DomainCheckAdmin::admin_notices_add($message, 'error', null, '145-unlocked');

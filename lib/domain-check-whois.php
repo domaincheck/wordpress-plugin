@@ -13,9 +13,7 @@ class DomainCheckWhois {
 
 	public static function init() {
 		if (!self::$m_init) {
-			if (!self::$m_data) {
-				self::$m_data = simplexml_load_file(dirname(__FILE__) . '/../db/whois-server-list.xml');
-			}
+			DomainCheckWhoisData::init();
 			self::$m_init = true;
 		}
 	}
@@ -31,66 +29,17 @@ class DomainCheckWhois {
 		$whois_servers = array();
 		$data = '';
 		$extension = '';
-		//if( $domain == '' || $server == '' ) {
-		//	return false;
-		//}
+		$extension_data = null;
 
-		if (!self::$m_data) {
-			self::$m_data = simplexml_load_file(dirname(__FILE__) . '/../db/whois-server-list.xml');
-		}
-
-		foreach (self::$m_data as $domain_xml_obj) {
-			$name = null;
-			$whois = null;
-			$country_code = null;
-			$registrar = null;
-
-			if (
-				count($domain_xml_obj->domain) ||
-				isset($domain_xml_obj->registrationService) ||
-				isset($domain_xml_obj->state) ||
-				isset($domain_xml_obj->countryCode)
-			) {
-				foreach ( $domain_xml_obj->attributes() as $domain_attr_idx => $domain_attr) {
-					//echo 'checking ' . substr($domain, $domain_len - strlen($domain_attr) - 1, strlen($domain_attr)) . ' ';
-					if ( $domain_attr_idx == 'name' && substr($domain, $domain_len - strlen($domain_attr) - 1, strlen($domain_attr) + 1) == '.' . $domain_attr ) {
-						if ( strlen($domain_attr) >= strlen($possible_tld) ) {
-							$possible_tld = $domain_attr;
-							$whois_servers[] = $domain_xml_obj->whoisServer;
-							$extension = strtolower(trim($domain_attr));
-						}
-					}
-				}
-				foreach ( $domain_xml_obj->domain as $inner_domain_obj ) {
-					if ( isset($inner_domain_obj->whoisServer) ) {
-						foreach ( $inner_domain_obj->attributes() as $domain_attr_idx => $domain_attr ) {
-							if ( $domain_attr_idx == 'name' && substr($domain, $domain_len - strlen($domain_attr) - 1, strlen($domain_attr) + 1) == '.' . $domain_attr ) {
-								if ( strlen($domain_attr) >= strlen($possible_tld) ) {
-									$possible_tld = $domain_attr;
-									$whois_servers[] = $inner_domain_obj->whoisServer;
-									$extension = strtolower(trim($domain_attr));
-								}
-							}
-						}
-					}
-				}
+		foreach ( DomainCheckWhoisData::$whoisData as $whois_extension => $whois_extension_data ) {
+			if ( substr($domain, $domain_len - strlen($whois_extension) - 1, strlen($whois_extension) + 1) == '.' . $whois_extension ) {
+				$extension = $whois_extension;
+				$extension_data = $whois_extension_data;
 			}
 		}
 
-		$server = null;
-		if (is_array($whois_servers)) {
-			foreach ($whois_servers as $whois_server) {
-				if ($server) {
-					continue;
-				}
-				if ($whois_server && $whois_server->attributes()) {
-					foreach ($whois_server->attributes() as $whois_server_attr_idx => $whois_server_attr) {
-						if ($whois_server_attr_idx == 'host') {
-							$server = $whois_server_attr;
-						}
-					}
-				}
-			}
+		if ( $extension_data && isset( $extension_data['whois'] ) ) {
+			$server = $extension_data['whois'];
 		} else {
 			DomainCheckAdmin::admin_notices_add('No WHOIS servers exist for domain extension <strong>' . $domain . '</strong>.', 'error', null, 'circle-x');
 			return array('error' => 'No WHOIS servers exist for domain extension ' . $domain);
@@ -128,6 +77,7 @@ class DomainCheckWhois {
 				'domain_expires' => 0
 			);
 
+			//if we generated pattern before
 			$ret['status'] = DomainCheckWhoisData::get_status($extension, $data);
 
 			if ($ret['status']) {
@@ -146,108 +96,37 @@ class DomainCheckWhois {
 		$domain = strtolower($domain);
 		$domain_len = strlen($domain);
 		$possible_tld = '';
-		foreach (self::$m_data as $domain_xml_obj) {
-			$name = null;
-			$whois = null;
-			$country_code = null;
-			$registrar = null;
 
-			if (
-				count($domain_xml_obj->domain) ||
-				isset($domain_xml_obj->registrationService) ||
-				isset($domain_xml_obj->state) ||
-				isset($domain_xml_obj->countryCode)
-			) {
-				foreach ( $domain_xml_obj->attributes() as $domain_attr_idx => $domain_attr) {
-					//echo 'checking ' . substr($domain, $domain_len - strlen($domain_attr) - 1, strlen($domain_attr)) . ' ';
-					if ( $domain_attr_idx == 'name' && substr($domain, $domain_len - strlen($domain_attr) - 1, strlen($domain_attr) + 1) == '.' . $domain_attr ) {
-						if ( strlen($domain_attr) >= strlen($possible_tld) ) {
-							$possible_tld = $domain_attr;
-						}
-					}
-				}
-				foreach ( $domain_xml_obj->domain as $inner_domain_obj ) {
-					if ( isset($inner_domain_obj->whoisServer) ) {
-						foreach ( $inner_domain_obj->attributes() as $domain_attr_idx => $domain_attr ) {
-							if ( $domain_attr_idx == 'name' && substr($domain, $domain_len - strlen($domain_attr) - 1, strlen($domain_attr) + 1) == '.' . $domain_attr ) {
-								if ( strlen($domain_attr) >= strlen($possible_tld) ) {
-									$possible_tld = $domain_attr;
-								}
-							}
-						}
-					}
-				}
+		$extension = '';
+		$extension_data = null;
+
+		foreach ( DomainCheckWhoisData::$whoisData as $whois_extension => $whois_extension_data ) {
+			if ( substr($domain, $domain_len - strlen($whois_extension) - 1, strlen($whois_extension) + 1) == '.' . $whois_extension ) {
+				$extension = $whois_extension;
+				$extension_data = $whois_extension_data;
 			}
 		}
-		return $possible_tld;
+
+		return $extension;
+
 	}
 
 	public static function getextensions() {
 		self::init();
-		$extensions = array();
-		foreach (self::$m_data as $domain_xml_obj) {
-			$name = null;
-			$whois = null;
-			$country_code = null;
-			$registrar = null;
 
-			if (
-				count($domain_xml_obj->domain) ||
-				isset($domain_xml_obj->registrationService) ||
-				isset($domain_xml_obj->state) ||
-				isset($domain_xml_obj->countryCode)
-			) {
-				foreach ( $domain_xml_obj->attributes() as $domain_attr_idx => $domain_attr) {
-					if ( $domain_attr_idx == 'name' ) {
-						$extensions[] = $domain_attr;
-					}
-				}
-				foreach ( $domain_xml_obj->domain as $inner_domain_obj ) {
-					if ( isset($inner_domain_obj->whoisServer) ) {
-						foreach ( $inner_domain_obj->attributes() as $domain_attr_idx => $domain_attr ) {
-							if ( $domain_attr_idx == 'name' ) {
-								$extensions[] = $domain_attr;
-							}
-						}
-					}
-				}
-
-				/*
-				if ( is_array($domain_arr) ) {
-					foreach ( $domain_xml_obj->domain as $inner_domain_obj ) {
-						if ( isset($inner_domain_obj->whoisServer) ) {
-							foreach ( $inner_domain_obj->attributes() as $domain_attr_idx => $domain_attr ) {
-								if ( $domain_attr_idx == 'name' ) {
-									$extensions[] = $domain_attr;
-								}
-							}
-						}
-					}
-				} else {
-					if ( isset($domain_xml_obj->domain->whoisServer) ) {
-						foreach ( $domain_xml_obj->domain->attributes() as $domain_attr_idx => $domain_attr ) {
-							if ( $domain_attr_idx == 'name' ) {
-								$extensions[] = $domain_attr;
-							}
-						}
-					}
-				}
-				*/
-			}
-		}
-		return $extensions;
+		return DomainCheckWhoisData::$whoisData;
 	}
 
 	public static function validdomain($domain) {
 		$valid_domain = false;
 		$domain_extension = null;
-		if ( strpos( $domain, '.' ) !== false ) {
-			$domain_parse = parse_url(strtolower(trim($domain)));
+		if ( mb_strpos( $domain, '.' ) !== false ) {
+			$domain_parse = parse_url(mb_strtolower(trim($domain)));
 
 			if (isset($domain_parse['path']) && $domain_parse['path'] != '/') {
 				$domain_parse = $domain_parse['path'];
 				$domain_parse = preg_replace("/[^a-z0-9.-]+/i", '', $domain_parse);
-				if ($domain_parse && strpos($domain_parse, '.') !== false) {
+				if ($domain_parse && mb_strpos($domain_parse, '.') !== false) {
 					$domain_extension = DomainCheckWhois::getextension($domain_parse);
 					$domain_preface = str_replace('.' . $domain_extension, '', $domain_parse);
 					if ($domain_extension && $domain_preface && $domain_preface != '.' && $domain_preface != '-' && $domain_preface != '' ) {
@@ -260,7 +139,7 @@ class DomainCheckWhois {
 			} else if (isset($domain_parse['host'])) {
 				$domain_parse = $domain_parse['host'];
 				$domain_parse = preg_replace("/[^a-z0-9.-]+/i", '', $domain_parse);
-				if ($domain_parse && strpos($domain_parse, '.') !== false) {
+				if ($domain_parse && mb_strpos($domain_parse, '.') !== false) {
 					$domain_extension = DomainCheckWhois::getextension($domain_parse);
 					$domain_preface = str_replace('.' . $domain_extension, '', $domain_parse);
 					if ($domain_extension && $domain_preface && $domain_preface != '.' && $domain_preface != '-' && $domain_preface != '' ) {

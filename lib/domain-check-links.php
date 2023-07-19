@@ -108,8 +108,12 @@ class DomainCheckLinks {
 		}
 		$coupons = DomainCheckCouponData::search('domain', 'en');
 		if (isset($coupons[$site]) && count($coupons[$site]['links']['link'])) {
-			$tmp_coupon = array_pop($coupons[$site]['links']['link']);
-			return $tmp_coupon['clickUrl'];
+			foreach ($coupons[$site]['links']['link'] as $tmp_coupon) {
+				//$tmp_coupon = array_pop($coupons[$site]['links']['link']);
+				if (isset($tmp_coupon['clickUrl'])) {
+					return $tmp_coupon['clickUrl'];
+				}
+			}
 		}
 		return false;
 	}

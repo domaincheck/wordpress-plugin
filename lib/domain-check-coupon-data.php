@@ -124,6 +124,9 @@ class DomainCheckCouponData {
 		//curl to get coupon data from S3...
 		$url = self::$api_url . 'coupons.json';
 
+		//verify actual wordpress site & not a bot
+		$url .= '?verify=' . site_url();
+
 		$coupons_raw = null;
 		if ( function_exists('curl_init') ) {
 			$ch = curl_init();

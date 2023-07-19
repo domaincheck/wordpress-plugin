@@ -8,6 +8,8 @@ class DomainCheckWhoisData {
 
 	private static $class_init = false;
 
+	public static $whoisDataXml = null;
+
 	public static $whoisData = array(
 		'app' => array(
 			'available' => 'Domain not found.',
@@ -22,6 +24,10 @@ class DomainCheckWhoisData {
 		'ca' => array(
 			'available' => 'Domain status:         available',
 			'expires' => 'Expiry date: '
+		),
+		'cn' => array (
+			'expires' => 'Expiration Time: ',
+			'expires_func' => 'cn'
 		),
 		'cc' => array(
 			'available' => 'No match for ',
@@ -80,7 +86,10 @@ class DomainCheckWhoisData {
 			'expires_func' => 'com'
 		),
 		//'marketing' => array(),
-		//'me' => array(),
+		'me' => array(
+			'expires' => 'Registry Expiry Date: ',
+			'expires_func' => 'cc'
+		),
 		//'mil' => array(),
 		//'mobi' => array(),
 		//'name' => array(),
@@ -110,6 +119,10 @@ class DomainCheckWhoisData {
 			'expires' => 'Expiration Date:',
 			'expires_func' => 'com'
 		),
+		'top' => array(
+			'expires' => 'Registry Expiry Date: ',
+			'expires_func' => 'cc'
+		),
 		//'tel' => array(),
 		//'travel' => array(),
 		'us' => array(
@@ -120,7 +133,7 @@ class DomainCheckWhoisData {
 			'available' => 'No match for ',
 			'expires' => 'Expiration Date: ',
 			'expires_func' => 'io'
-		),
+		)
 		//'xxx' => array()
 	);
 
@@ -161,6 +174,13 @@ class DomainCheckWhoisData {
 		return mktime(0, 0, 0, date('m', strtotime(ucfirst($dateArr[1]))), $dateArr[0], $dateArr[2]);
 	}
 
+	public static function ext_cn_expires($expiry_date) {
+		$dateArr = explode(' ', $expiry_date);
+		$dateDayArr = explode('-', $dateArr[0]);
+		$dayMinArr = explode(':', $dateArr[1]);
+		return mktime($dayMinArr[0], $dayMinArr[1], $dayMinArr[2], (int)$dateDayArr[1], (int)$dateDayArr[0], (int)$dateDayArr[2]);
+	}
+
 	public static function extension_supported($extension) {
 		self::init();
 		if (isset(self::$whoisData[$extension])) {
@@ -172,7 +192,12 @@ class DomainCheckWhoisData {
 
 	public static function get_expiration($extension, $data) {
 		self::init();
-		$replaced = str_replace('[[domain_check]]', '', DomainCheckWhoisData::$whoisData[$extension]['expires']);
+
+		$replaced = null;
+		if ( isset( DomainCheckWhoisData::$whoisData[$extension]['expires'] ) ) {
+			$replaced = str_replace('[[domain_check]]', '', DomainCheckWhoisData::$whoisData[$extension]['expires']);
+		}
+
 		if ($replaced) {
 			$whois_arr = explode("\n", $data);
 			foreach ($whois_arr as $whois_arr_idx => $whois_arr_line) {
@@ -201,6 +226,10 @@ class DomainCheckWhoisData {
 		if (!$data || !self::$whoisData[$extension]['available']) {
 			return 1;
 		}
+		$available = self::$whoisData[$extension]['available'];
+		$data = strtolower($data);
+		$res = strpos($data, $available);
+
 		if (strpos($data, self::$whoisData[$extension]['available']) !== false) {
 			return 0;
 		} else {
@@ -215,8 +244,95 @@ class DomainCheckWhoisData {
 
 	public static function init() {
 		if (!self::$class_init) {
+
+			self::xml_import();
+
 			self::json_import();
+
+			ksort(self::$whoisData);
+
 			self::$class_init = true;
+		}
+	}
+
+	public static function xml_import() {
+		if (!self::$whoisDataXml) {
+			self::$whoisDataXml = simplexml_load_file(dirname(__FILE__) . '/../db/whois-server-list.xml');
+		}
+
+		foreach (self::$whoisDataXml as $domain_xml_obj) {
+			$name = null;
+			$whois = null;
+			$country_code = null;
+			$registrar = null;
+
+			if (
+				count($domain_xml_obj->domain) ||
+				isset($domain_xml_obj->registrationService) ||
+				isset($domain_xml_obj->state) ||
+				isset($domain_xml_obj->countryCode)
+			) {
+				foreach ( $domain_xml_obj->attributes() as $domain_attr_idx => $domain_attr) {
+					//echo 'checking ' . substr($domain, $domain_len - strlen($domain_attr) - 1, strlen($domain_attr)) . ' ';
+					if ( $domain_attr_idx == 'name' ) {
+
+						$whois_server = $domain_xml_obj->whoisServer;
+						$extension = strtolower(trim($domain_attr));
+						if ($whois_server && $whois_server->attributes()) {
+							foreach ($whois_server->attributes() as $whois_server_attr_idx => $whois_server_attr) {
+								if ($whois_server_attr_idx == 'host') {
+									if ( !isset( self::$whoisData[$extension] ) ) {
+										self::$whoisData[$extension] = array();
+									}
+									if ( !isset(self::$whoisData[$extension]['whois']) ) {
+										self::$whoisData[$extension]['whois'] = $whois_server_attr;
+									}
+									if ( $whois_server !== null && isset( $whois_server->availablePattern ) && $whois_server->availablePattern ) {
+										//if we have pattern for a server prefer that server for lookups
+										self::$whoisData[$extension]['whois'] = $whois_server_attr;
+										$found_pattern = $whois_server->availablePattern;
+										$found_pattern = str_replace('\Q', '', $found_pattern);
+										$found_pattern = str_replace('\E', '', $found_pattern);
+										self::$whoisData[$extension]['available'] = $found_pattern;
+									}
+								}
+							}
+						}
+					}
+				}
+				foreach ( $domain_xml_obj->domain as $inner_domain_obj ) {
+					if ( isset($inner_domain_obj->whoisServer) ) {
+						foreach ( $inner_domain_obj->attributes() as $domain_attr_idx => $domain_attr ) {
+							if ( $domain_attr_idx == 'name' ) {
+
+								$whois_server = $domain_xml_obj->whoisServer;
+								$extension = strtolower(trim($domain_attr));
+								if ($whois_server && $whois_server->attributes()) {
+									foreach ($whois_server->attributes() as $whois_server_attr_idx => $whois_server_attr) {
+										if ($whois_server_attr_idx == 'host') {
+											if ( !isset( self::$whoisData[$extension] ) ) {
+												self::$whoisData[$extension] = array();
+											}
+											self::$whoisData[$extension]['whois'] = $whois_server_attr;
+											if ( $whois_server !== null && isset( $whois_server->availablePattern ) && $whois_server->availablePattern ) {
+												$found_pattern = $whois_server->availablePattern;
+												$found_pattern = str_replace('\Q', '', $found_pattern);
+												$found_pattern = str_replace('\E', '', $found_pattern);
+												$found_pattern = trim($found_pattern);
+
+												if ( $found_pattern && !isset( self::$whoisData[$extension]['available'] ) ) {
+													self::$whoisData[$extension]['available'] = $found_pattern;
+												}
+											}
+										}
+									}
+								}
+
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -228,8 +344,36 @@ class DomainCheckWhoisData {
 			ob_end_clean();
 			$whois_data = json_decode($whois_data, true);
 			if ($whois_data && is_array($whois_data)) {
-				self::$whoisData = array_merge($whois_data, self::$whoisData);
+				foreach ($whois_data as $extension => $extension_data) {
+					if ( !isset( self::$whoisData[$extension] ) ) {
+						self::$whoisData[$extension] = array();
+					}
+					//available
+					if (
+						isset($extension_data['available'])
+						&& $extension_data['available']
+						&& (
+							!isset( self::$whoisData[$extension]['available'] )
+							|| !self::$whoisData[$extension]['available']
+						)
+					) {
+						self::$whoisData[$extension]['available'] = $extension_data['available'];
+					}
+					//expires
+					if (
+						isset($extension_data['expires'])
+						&& $extension_data['expires']
+						&& (
+							!isset( self::$whoisData[$extension]['expires'] )
+							|| !self::$whoisData[$extension]['expires']
+						)
+					) {
+						self::$whoisData[$extension]['expires'] = $extension_data['expires'];
+					}
+					//self::$whoisData = array_merge($whois_data, self::$whoisData);
+				}
 			}
 		}
 	}
+
 }
