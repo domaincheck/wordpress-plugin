@@ -7,7 +7,7 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Tags: admin, multisite, domain, ssl, https, hosting, email, admin, alerts, coupons, deals, dashboard, expiration, alert, notification, dashboard, domain checker, domain search, domain mapping
 Requires at least: 3.8
 Tested up to: 4.4.2
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 
 Domain Check lets you search domain names, check SSL certificates and HTTPS, set email alerts for domain and SSL expiration, and get daily coupons.
 
@@ -97,6 +97,9 @@ A: Please use the email alert tester in the Help section within the plugin. This
 5. See the lastest coupon codes and daily deals from major domain registrars, SSL certificate providers, and hosting companies. No more clicking to shady coupon sites!
 
 == Changelog ==
+
+= 1.0.7 =
+* Bulk actions added! Bulk delete, bulk watch start, and bulk watch stop.
 
 = 1.0.6 =
 * Improved handling of URLs during SSL checks

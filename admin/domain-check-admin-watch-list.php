@@ -290,7 +290,10 @@ class DomainCheck_Watch_List extends WP_List_Table {
         }
     }
     
-    
+    function column_cb($item) {
+        return '<input type="checkbox" name="bulk_domains[]" value="' . htmlentities($item['domain_url']) . '" />';
+    }
+
     /**
      * Associative array of columns
      *
@@ -299,9 +302,9 @@ class DomainCheck_Watch_List extends WP_List_Table {
      * @return array Returns the list of columns that are a part of the list.
      * @todo add unit testing
      */
-
     function get_columns() {
         $columns = array(
+            'cb' => '<input type="checkbox" />',
             //'domain_id'    => __('Domain ID', 'sp'),
             //'domain_root' => __('Root Domain', 'sp'),
             'domain_url'    => __('Domain', 'sp'),
@@ -348,7 +351,9 @@ class DomainCheck_Watch_List extends WP_List_Table {
     public function get_bulk_actions() {
 
         $actions = array(
-            'bulk-delete' => 'Delete'
+            'bulk_delete' => 'Delete',
+            'bulk_watch_start' => 'Watch',
+            'bulk_watch_stop' => 'Stop Watching'
         );
 
         //$actions = array();
@@ -388,34 +393,19 @@ class DomainCheck_Watch_List extends WP_List_Table {
      * @todo add unit testing
      */
     public function process_bulk_action() {
- 
-        //Detect when a bulk action is being triggered...
-        if ( 'delete' === $this->current_action() ) {
 
-            // In our file that handles the request, verify the nonce.
-            $nonce = esc_attr( $_REQUEST['_wpnonce'] );
-            if ( ! wp_verify_nonce( $nonce, 'domain_check_delete_domain' ) ) {
-                die( 'Go get a life script kiddies' );
+        if (isset($_POST['bulk_domains'])) {
+            switch($this->current_action()) {
+                case 'bulk_delete':
+                    DomainCheckAdmin::callInstance('bulk_domain_delete', $_POST['bulk_domains']);
+                    break;
+                case 'bulk_watch_start':
+                    DomainCheckAdmin::callInstance('bulk_domain_watch', $_POST['bulk_domains']);
+                    break;
+                case 'bulk_watch_stop':
+                    DomainCheckAdmin::callInstance('bulk_domain_watch_stop', $_POST['bulk_domains']);
+                    break;
             }
-            else {
-                //self::delete_domain( $_GET['domain'] );
-                wp_redirect( esc_url( add_query_arg() ) );
-                exit;
-            }
-        }
-
-        // If the delete bulk action is triggered
-        if ( ( isset( $_POST['action'] ) && $_POST['action'] == 'bulk-delete' )
-            || ( isset( $_POST['action2'] ) && $_POST['action2'] == 'bulk-delete' )
-        ) {
-
-            $delete_ids = esc_sql( $_POST['bulk-delete'] );
-            // loop over the array of record IDs and delete them
-            foreach ( $delete_ids as $id ) {
-                //do the delete
-            }
-            wp_redirect( esc_url( add_query_arg() ) );
-            exit;
         }
     }
 }

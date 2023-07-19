@@ -968,6 +968,88 @@ if(!class_exists('DomainCheckAdmin')) {
 			wp_die();
 		}
 
+		public function bulk_domain_delete($domain_urls) {
+			global $wpdb;
+			foreach ($domain_urls as $domain) {
+				$wpdb->delete(
+					DomainCheck::$db_prefix . '_domains',
+					array(
+						'domain_url' => $domain
+					)
+				);
+			}
+			$message = 'Success! You deleted <strong>' . count($domain_urls) . '</strong> domains!';
+			DomainCheckAdmin::admin_notices_add($message, 'updated', null, '174-bin2');
+		}
+
+		public function bulk_domain_watch($domain_urls, $watch = 1) {
+			global $wpdb;
+			foreach ($domain_urls as $domain) {
+				$wpdb->update(
+					DomainCheck::$db_prefix . '_domains',
+					array(
+						'domain_watch' => $watch
+					),
+					array(
+						'domain_url' => $domain
+					)
+				);
+			}
+			$watch_text = 'started';
+			$icon = '208-eye-plus';
+			if (!$watch) {
+				$watch_text = 'stopped';
+				$icon = '209-eye-minus';
+			}
+			$message = 'Success! You ' . $watch_text . ' watching <strong>' . count($domain_urls) . '</strong> domains!';
+			DomainCheckAdmin::admin_notices_add($message, 'updated', null, $icon);
+		}
+
+		public function bulk_domain_watch_stop($domain_urls) {
+			$this->bulk_domain_watch($domain_urls, 0);
+		}
+
+		public function bulk_ssl_delete($domain_urls) {
+			global $wpdb;
+			foreach ($domain_urls as $domain) {
+				$wpdb->delete(
+					DomainCheck::$db_prefix . '_ssl',
+					array(
+						'domain_url' => $domain
+					)
+				);
+			}
+			$message = 'Success! You deleted <strong>' . count($domain_urls) . '</strong> SSL certificates!';
+			DomainCheckAdmin::admin_notices_add($message, 'updated', null, '174-bin2');
+		}
+
+		public function bulk_ssl_watch($domain_urls, $watch = 1) {
+			global $wpdb;
+			foreach ($domain_urls as $domain) {
+				$wpdb->update(
+					DomainCheck::$db_prefix . '_ssl',
+					array(
+						'domain_watch' => $watch
+					),
+					array(
+						'domain_url' => $domain
+					)
+				);
+			}
+			$watch_text = 'started';
+			$icon = '208-eye-plus';
+			if (!$watch) {
+				$watch_text = 'stopped';
+				$icon = '209-eye-minus';
+			}
+			$message = 'Success! You ' . $watch_text . ' watching <strong>' . count($domain_urls) . '</strong> SSL certificates!';
+			DomainCheckAdmin::admin_notices_add($message, 'updated', null, $icon);
+		}
+
+		public function bulk_ssl_watch_stop($domain_urls) {
+			$this->bulk_ssl_watch($domain_urls, 0);
+		}
+
 		public static function callInstance($method, $args) {
 			self::$instance->{$method}($args);
 		}
