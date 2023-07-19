@@ -30,9 +30,9 @@ if(!class_exists('DomainCheckConfig')) {
 
 		public function __construct() {
 			//attach prefix to options
-			foreach (static::$options as $key => $val) {
-				static::$options[static::OPTIONS_PREFIX . $key] = $val;
-				unset(static::$options[$key]);
+			foreach (self::$options as $key => $val) {
+				self::$options[self::OPTIONS_PREFIX . $key] = $val;
+				unset(self::$options[$key]);
 			}
 		}
 	}

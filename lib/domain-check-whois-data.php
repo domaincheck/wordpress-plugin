@@ -162,8 +162,8 @@ class DomainCheckWhoisData {
 	}
 
 	public static function extension_supported($extension) {
-		static::init();
-		if (isset(static::$whoisData[$extension])) {
+		self::init();
+		if (isset(self::$whoisData[$extension])) {
 			return 1;
 		} else {
 			return 0;
@@ -171,7 +171,7 @@ class DomainCheckWhoisData {
 	}
 
 	public static function get_expiration($extension, $data) {
-		static::init();
+		self::init();
 		$replaced = str_replace('[[domain_check]]', '', DomainCheckWhoisData::$whoisData[$extension]['expires']);
 		if ($replaced) {
 			$whois_arr = explode("\n", $data);
@@ -197,11 +197,11 @@ class DomainCheckWhoisData {
 	}
 
 	public static function get_status($extension, $data) {
-		static::init();
-		if (!$data || !static::$whoisData[$extension]['available']) {
+		self::init();
+		if (!$data || !self::$whoisData[$extension]['available']) {
 			return 1;
 		}
-		if (strpos($data, static::$whoisData[$extension]['available']) !== false) {
+		if (strpos($data, self::$whoisData[$extension]['available']) !== false) {
 			return 0;
 		} else {
 			return 1;
@@ -209,14 +209,14 @@ class DomainCheckWhoisData {
 	}
 
 	public static function get_data() {
-		static::init();
-		return static::$whoisData;
+		self::init();
+		return self::$whoisData;
 	}
 
 	public static function init() {
-		if (!static::$class_init) {
-			static::json_import();
-			static::$class_init = true;
+		if (!self::$class_init) {
+			self::json_import();
+			self::$class_init = true;
 		}
 	}
 
@@ -228,7 +228,7 @@ class DomainCheckWhoisData {
 			ob_end_clean();
 			$whois_data = json_decode($whois_data, true);
 			if ($whois_data && is_array($whois_data)) {
-				static::$whoisData = array_merge($whois_data, static::$whoisData);
+				self::$whoisData = array_merge($whois_data, self::$whoisData);
 			}
 		}
 	}

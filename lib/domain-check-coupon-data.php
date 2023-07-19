@@ -13,15 +13,15 @@ class DomainCheckCouponData {
 	public static $update_start = 0;
 
 	public static function get_data() {
-		static::init();
-		return static::$data;
+		self::init();
+		return self::$data;
 	}
 
 	public static function init() {
-		if (!static::$class_init) {
-			static::_db_import();
+		if (!self::$class_init) {
+			self::_db_import();
 			$coupons_found = false;
-			foreach (static::$data as $site => $site_data) {
+			foreach (self::$data as $site => $site_data) {
 				if (count($site_data['links']['link'])) {
 					$coupons_found = true;
 					break;
@@ -30,7 +30,7 @@ class DomainCheckCouponData {
 
 			//last resort
 			if (!$coupons_found) {
-				static::_json_import();
+				self::_json_import();
 			}
 		}
 	}
@@ -38,7 +38,7 @@ class DomainCheckCouponData {
 	private static function _json_import() {
 		$return_data = array();
 		//if (!is_file(dirname(__FILE__) . '/../admin/cache/coupons.json')) {
-		//	static::update();
+		//	self::update();
 		//}
 		if (is_file(dirname(__FILE__) . '/../admin/cache/coupons.json')) {
 			ob_start();
@@ -50,8 +50,8 @@ class DomainCheckCouponData {
 				$return_data = $data;
 			}
 		}
-		static::$data = $return_data;
-		return static::$data;
+		self::$data = $return_data;
+		return self::$data;
 	}
 
 	private static function _db_import() {
@@ -81,16 +81,16 @@ class DomainCheckCouponData {
 		} else {
 		}
 
-		static::$data = $return_data;
+		self::$data = $return_data;
 	}
 
 	public static function search($needle, $language = 'all', $site = null) {
-		static::init();
+		self::init();
 
 		$ret = array();
 		$needle_lower = strtolower($needle);
 		$found = 0;
-		foreach (static::$data as $coupon_site => $coupon_data) {
+		foreach (self::$data as $coupon_site => $coupon_data) {
 			$ret[$coupon_site] = array();
 			$ret[$coupon_site]['links'] = array();
 			$ret[$coupon_site]['links']['link'] = array();
@@ -114,15 +114,15 @@ class DomainCheckCouponData {
 	public static function update() {
 		global $wpdb;
 
-		if (static::$updating || (static::$update_start !== 0 && static::$update_start < (time() - 10))) {
+		if (self::$updating || (self::$update_start !== 0 && self::$update_start < (time() - 10))) {
 			return false;
 		}
 
-		static::$updating = true;
-		static::$update_start = time();
+		self::$updating = true;
+		self::$update_start = time();
 
 		//curl to get coupon data from S3...
-		$url = static::$api_url . 'coupons.json';
+		$url = self::$api_url . 'coupons.json';
 
 		$coupons_raw = null;
 		if ( function_exists('curl_init') ) {
@@ -180,17 +180,17 @@ class DomainCheckCouponData {
 				}
 			}
 
-			static::$data = $coupons_json;
+			self::$data = $coupons_json;
 
 			if (get_option(DomainCheckConfig::OPTIONS_PREFIX . 'coupons_updated')) {
 				update_option(DomainCheckConfig::OPTIONS_PREFIX . 'coupons_updated', time());
 			} else {
 				add_option(DomainCheckConfig::OPTIONS_PREFIX . 'coupons_updated', time());
 			}
-			static::$updating = false;
+			self::$updating = false;
 			return true;
 		}
-		static::$updating = false;
+		self::$updating = false;
 		return false;
 	}
 
@@ -199,8 +199,8 @@ class DomainCheckCouponData {
 	}
 
 	public static function valid_site($site) {
-		static::init();
-		if (isset(static::$data[$site])) {
+		self::init();
+		if (isset(self::$data[$site])) {
 			return true;
 		}
 		return false;

@@ -12,16 +12,16 @@ class DomainCheckWhois {
 	private static $m_init = false;
 
 	public static function init() {
-		if (!static::$m_init) {
-			if (!static::$m_data) {
-				static::$m_data = simplexml_load_file(dirname(__FILE__) . '/../db/whois-server-list.xml');
+		if (!self::$m_init) {
+			if (!self::$m_data) {
+				self::$m_data = simplexml_load_file(dirname(__FILE__) . '/../db/whois-server-list.xml');
 			}
-			static::$m_init = true;
+			self::$m_init = true;
 		}
 	}
 
 	public static function dolookup($domain, $raw = false) {
-		static::init();
+		self::init();
 		//echo 'CHECKING FOR....... ' . $domain;
 		$connectiontimeout = 5;
 		$sockettimeout = 15;
@@ -35,11 +35,11 @@ class DomainCheckWhois {
 		//	return false;
 		//}
 
-		if (!static::$m_data) {
-			static::$m_data = simplexml_load_file(dirname(__FILE__) . '/../db/whois-server-list.xml');
+		if (!self::$m_data) {
+			self::$m_data = simplexml_load_file(dirname(__FILE__) . '/../db/whois-server-list.xml');
 		}
 
-		foreach (static::$m_data as $domain_xml_obj) {
+		foreach (self::$m_data as $domain_xml_obj) {
 			$name = null;
 			$whois = null;
 			$country_code = null;
@@ -142,11 +142,11 @@ class DomainCheckWhois {
 	}
 
 	public static function getextension($domain) {
-		static::init();
+		self::init();
 		$domain = strtolower($domain);
 		$domain_len = strlen($domain);
 		$possible_tld = '';
-		foreach (static::$m_data as $domain_xml_obj) {
+		foreach (self::$m_data as $domain_xml_obj) {
 			$name = null;
 			$whois = null;
 			$country_code = null;
@@ -183,9 +183,9 @@ class DomainCheckWhois {
 	}
 
 	public static function getextensions() {
-		static::init();
+		self::init();
 		$extensions = array();
-		foreach (static::$m_data as $domain_xml_obj) {
+		foreach (self::$m_data as $domain_xml_obj) {
 			$name = null;
 			$whois = null;
 			$country_code = null;

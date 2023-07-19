@@ -256,6 +256,14 @@ class DomainCheck_Your_Domains_List extends WP_List_Table {
 
         return $out;
     }
+
+    public function column_owner( $item ) {
+        $out = '';
+        if (isset($item['owner']) && $item['owner'] && $item['owner'] != '') {
+            $out = $item['owner'];
+        }
+        return $out;
+    }
     
     /**
      * Render a column when no column specific method exists.
@@ -308,6 +316,7 @@ class DomainCheck_Your_Domains_List extends WP_List_Table {
             'domain_url'    => __('Domain', 'sp'),
             'domain_expires' => __('Expires', 'sp'),
             'domain_last_check' => __('Last Checked', 'sp'),
+            'owner' => __('Owner', 'sp'),
             //'domain_check' => __('Domain', 'sp'),
             //'ssl_check' => __('SSL', 'sp'),
             //'hosting_check' => __('Hosting'),
@@ -333,6 +342,7 @@ class DomainCheck_Your_Domains_List extends WP_List_Table {
            'domain_url' => array( 'domain_url', true ),
            'domain_expires' => array( 'domain_expires', true ),
            'status' => array( 'status', true ),
+           'owner' => array( 'owner', true ),
 
        );
  
@@ -359,7 +369,24 @@ class DomainCheck_Your_Domains_List extends WP_List_Table {
  
         return $actions;
     }
-    
+
+    /**
+     * Force columns to be hidden on first load...
+     *
+     */
+    public function set_hidden_columns() {
+
+        $hidden = get_user_option( 'manage' . $this->screen->id . 'columnshidden' );
+
+        $use_defaults = ! is_array( $hidden );
+
+        if ($use_defaults) {
+            $hidden = array( 'owner' );
+            update_user_option( get_current_user_id(), 'manage' . $this->screen->id . 'columnshidden', $hidden, true );
+        }
+
+    }
+
     /**
      * Handles data query and filter, sorting, and pagination.
      * 
@@ -367,7 +394,9 @@ class DomainCheck_Your_Domains_List extends WP_List_Table {
      * @todo add unit testing
      */
     public function prepare_items() {
- 
+
+        $this->set_hidden_columns();
+
         $this->_column_headers = $this->get_column_info();
 
         /** Process bulk action */
@@ -382,7 +411,14 @@ class DomainCheck_Your_Domains_List extends WP_List_Table {
             'per_page'    => $per_page //WE have to determine how many items to show on a page
         ) );
 
-        $this->items = self::get_domains( $per_page, $current_page );
+        $items = self::get_domains( $per_page, $current_page );
+
+        foreach ($items as $item_idx => $item) {
+            $item['domain_settings'] = ($item['domain_settings'] ? json_decode(gzuncompress($item['domain_settings']), true) : null);
+            $items[$item_idx] = $item;
+        }
+
+        $this->items = $items;
     }
     
     /**

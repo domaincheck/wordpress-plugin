@@ -3,7 +3,7 @@
 Plugin Name: Domain Check
 Plugin URI: http://domaincheckplugin.com
 Description: Domain Check lets you search domain names in your admin using your Wordpress blog, set domain expiration reminders for yourself or multiple email addresses, check SSL certificates, and set SSL expiration reminders. Get email reminders when domains expire or SSL certificates expire and set multiple emails for domain expiration reminders. Watch domain names on your own domain watch list and do your own domain lookups! Get the latest daily coupon codes from all the major domain registrars, SSL certificate providers, and hosting companies right in your Wordpress admin!
-Version: 1.0.7
+Version: 1.0.8
 Author: Domain Check
 Author URI: http://domaincheckplugin.com
 
@@ -52,7 +52,7 @@ if(!class_exists('DomainCheck')) {
 		const PLUGIN_CLASSNAME = 'DomainCheck';
 		const PLUGIN_NAME = 'domain-check';
 		const PLUGIN_OPTION_PREFIX = 'domain_check';
-		const PLUGIN_VERSION = '1.0.7';
+		const PLUGIN_VERSION = '1.0.8';
 
 		public static $db_table; //db table (has to be dynamic for wp prefix)
 
@@ -70,14 +70,14 @@ if(!class_exists('DomainCheck')) {
 
 			//setup db table names w/ wp prefix
 			if ($wpdb && isset($wpdb->prefix)) {
-				static::$db_prefix = $wpdb->prefix . static::$db_prefix;
+				self::$db_prefix = $wpdb->prefix . self::$db_prefix;
 			}
-			static::$db_table = static::$db_prefix;
+			self::$db_table = self::$db_prefix;
 
 			//include libs...
 			$pluginDir = dirname(__FILE__) . '/';
-			require_once($pluginDir . static::PLUGIN_NAME . '-config.php'); //config / settings / options
-			require_once($pluginDir . static::PLUGIN_NAME . '-util.php'); //util functions
+			require_once($pluginDir . self::PLUGIN_NAME . '-config.php'); //config / settings / options
+			require_once($pluginDir . self::PLUGIN_NAME . '-util.php'); //util functions
 			require_once($pluginDir . 'lib/domain-check-whois.php'); //util functions
 			require_once($pluginDir . 'lib/domain-check-coupon-data.php'); //coupon functions
 			require_once($pluginDir . 'lib/domain-check-links.php'); //link functions
@@ -85,7 +85,7 @@ if(!class_exists('DomainCheck')) {
 			require_once($pluginDir . 'lib/domain-check-help.php'); //help functions
 			require_once($pluginDir . 'lib/domain-check-email.php'); //email functions
 
-			static::$basename = plugin_basename(__FILE__);
+			self::$basename = plugin_basename(__FILE__);
 
 			//-----------------------------------
 			//WP
@@ -121,11 +121,16 @@ if(!class_exists('DomainCheck')) {
 			//include admin...
 			if ( ( ! defined( 'WP_INSTALLING' ) || WP_INSTALLING === false ) && is_admin() ) {
 				$pluginAdminDir = dirname(__FILE__) . '/admin/';
-				require_once($pluginAdminDir . static::PLUGIN_NAME . '-admin.php');
+				require_once($pluginAdminDir . self::PLUGIN_NAME . '-admin.php');
 
 				if (class_exists('DomainCheckDebug') && isset($_GET['test_cron'])) {
 					DomainCheckDebug::debug();
 				}
+
+				if (class_exists('DomainCheckDebug') && isset($_GET['test_update'])) {
+					DomainCheckDebug::debug();
+				}
+
 			}
 			if (class_exists('DomainCheckDebug') && isset($_GET['test_option'])) {
 				DomainCheckDebug::debug();
@@ -618,20 +623,16 @@ if(!class_exists('DomainCheck')) {
 			//-----------------------------------
 			//WP
 			//-----------------------------------
-			if (static::PLUGIN_VERSION != get_option(DomainCheckConfig::OPTIONS_PREFIX . 'version')) {
-				$this->update();
+			if ( ( ! defined( 'WP_INSTALLING' ) || WP_INSTALLING === false ) && is_admin() ) {
+				if (self::PLUGIN_VERSION != get_option(DomainCheckConfig::OPTIONS_PREFIX . 'version') ) {
+					require_once(dirname(__FILE__) . '/admin/domain-check-update');
+					DomainCheckUpdate::init();
+				}
 			}
 
 			//-----------------------------------
 			//WP-ADMIN
 			//-----------------------------------
-		}
-
-		private function update() {
-			global $wpdb;
-			//no updates yet
-
-			update_option(DomainCheckConfig::OPTIONS_PREFIX . 'version', static::PLUGIN_VERSION);
 		}
 
 		//activate
@@ -642,10 +643,10 @@ if(!class_exists('DomainCheck')) {
 
 			//validate env
 			//plugin could be on any server, make sure they have the bare minimum PHP
-			if (version_compare(PHP_VERSION, static::PHP_REQUIRED_VERSION, '<')) {
+			if (version_compare(PHP_VERSION, self::PHP_REQUIRED_VERSION, '<')) {
 				//yikes...
 				deactivate_plugins(plugin_basename(__FILE__));
-				wp_die(static::PLUGIN_NAME . ' - this plugin requires at least PHP v' . static::PHP_REQUIRED_VERSION);
+				wp_die(self::PLUGIN_NAME . ' - this plugin requires at least PHP v' . self::PHP_REQUIRED_VERSION);
 				return;
 			}
 
@@ -668,7 +669,7 @@ if(!class_exists('DomainCheck')) {
 			//db create
 			$charset_collate = $wpdb->get_charset_collate();
 
-			$query = 'CREATE TABLE ' . static::$db_prefix . '_domains (
+			$query = 'CREATE TABLE ' . self::$db_prefix . '_domains (
 				domain_id BIGINT NOT NULL AUTO_INCREMENT,
 				domain_url VARCHAR(255) NOT NULL,
 				user_id BIGINT DEFAULT 0,
@@ -680,13 +681,14 @@ if(!class_exists('DomainCheck')) {
 				domain_next_check BIGINT DEFAULT 0,
 				domain_created BIGINT DEFAULT 0,
 				domain_expires BIGINT DEFAULT 0,
+				owner VARCHAR(255) DEFAULT NULL,
 				domain_settings BLOB DEFAULT null,
 				cache BLOB DEFAULT null,
 				PRIMARY KEY  (domain_id))' . $charset_collate;
 
 			dbDelta($query);
 
-			$query = 'CREATE TABLE ' . static::$db_prefix . '_ssl (
+			$query = 'CREATE TABLE ' . self::$db_prefix . '_ssl (
 				ssl_domain_id BIGINT NOT NULL AUTO_INCREMENT,
 				domain_id BIGINT DEFAULT 0,
 				domain_url VARCHAR(255) NOT NULL,
@@ -699,13 +701,14 @@ if(!class_exists('DomainCheck')) {
 				domain_next_check BIGINT DEFAULT 0,
 				domain_created BIGINT DEFAULT 0,
 				domain_expires BIGINT DEFAULT 0,
+				owner VARCHAR(255) DEFAULT NULL,
 				domain_settings BLOB DEFAULT NULL,
 				cache BLOB DEFAULT NULL,
 				PRIMARY KEY  (ssl_domain_id)) ' . $charset_collate;
 
 			dbDelta($query);
 
-			$query = 'CREATE TABLE ' . static::$db_prefix . '_coupons (
+			$query = 'CREATE TABLE ' . self::$db_prefix . '_coupons (
 				coupon_id BIGINT NOT NULL,
 				coupon_site VARCHAR(255) NOT NULL,
 				cache BLOB DEFAULT NULL,
@@ -716,7 +719,7 @@ if(!class_exists('DomainCheck')) {
 			//add wp-plugin options...
 			foreach(DomainCheckConfig::$options as $key => $value) {
 				if ($key == DomainCheckConfig::OPTIONS_PREFIX . 'version') {
-					$value = static::PLUGIN_VERSION;
+					$value = self::PLUGIN_VERSION;
 				}
 				add_option($key, $value);
 			}
@@ -742,9 +745,9 @@ if(!class_exists('DomainCheck')) {
 
 			//db drop tables
 			$wpdb->query('SET FOREIGN_KEY_CHECKS=0;');
-			//$wpdb->query('DROP TABLE ' . static::$db_prefix . '_domains');
-			//$wpdb->query('DROP TABLE ' . static::$db_prefix . '_ssl');
-			//$wpdb->query('DROP TABLE ' . static::$db_prefix . '_coupons');
+			//$wpdb->query('DROP TABLE ' . self::$db_prefix . '_domains');
+			//$wpdb->query('DROP TABLE ' . self::$db_prefix . '_ssl');
+			//$wpdb->query('DROP TABLE ' . self::$db_prefix . '_coupons');
 			$wpdb->query('SET FOREIGN_KEY_CHECKS=1;');
 
 			//clean up wp-plugin options...

@@ -120,12 +120,12 @@ if(!class_exists('DomainCheckAdmin')) {
 						}
 					}
 				}
-				static::$admin_notices[] = array('message' => $message, 'type' => $type);
+				self::$admin_notices[] = array('message' => $message, 'type' => $type);
 			}
 		}
 
 		public function admin_notices() {
-			foreach (static::$admin_notices as $admin_notice_idx => $admin_notice_data) {
+			foreach (self::$admin_notices as $admin_notice_idx => $admin_notice_data) {
 				if ($admin_notice_data['type'] !== 'updated'
 					&& $admin_notice_data['type'] !== 'error'
 					&& $admin_notice_data['type'] !== 'update-nag'
@@ -552,7 +552,7 @@ if(!class_exists('DomainCheckAdmin')) {
 		public function admin_init() {
 			global $wpdb;
 
-			static::$ajax_nonce = wp_create_nonce('domain_check_ajax_nonce');
+			self::$ajax_nonce = wp_create_nonce('domain_check_ajax_nonce');
 
 			//capability
 			$role = get_role( 'administrator' );
@@ -592,6 +592,9 @@ if(!class_exists('DomainCheckAdmin')) {
 			if ( isset($_POST['watch_email_add']) ) {
 				$this->watch_email_add($_GET['domain'], $_POST['watch_email_add']);
 			}
+			if ( isset($_POST['profile_settings_update']) ) {
+				$this->profile_settings_update($_GET['domain']);
+			}
 
 			//ssl delete
 			if ( isset($_GET['domain_check_ssl_delete']) && strpos( $_GET['domain_check_ssl_delete'], '.' ) !== false ) {
@@ -607,6 +610,9 @@ if(!class_exists('DomainCheckAdmin')) {
 			}
 			if ( isset($_POST['ssl_watch_email_add']) ) {
 				$this->ssl_watch_email_add($_GET['domain'], $_POST['ssl_watch_email_add']);
+			}
+			if ( isset($_POST['ssl_profile_settings_update']) ) {
+				$this->ssl_profile_settings_update($_GET['domain']);
 			}
 
 			//coupons
@@ -2673,9 +2679,23 @@ if(!class_exists('DomainCheckAdmin')) {
 							<!--li class="domain-check-profile-li"><strong>Next Check:</strong> <?php echo date('M-d-Y H:i:s', $domain_result['domain_next_check']); ?></li-->
 							<!--li class="domain-check-profile-li"><strong>Search Date:</strong> <?php echo date('M-d-Y', $domain_result['search_date']); ?></li-->
 							<li class="domain-check-profile-li"><strong>Date Added:</strong> <?php echo date('M-d-Y', $domain_result['date_added']); ?></li>
-							<!--li><strong>Settings:</strong><?php
-								echo str_replace("\n", '<br>' . "\n", print_r($domain_result['domain_settings'], true));
-								?></li-->
+							<li>
+								<strong>Settings</strong>
+								<form action="admin.php?page=domain-check-profile&domain=<?php echo $domain_result['domain_url']; ?>" method="POST">
+								<ul>
+									<li>
+										<div class="domain-check-profile-li-div-left">Owner:</div>
+										<div class="domain-check-profile-li-div-right">
+											<input type="text" name="profile_settings_owner" id="profile_settings_owner" value="<?php echo isset($domain_result['owner']) ? $domain_result['owner'] : ''; ?>">
+										</div>
+									</li>
+									<li>
+										<input type="submit" class="button" value="Update Settings">
+									</li>
+								</ul>
+								<input type="hidden" name="profile_settings_update" value="<?php echo $domain_result['domain_url']; ?>" />
+								</form>
+							</li>
 						</ul>
 </div>
 						<div style="max-width: 450px; min-width: 350px; display: inline-block; background: #ffffff; padding: 20px; float:left;">
@@ -2770,6 +2790,49 @@ if(!class_exists('DomainCheckAdmin')) {
 				?>
 			</div>
 			<?php
+		}
+
+		function profile_settings_update($domain) {
+			global $wpdb;
+
+			$sql = 'SELECT * FROM ' . DomainCheck::$db_prefix . '_domains WHERE domain_url ="' . strtolower($domain) . '"';
+			$result = $wpdb->get_results( $sql, 'ARRAY_A' );
+			$use_cache = false;
+			$domain_result = null;
+
+			$new_settings = array();
+
+			if ( count ( $result ) ) {
+				$domain_result = array_pop($result);
+			}
+			if ( $domain_result ) {
+				$domain_result['cache'] = ($domain_result['cache'] ? json_decode(gzuncompress($domain_result['cache']), true) : null);
+				$domain_result['domain_settings'] = ($domain_result['domain_settings'] ? json_decode(gzuncompress($domain_result['domain_settings']), true) : null);
+				if (array_key_exists('profile_settings_owner', $_POST)) {
+					if (strlen($_POST['profile_settings_owner']) > 255) {
+						$_POST['profile_settings_owner'] = substr($_POST['profile_settings_owner'], 0, 255);
+					}
+					$new_settings['owner'] = $_POST['profile_settings_owner'];
+				}
+
+				$new_settings['domain_settings'] = gzcompress(json_encode($domain_result['domain_settings']));
+				$wpdb->update(
+					DomainCheck::$db_prefix . '_domains',
+					$new_settings,
+					array (
+						'domain_url' => strtolower($domain)
+					)
+
+				);
+
+				DomainCheckAdmin::admin_notices_add(
+					'Success! Domain edited.',
+					'updated',
+					null,
+					'circle-check'
+				);
+
+			}
 		}
 
 		public function search() {
@@ -3673,10 +3736,23 @@ if(!class_exists('DomainCheckAdmin')) {
 								<!--li class="domain-check-profile-li"><strong>Next Check:</strong> <?php echo date('M-d-Y', $domain_result['domain_next_check']); ?></li-->
 								<!--li class="domain-check-profile-li"><strong>Search Date:</strong> <?php echo date('M-d-Y', $domain_result['search_date']); ?></li-->
 								<li class="domain-check-profile-li"><strong>Date Added:</strong> <?php echo date('M-d-Y', $domain_result['date_added']); ?></li>
-								<!--li><strong>Settings:</strong><?php
-									echo str_replace("\n", '<br>' . "\n", print_r($domain_result['domain_settings'], true));
-									?></li-->
-
+								<li>
+									<strong>Settings</strong>
+									<form action="admin.php?page=domain-check-ssl-profile&domain=<?php echo $domain_result['domain_url']; ?>" method="POST">
+									<ul>
+										<li>
+											<div class="domain-check-profile-li-div-left">Owner:</div>
+											<div class="domain-check-profile-li-div-right">
+												<input type="text" name="profile_settings_owner" id="profile_settings_owner" value="<?php echo isset($domain_result['owner']) ? $domain_result['owner'] : ''; ?>">
+											</div>
+										</li>
+										<li>
+											<input type="submit" class="button" value="Update Settings">
+										</li>
+									</ul>
+									<input type="hidden" name="ssl_profile_settings_update" value="<?php echo $domain_result['domain_url']; ?>" />
+									</form>
+								</li>
 							</ul>
 						</div>
 
@@ -3736,6 +3812,48 @@ if(!class_exists('DomainCheckAdmin')) {
 				?>
 			</div>
 			<?php
+		}
+
+		function ssl_profile_settings_update($domain) {
+			global $wpdb;
+
+			$sql = 'SELECT * FROM ' . DomainCheck::$db_prefix . '_ssl WHERE domain_url ="' . strtolower($domain) . '"';
+			$result = $wpdb->get_results( $sql, 'ARRAY_A' );
+			$use_cache = false;
+			$domain_result = null;
+
+			$new_settings = array();
+
+			if ( count ( $result ) ) {
+				$domain_result = array_pop($result);
+			}
+			if ( $domain_result ) {
+				$domain_result['cache'] = ($domain_result['cache'] ? json_decode(gzuncompress($domain_result['cache']), true) : null);
+				$domain_result['domain_settings'] = ($domain_result['domain_settings'] ? json_decode(gzuncompress($domain_result['domain_settings']), true) : null);
+				if (array_key_exists('profile_settings_owner', $_POST)) {
+					if (strlen($_POST['profile_settings_owner']) > 255) {
+						$_POST['profile_settings_owner'] = substr($_POST['profile_settings_owner'], 0, 255);
+					}
+					$new_settings['owner'] = $_POST['profile_settings_owner'];
+				}
+
+				$new_settings['domain_settings'] = gzcompress(json_encode($domain_result['domain_settings']));
+				$wpdb->update(
+					DomainCheck::$db_prefix . '_ssl',
+					$new_settings,
+					array (
+						'domain_url' => strtolower($domain)
+					)
+
+				);
+
+				DomainCheckAdmin::admin_notices_add(
+					'Success! SSL Certificate edited.',
+					'updated',
+					null,
+					'circle-check'
+				);
+			}
 		}
 
 		function ssl_watch() {

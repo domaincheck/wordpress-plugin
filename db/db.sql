@@ -10,6 +10,7 @@ create table wp_domain_check_domains (
 	domain_next_check bigint default 0,
 	domain_created bigint default 0,
 	domain_expires bigint default 0,
+	owner VARCHAR(255) DEFAULT NULL,
 	domain_settings blob default null,
 	cache blob default null,
 	key(domain_id)
@@ -28,6 +29,7 @@ domain_last_check bigint default 0,
 domain_next_check bigint default 0,
 domain_created bigint default 0,
 domain_expires bigint default 0,
+owner VARCHAR(255) DEFAULT NULL,
 domain_settings blob default null,
 cache blob default null,
 key(ssl_domain_id)
