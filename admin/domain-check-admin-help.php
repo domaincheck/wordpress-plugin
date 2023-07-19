@@ -234,6 +234,7 @@ class DomainCheckAdminHelp {
 		</p>
 		<h3>Cron Info</h3>
 		<p>
+			Current Server Time: <?php echo date("F jS, Y l h:i:s A", time() ); ?><br><br>
 		<?php
 			$cron_function_exists = 'No';
 			$cron_data = array();
@@ -258,6 +259,8 @@ class DomainCheckAdminHelp {
 								$count++;
 							}
 							echo $cron_name . ': ' . ucwords( $cron_schedule ) . '<br>' . "\n";
+							echo 'Next Run: '. date("F jS, Y l h:i:s A", wp_next_scheduled( $cron_data_items_idx ) ) . "<br><br>" . "\n";
+
 						}
 					}
 				}
@@ -284,6 +287,8 @@ class DomainCheckAdminHelp {
 			$pro_version = DomainCheckPro::PLUGIN_VERSION;
 		}
 		?>
+	</div>
+	<div class="setting-div">
 		<h3>Domain Check PRO</h3>
 		<p>
 			PRO Plugin Directory Exists: <?php echo $pro_directory_exists; ?><br>
@@ -292,6 +297,72 @@ class DomainCheckAdminHelp {
 			PRO Plugin Version: <?php echo $pro_version; ?><br>
 		</p>
 	</div>
+		<script type="text/javascript">
+
+			var data_migration_active = {};
+			var data_migration_total = {};
+			var data_migration_page = {};
+			var data_migration_results = {};
+			var data_migration_timer = {};
+
+			function data_migration_start( migration_type ) {
+
+			}
+
+			function data_migration_start_callback( res ) {
+
+			}
+
+			function data_migration_confirm( message ) {
+
+			}
+
+			function data_migration_confirm_callback( res ) {
+
+			}
+
+			function data_migration_process_page( migration_type, page ) {
+
+			}
+
+			function data_migration_process_page_callback( res ) {
+
+			}
+
+			function data_migration_complete( migration_type ) {
+
+			}
+
+			function data_migration_error( message ) {
+
+			}
+
+			function data_migration_ui_update( migration_type ) {
+
+			}
+
+		</script>
+	<!--div class="setting-div">
+		<h3>Data Migration</h3>
+		<p>
+			<span style="color: #FF0000;"><strong>WARNING!!!</strong></span> - Backup your database before attempting any data migrations. Running this on medium or large installations may cause process timeouts, failed PHP processeses, database strain, database corruption, or other server related issues. If you are unsure of the implications of this please consult a developer or programmer familiar with your installation.
+			<br><br>
+			This loops through every domain or SSL entry within your database and attempts to update, upgrade, and sanitize any new, out of date, missing, or corrupted data fields from previous installations. This process does not do WHOIS lookups or SSL lookups.
+			<br><br>
+			<strong>Example Use:</strong>
+			<br>
+			Domain Check installations before version 1.0.15 did not store the domain extension, registrar, or nameserver as separate columns in the database. Upgrading old Domain Check installations to 1.0.15 or higher shows all extension, registrar, and nameservers as blank fields. Running the Domain Data Migration after upgrading fills in those blank fields with the correct extension, registrar, and nameserver for each domain.
+			<h3>Domain Data Migration</h3>
+			Migration Updates:<br>
+			Version 1.0.15 - Creation of extension, registrar, and nameserver for domains.
+			<br><br>
+			<input type="button" class="button btn" value="Start Domain Data Migration" onclick="data_migration_start( 'domain' );" />
+			<br><br>
+			<h3>SSL Data Migration</h3>
+			<input type="button" class="button btn" value="Start SSL Data Migration" onclick="data_migration_start( 'ssl' );" />
+			<br><br>
+		</p>
+	</div-->
 	<?php
 	}
 

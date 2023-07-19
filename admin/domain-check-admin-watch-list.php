@@ -285,6 +285,25 @@ class DomainCheck_Watch_List extends WP_List_Table {
 		return $out;
 	}
 
+	public function column_domain_extension( $item ) {
+		$out = '';
+
+		if ( isset( $item['domain_extension'] ) && $item['domain_extension'] ) {
+			$out .= '.' . $item['domain_extension'];
+		}
+
+		return $out;
+	}
+
+	public function column_registrar( $item ) {
+		$out = '';
+		if ( isset($item['registrar']) && $item['registrar'] && $item['registrar'] != '' ) {
+			//$out = '<a href="">' .
+			$out .= DomainCheckWhoisData::get_registrar_name( $item['registrar'] );
+		}
+		return $out;
+	}
+
 	public function column_owner( $item ) {
 		$out = '';
 		if (isset($item['owner']) && $item['owner'] && $item['owner'] != '') {
@@ -341,8 +360,10 @@ class DomainCheck_Watch_List extends WP_List_Table {
 			//'domain_id'	=> __('Domain ID', 'sp'),
 			//'domain_root' => __('Root Domain', 'sp'),
 			'domain_url'	=> __('Domain', 'sp'),
+			'domain_extension' => __( 'Extension', 'sp' ),
 			'domain_expires' => __('Expires', 'sp'),
 			'status' => __('Status', 'sp'),
+			'registrar' => __( 'Registrar', 'sp' ),
 			'owner' => __('Owner', 'sp'),
 			//'domain_check' => __('Domain', 'sp'),
 			//'ssl_check' => __('SSL', 'sp'),
@@ -367,8 +388,10 @@ class DomainCheck_Watch_List extends WP_List_Table {
 		 'domain_id' => array( 'domain_id', true ),
 		 //'domain_root' => array( 'domain_root', true ),
 		 'domain_url' => array( 'domain_url', true ),
+		 'domain_extension' => array( 'domain_extension', true ),
 		 'domain_expires' => array( 'domain_expires', true ),
 		 'status' => array( 'status', true ),
+		 'registrar' => array( 'status', true ),
 		 'owner' => array( 'owner', true )
 	 );
  

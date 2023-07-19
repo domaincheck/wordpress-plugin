@@ -50,51 +50,7 @@ class DomainCheckAdminSettings {
 
 		?>
 		<script type="text/javascript">
-			function update_setting(setting_id) {
-				var data_obj = {};
-				switch (setting_id) {
-					case 'domain_extension_favorites':
-						data_obj = {
-							action:"settings",
-							method:"domain_extension_favorites",
-							domain_extension_favorites: document.getElementById('domain-extension-favorites').value
-						};
-						break;
-					case 'email_additional_emails':
-						data_obj = {
-							action:"settings",
-							method:"email_additional_emails",
-							email_additional_emails: document.getElementById('email-additional-emails').value
-						};
-						break;
-					case 'email_primary_email':
-						data_obj = {
-							action:"settings",
-							method:"email_primary_email",
-							email_primary_email: document.getElementById('email-primary-email').value
-						};
-						break;
-					case 'coupons_primary_site':
-						data_obj = {
-							action:"settings",
-							method:"coupons_primary_site",
-							coupons_primary_site: jQuery("#coupons-primary-site" ).val()
-						};
-						break;
-				}
-				domain_check_ajax_call(
-					data_obj,
-					update_setting_callback
-				);
-			}
 
-			function update_setting_callback(data) {
-				if (!data.hasOwnProperty('error')) {
-					jQuery('#domain-check-admin-notices').append('<div class="notice updated domain-check-notice"><p>' + data.message + '</p></div>');
-				} else {
-					jQuery('#domain-check-admin-notices').append('<div class="notice error domain-check-notice"><p>' + data.error + '</p></div>');
-				}
-			}
 		</script>
 		<div class="wrap">
 			<h2>
@@ -161,7 +117,7 @@ class DomainCheckAdminSettings {
 				</div>
 				<div class="setting-div">
 					<div class="setting-input">
-						<h4>Primary Coupon Site</h4>
+						<h3>Primary Coupon Site</h3>
 						<p class="p">
 							This should be set to the registrar you regularly use or the site you most. Your coupon site controls links in domain searches, domain expiration alerts, email links, and dashboard links for easy clicking.
 						</p>

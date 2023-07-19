@@ -13,6 +13,13 @@ if(!class_exists('DomainCheckUtil')) {
 		public static function cli($message) {
 			echo $message . "\n";
 		}
+
+		public static function debug($message, $data = 'domaincheckdefault' ) {
+			if ( $data === 'domaincheckdefault' ) {
+				$data = null;
+			}
+			error_log( $message . ' ' . print_r($data, true) . "\n");
+		}
 	}
 
 	$domain_check_util = new DomainCheckUtil();

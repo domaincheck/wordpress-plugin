@@ -1,6 +1,7 @@
 create table wp_domain_check_domains (
 	domain_id bigint not null auto_increment,
 	domain_url varchar(255) not null,
+	domain_extension varchar(255) not null,
 	user_id bigint default 0,
 	status varchar(255),
 	date_added bigint default 0,
@@ -10,6 +11,9 @@ create table wp_domain_check_domains (
 	domain_next_check bigint default 0,
 	domain_created bigint default 0,
 	domain_expires bigint default 0,
+	registrar int(11) default 0,
+	nameserver VARCHAR(255) DEFAULT NULL,
+	autorenew tinyint DEFAULT 0,
 	owner VARCHAR(255) DEFAULT NULL,
 	domain_settings blob default null,
 	cache blob default null,

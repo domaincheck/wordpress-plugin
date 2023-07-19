@@ -117,6 +117,7 @@ class DomainCheckSearch {
 				$tld = substr($domain_root, $dot + 1);
 
 				$whois = DomainCheckWhois::dolookup($domain_root);
+
 				if (!isset($whois['error'])) {
 					$ajax_response = null;
 					$status = 0;
@@ -160,6 +161,7 @@ class DomainCheckSearch {
 						$valarr = array(
 							'domain_id' => null,
 							'domain_url' => $search,
+							'domain_extension' => $whois['extension'],
 							'user_id' => 0,
 							'status' => $status,
 							'date_added' => time(),
@@ -168,6 +170,8 @@ class DomainCheckSearch {
 							'domain_last_check' => time(),
 							'domain_next_check' => 0,
 							'domain_expires' => $expires,
+							'registrar' => $whois['registrar'],
+							'nameserver' => $whois['nameserver'],
 							'domain_settings' => null,
 							'cache' => gzcompress(json_encode($whois)),
 						);
@@ -188,6 +192,9 @@ class DomainCheckSearch {
 							'search_date' => time(),
 							'domain_created' => 0,
 							'domain_last_check' => time(),
+							'registrar' => $whois['registrar'],
+							'nameserver' => $whois['nameserver'],
+							'domain_extension' => $whois['extension'],
 							'domain_expires' => $expires,
 							'cache' => gzcompress(json_encode($whois)),
 						);

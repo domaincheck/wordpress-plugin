@@ -251,6 +251,14 @@ class DomainCheckAdminHeader {
 				width: 100%;
 			}
 
+			#the-list > tr:hover {
+				background-color: #e9e9e9;
+			}
+
+			.autorenew-link {
+				cursor: pointer;
+			}
+
 			@media (min-width: 782px) {
 				.hidden-desktop {
 					display: none;
@@ -325,6 +333,10 @@ class DomainCheckAdminHeader {
 
 				.hidden-mobile {
 					display: none;
+				}
+
+				#screen-meta, #screen-meta-links  {
+					display: block !important;
 				}
 
 			}
@@ -444,6 +456,7 @@ class DomainCheckAdminHeader {
 				}
 			);
 		}
+
 		function watch_trigger_callback(data) {
 			var htmlDomain = data.domain.replace(/\./g, '-');
 			var iconDir = '<?php echo plugins_url('/images/icons/color/', __FILE__); ?>';
@@ -483,6 +496,24 @@ class DomainCheckAdminHeader {
 			} else if (data.status == 1) {
 				jQuery('#domain-check-admin-notices').append('<div class="notice error domain-check-notice"><p>' + data.message + '</p></div>');
 				jQuery('#status-link-' + htmlDomain).text('Taken');
+			}
+		}
+
+		function autorenew_trigger_callback(data) {
+			var htmlDomain = data.domain.replace(/\./g, '-');
+			var iconDir = '<?php echo plugins_url('/images/icons/color/', __FILE__); ?>';
+			if ( data.autorenew ) {
+				jQuery('#domain-check-admin-notices').append('<div class="notice updated domain-check-notice"><p>' + data.message + '</p></div>');
+				//jQuery('#watch-link-' + htmlDomain).text('Stop Watching');
+				var replace = '<img id="autorenew-image-' + htmlDomain + '" src="' + iconDir + 'infinity-green.svg" class="svg svg-fill svg-icon-table svg-icon-table-links svg-fill-updated">';
+				jQuery( '#autorenew-image-' + htmlDomain ).replaceWith( replace );
+				jQuery( '#autorenew-text-' + htmlDomain ).text( 'on' );
+			} else {
+				jQuery('#domain-check-admin-notices').append('<div class="notice error domain-check-notice"><p>' + data.message + '</p></div>');
+				//jQuery('#watch-link-' + htmlDomain).text('Watch');
+				var replace = '<img id="autorenew-image-' + htmlDomain + '" src="' + iconDir + 'infinity-disabled.svg" class="svg svg-fill svg-icon-table svg-icon-table-links svg-fill-disabled">';
+				jQuery( '#autorenew-image-' + htmlDomain ).replaceWith( replace );
+				jQuery( '#autorenew-text-' + htmlDomain ).text( 'off' );
 			}
 		}
 
@@ -536,6 +567,63 @@ class DomainCheckAdminHeader {
 				document.getElementById( elemId ).style.display = displayStyle;
 			} else {
 				document.getElementById( elemId ).style.display = 'none';
+			}
+		}
+
+		function update_setting(setting_id) {
+			var data_obj = {
+				action: "settings",
+				method: setting_id
+			};
+			data_obj[setting_id] = jQuery("#" + setting_id.replace( /_/g, '-' ) ).val();
+			switch (setting_id) {
+				case 'domain_extension_favorites':
+					data_obj = {
+						action:"settings",
+						method:"domain_extension_favorites",
+						domain_extension_favorites: document.getElementById('domain-extension-favorites').value
+					};
+					break;
+				case 'email_additional_emails':
+					data_obj = {
+						action:"settings",
+						method:"email_additional_emails",
+						email_additional_emails: document.getElementById('email-additional-emails').value
+					};
+					break;
+				case 'email_primary_email':
+					data_obj = {
+						action:"settings",
+						method:"email_primary_email",
+						email_primary_email: document.getElementById('email-primary-email').value
+					};
+					break;
+				case 'coupons_primary_site':
+					data_obj = {
+						action:"settings",
+						method:"coupons_primary_site",
+						coupons_primary_site: jQuery("#coupons-primary-site" ).val()
+					};
+					break;
+				case 'email_schedule_cron':
+					data_obj = {
+						action:"settings",
+						method:"email_schedule_cron",
+						email_schedule_cron: jQuery("#email-schedule-cron" ).val()
+					};
+					break;
+			}
+			domain_check_ajax_call(
+				data_obj,
+				update_setting_callback
+			);
+		}
+
+		function update_setting_callback(data) {
+			if (!data.hasOwnProperty('error')) {
+				jQuery('#domain-check-admin-notices').append('<div class="notice updated domain-check-notice"><p>' + data.message + '</p></div>');
+			} else {
+				jQuery('#domain-check-admin-notices').append('<div class="notice error domain-check-notice"><p>' + data.error + '</p></div>');
 			}
 		}
 		</script>

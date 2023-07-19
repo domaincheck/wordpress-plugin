@@ -6,8 +6,8 @@ License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 Tags: admin, multisite, domain, ssl, https, hosting, email, admin, alerts, coupons, deals, dashboard, expiration, alert, notification, dashboard, domain checker, domain search, domain mapping
 Requires at least: 3.8
-Tested up to: 4.7.2
-Stable tag: 1.0.14
+Tested up to: 4.7.3
+Stable tag: 1.0.15
 
 Domain Check lets you search domain names, check SSL certificates and HTTPS, set email alerts for domain and SSL expiration, and get daily coupons.
 
@@ -77,6 +77,10 @@ A: No. Domain Check only allows you to search and monitor domain names it does n
 = Q: Does Domain Check give people access to my GoDaddy / Bluehost / Hostmonster / etc. account? =
 A: No. Domain Check does not require any logins, passwords, or access to any of your domain registrar, SSL certificate provider, or hosting company.
 
+= Q: Does Domain Check let me change domain autorenew for my domains? =
+A: No. Domain Check only allows you to search and monitor domains and does not allow you to change anything about your autorenew status.
+
+
 = Q: One of the coupon codes or deals I want does not work or expired, what should I do? =
 A: Be sure to go to the Coupons page and refresh the coupons to make sure you have the most up-to-date coupons available. If it still is available but the site is not giving you the coupon please contact their custom support directly.
 
@@ -86,7 +90,7 @@ A: Domain Check is updated with new extensions and TLDs as they become available
 = Q: Does Domain Check track my domain searches and lookups and send them to a third party or make the public? =
 A: No. Domain Check does the opposite and allows you to do all your domain name searching privately from your own server and blog. Using Domain Check is a more secure way to search domain names and prevent domain name frontrunning. Domain Check is the best domain checker because it is your domain checker!
 
-= Q: My domain expriation emails alerts, domain watch alerts, or SSL expiration alerts are not working? =
+= Q: My domain expiration emails alerts, domain watch alerts, or SSL expiration alerts are not working? =
 A: Please use the email alert tester in the Help section within the plugin. This will allow you to test sending an email to any email address. If you still do not see the email message please check your Spam inbox. If you see any emails from Domain Check in your spam inbox be to mark them as not spam. Make sure to accept all emails from your blog's primary admin email address.
 
 == Screenshots ==
@@ -97,6 +101,14 @@ A: Please use the email alert tester in the Help section within the plugin. This
 5. See the lastest coupon codes and daily deals from major domain registrars, SSL certificate providers, and hosting companies. No more clicking to shady coupon sites!
 
 == Changelog ==
+
+= 1.0.15 =
+* Better support for domain extension!
+* Introduces domain registrar! Uses the official registrar IANA ID and registrar name! Know exactly which domain is at each registrar for better domain management.
+* Introduces domain nameservers! Keep track of where you're hosting each of your domains.
+* Introduces autorenew! Mark if your domains are up for autorenew so you know at a glance which domains need your attention and which domains might expire.
+* UI improvements including Screen Options on mobile & highlight list rows on hover!
+* Better information about wp_cron jobs and the current server time.
 
 = 1.0.14 =
 * Bugfix: Unable to add new domains to Your Domains from the Your Domains search box fixed

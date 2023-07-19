@@ -13,6 +13,8 @@ class DomainCheckUpdate {
 
 		if ($current_version != DomainCheck::PLUGIN_VERSION && version_compare($current_version, DomainCheck::PLUGIN_VERSION) === (-1) ) {
 			//error_log('upgrading version ' . $current_version . ' to ' . DomainCheck::PLUGIN_VERSION);
+
+			//1.0.8 releaase
 			if (version_compare($current_version, '1.0.8') === (-1)) {
 				if (!self::column_exists(DomainCheck::$db_prefix . '_domains', 'owner')) {
 					//column does not exist...
@@ -22,6 +24,30 @@ class DomainCheckUpdate {
 				if (!self::column_exists(DomainCheck::$db_prefix . '_ssl', 'owner')) {
 					//column does not exist...
 					$sql = 'ALTER TABLE ' . DomainCheck::$db_prefix . '_ssl ADD COLUMN owner varchar(255) DEFAULT NULL AFTER domain_expires';
+					$wpdb->query($sql);
+				}
+			}
+
+			//1.0.15 release
+			if ( version_compare($current_version, '1.0.15') === (-1) ) {
+				if ( !self::column_exists( DomainCheck::$db_prefix . '_domains', 'domain_extension' ) ) {
+					//column does not exist...
+					$sql = 'ALTER TABLE ' . DomainCheck::$db_prefix . '_domains ADD COLUMN domain_extension varchar(255) DEFAULT null AFTER domain_url';
+					$wpdb->query($sql);
+				}
+				if ( !self::column_exists( DomainCheck::$db_prefix . '_domains', 'registrar' ) ) {
+					//column does not exist...
+					$sql = 'ALTER TABLE ' . DomainCheck::$db_prefix . '_domains ADD COLUMN registrar int(11) DEFAULT 0 AFTER domain_expires';
+					$wpdb->query($sql);
+				}
+				if ( !self::column_exists( DomainCheck::$db_prefix . '_domains', 'nameserver' ) ) {
+					//column does not exist...
+					$sql = 'ALTER TABLE ' . DomainCheck::$db_prefix . '_domains ADD COLUMN nameserver varchar(255) DEFAULT NULL AFTER registrar';
+					$wpdb->query($sql);
+				}
+				if ( !self::column_exists( DomainCheck::$db_prefix . '_domains', 'autorenew' ) ) {
+					//column does not exist...
+					$sql = 'ALTER TABLE ' . DomainCheck::$db_prefix . '_domains ADD COLUMN autorenew TINYINT DEFAULT 0 NOT NULL AFTER nameserver';
 					$wpdb->query($sql);
 				}
 			}

@@ -213,7 +213,7 @@ class DomainCheck_Search_List extends WP_List_Table {
 				}
 			}
 		} else {
-			$out = 'n/a';
+			$out = '';
 			//$out = '';
 		}
 		return $out;
@@ -306,6 +306,33 @@ class DomainCheck_Search_List extends WP_List_Table {
 		return $out;
 	}
 
+	public function column_domain_extension( $item ) {
+		$out = '';
+
+		if ( isset( $item['domain_extension'] ) && $item['domain_extension'] ) {
+			$out .= '.' . $item['domain_extension'];
+		}
+
+		return $out;
+	}
+
+	public function column_registrar( $item ) {
+		$out = '';
+		if ( isset($item['registrar']) && $item['registrar'] && $item['registrar'] != '' ) {
+			//$out = '<a href="">' .
+			$out .= DomainCheckWhoisData::get_registrar_name( $item['registrar'] );
+		}
+		return $out;
+	}
+
+	public function column_nameserver( $item ) {
+		$out = '';
+		if ( isset( $item['nameserver'] ) && $item['nameserver'] && $item['nameserver'] != '') {
+			$out = $item['nameserver'];
+		}
+		return $out;
+	}
+
 	public function column_owner( $item ) {
 		$out = '';
 		if (isset($item['owner']) && $item['owner'] && $item['owner'] != '') {
@@ -363,8 +390,11 @@ class DomainCheck_Search_List extends WP_List_Table {
 			//'domain_id'	=> __('Domain ID', 'sp'),
 			//'domain_root' => __('Root Domain', 'sp'),
 			'domain_url'	=> __('Domain', 'sp'),
+			'domain_extension' => __( 'Extension', 'sp' ),
 			'domain_expires' => __('Expires', 'sp'),
 			'status' => __('Status', 'sp'),
+			'registrar' => __('Registrar', 'sp'),
+			//'nameserver' => __( 'Nameserver', 'sp' ),
 			'search_date'   => __('Last Searched', 'sp'),
 			'owner' => __('Owner', 'sp'),
 			//'domain_check' => __('Domain', 'sp'),
@@ -391,6 +421,9 @@ class DomainCheck_Search_List extends WP_List_Table {
 		  //'domain_root' => array( 'domain_root', true ),
 		  'domain_url' => array( 'domain_url', true ),
 		  'domain_expires' => array( 'domain_expires', true ),
+		  'domain_extension' => array( 'domain_extension', true ),
+		  'registrar' => array( 'registrar', true ),
+		  'nameserver' => array( 'nameserver', true ),
 		  'owner' => array ('owner', true),
 		  'status' => array( 'status', true ),
 	  );

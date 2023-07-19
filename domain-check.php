@@ -3,7 +3,7 @@
 Plugin Name: Domain Check
 Plugin URI: http://domaincheckplugin.com
 Description: Domain Check lets you search domain names in your admin using your Wordpress blog, set domain expiration reminders for yourself or multiple email addresses, check SSL certificates, and set SSL expiration reminders. Get email reminders when domains expire or SSL certificates expire and set multiple emails for domain expiration reminders. Watch domain names on your own domain watch list and do your own domain lookups! Get the latest daily coupon codes from all the major domain registrars, SSL certificate providers, and hosting companies right in your Wordpress admin!
-Version: 1.0.14
+Version: 1.0.15
 Author: Domain Check
 Author URI: http://domaincheckplugin.com
 
@@ -52,7 +52,7 @@ if(!class_exists('DomainCheck')) {
 		const PLUGIN_CLASSNAME = 'DomainCheck';
 		const PLUGIN_NAME = 'domain-check';
 		const PLUGIN_OPTION_PREFIX = 'domain_check';
-		const PLUGIN_VERSION = '1.0.14';
+		const PLUGIN_VERSION = '1.0.15';
 
 		public static $db_table; //db table (has to be dynamic for wp prefix)
 
@@ -63,6 +63,8 @@ if(!class_exists('DomainCheck')) {
 		//public static $add_script = false;
 
 		private $version_field_name = 'domain_check_version';
+
+		private static $is_pro = 0;
 
 		//constructor for wp-plugin object
 		public function __construct() {
@@ -84,8 +86,15 @@ if(!class_exists('DomainCheck')) {
 			require_once($pluginDir . 'lib/domain-check-search.php'); //search functions
 			require_once($pluginDir . 'lib/domain-check-help.php'); //help functions
 			require_once($pluginDir . 'lib/domain-check-email.php'); //email functions
+			require_once($pluginDir . 'lib/domain-check-cron.php'); //cron functions
 
 			self::$basename = plugin_basename(__FILE__);
+
+			//pro plugin is active
+			//in instantiated class but referencing by static
+			if ( class_exists( 'DomainCheckPro' ) ) {
+				self::$is_pro = 1;
+			}
 
 			//-----------------------------------
 			//WP
@@ -108,8 +117,10 @@ if(!class_exists('DomainCheck')) {
 				//add_action('wp_enqueue_scripts', array(&$this, 'enqueue_styles'));
 				//add_action('wp_footer', array(&$this, 'enqueue_scripts'));
 			}
+
 			//filters
 			//add_filter('post_class', array( &$this, 'add_fancy_product_class'));
+			add_filter( 'cron_schedules', array( 'DomainCheckCron', 'add_intervals' ) );
 
 			//language
 			//load_plugin_textdomain('mystyle-wp-plugin', false, dirname(plugin_basename( __FILE__)) . '/language/');
@@ -672,6 +683,7 @@ if(!class_exists('DomainCheck')) {
 			$query = 'CREATE TABLE ' . self::$db_prefix . '_domains (
 				domain_id BIGINT NOT NULL AUTO_INCREMENT,
 				domain_url VARCHAR(255) NOT NULL,
+				domain_extension VARCHAR(255) DEFAULT NULL,
 				user_id BIGINT DEFAULT 0,
 				status VARCHAR(255),
 				date_added BIGINT DEFAULT 0,
@@ -682,6 +694,9 @@ if(!class_exists('DomainCheck')) {
 				domain_created BIGINT DEFAULT 0,
 				domain_expires BIGINT DEFAULT 0,
 				owner VARCHAR(255) DEFAULT NULL,
+				registrar VARCHAR(255) DEFAULT NULL,
+				nameserver VARCHAR(255) DEFAULT NULL,
+				autorenew VARCHAR(255) DEFAULT NULL,
 				domain_settings BLOB DEFAULT null,
 				cache BLOB DEFAULT null,
 				PRIMARY KEY  (domain_id))' . $charset_collate;
@@ -753,6 +768,18 @@ if(!class_exists('DomainCheck')) {
 			//clean up wp-plugin options...
 			foreach(DomainCheckConfig::$options as $key => $value) {
 				delete_option($key);
+			}
+		}
+
+		public static function is_pro() {
+			return self::$is_pro;
+		}
+
+		public static function pro($class, $method, $data) {
+			if ( self::$is_pro ) {
+				return DomainCheckPro::filter($class, $method, $data);
+			} else {
+				return null;
 			}
 		}
 	}

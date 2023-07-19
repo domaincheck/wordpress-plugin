@@ -95,8 +95,18 @@ class DomainCheckAdminAjax {
 						}
 					}
 					break;
+				case 'email_schedule_cron':
+					if (isset($_POST['email_schedule_cron'])) {
+						$schedule = $_POST['email_schedule_cron'];
+						$ret = DomainCheckCron::cron_schedule( 'domain_check_cron_email', $schedule );
+						if ( $ret ) {
+							self::ajax_success( array( 'message' => 'Success! Setting updated!' ) );
+						} else {
+							self::ajax_success( array( 'message' => 'Error! Schedule not updated!' ) );
+						}
+					}
+					break;
 				case 'email_test':
-
 					if (isset($_POST['email_address'])) {
 						$email = trim($_POST['email_address']);
 						$email = sanitize_email($email);

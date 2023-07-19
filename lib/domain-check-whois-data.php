@@ -6,9 +6,11 @@ if (!defined('ABSPATH') && php_sapi_name() !== 'cli') {
 
 class DomainCheckWhoisData {
 
-	private static $class_init = false;
+	private static $class_init = false; //have we initialized the class and imported data from the files in /db
 
-	public static $whoisDataXml = null;
+	public static $whoisDataXml = null; //the imported whois XML data
+
+	public static $registrarData = array(); //the imported whois XML data
 
 	//someone is inevitably going to try to copy & paste this
 	//I made this by hand so plz pause for a moment of silence, programmer to programmer, for how much work this took
@@ -25,6 +27,9 @@ class DomainCheckWhoisData {
 			'available' => 'Not found: ',
 			'expires' => 'Domain Expiration Date:',
 			'expires_func' => 'co'
+		),
+		'buzz' => array(
+			'available' => 'No Data Found',
 		),
 		'ca' => array(
 			'available' => 'Domain status:         available',
@@ -399,11 +404,17 @@ class DomainCheckWhoisData {
 	}
 
 	public static function get_status($extension, $data) {
+
 		self::init();
-		if (!$data || !isset(self::$whoisData[$extension]['available']) || !self::$whoisData[$extension]['available']) {
+		if (!$data) {
 			return 1;
 		}
-		$available = strtolower(self::$whoisData[$extension]['available']);
+
+		$available = 'not found';
+		if (isset(self::$whoisData[$extension]['available'])  && self::$whoisData[$extension]['available']) {
+			$available = strtolower(self::$whoisData[$extension]['available']);
+		}
+
 		$data = strtolower($data);
 		$res = mb_strpos($data, $available);
 
@@ -419,12 +430,86 @@ class DomainCheckWhoisData {
 		return self::$whoisData;
 	}
 
+	public static function get_registrar($extension, $data) {
+		self::init();
+
+		$ret = null;
+
+		$replaced = null;
+
+		if ( isset( DomainCheckWhoisData::$whoisData[$extension]['registrar_check'] ) ) {
+			$replaced = str_replace('[[domain_check]]', '', DomainCheckWhoisData::$whoisData[$extension]['registrar_check']);
+			$replaced = trim($replaced);
+		}
+
+		//best guess is standard whois format...
+		if ( strpos( $data, 'Sponsoring Registrar IANA ID:' ) !== false && $replaced === null ) {
+			$replaced = 'Sponsoring Registrar IANA ID:';
+		}
+		if ( strpos( $data, 'Registrar IANA ID:' ) !== false && $replaced === null ) {
+			$replaced = 'Registrar IANA ID:';
+		}
+
+		$whois_arr = explode("\n", $data);
+		foreach ( $whois_arr as $whois_arr_idx => $whois_arr_line ) {
+			if ( $replaced && strpos($whois_arr_line, $replaced) !== false ) {
+				$ret = trim( str_replace( $replaced, '', $whois_arr_line ) );
+				break;
+			}
+		}
+
+		return $ret;
+	}
+
+	public static function get_registrar_name( $id ) {
+		self::init();
+
+		if ( isset( self::$registrarData[$id] ) ) {
+			return self::$registrarData[$id]['Registrar Name'];
+		}
+
+		return null;
+	}
+
+	public static function get_registrar_link( $id ) {
+
+	}
+
+
+	public static function get_nameserver($extension, $data) {
+		$ret = null;
+
+		$replaced = null;
+
+		if ( isset( DomainCheckWhoisData::$whoisData[$extension]['nameserver'] ) ) {
+			$replaced = str_replace('[[domain_check]]', '', DomainCheckWhoisData::$whoisData[$extension]['nameserver']);
+			$replaced = trim($replaced);
+		}
+
+		//best guess is standard whois format...
+		if ( strpos( $data, 'Name Server:' ) !== false ) {
+			$replaced = 'Name Server:';
+		}
+
+		$whois_arr = explode("\n", $data);
+		foreach ( $whois_arr as $whois_arr_idx => $whois_arr_line ) {
+			if ( $replaced && strpos($whois_arr_line, $replaced) !== false ) {
+				$ret = trim( str_replace( $replaced, '', $whois_arr_line ) );
+				break;
+			}
+		}
+
+		return $ret;
+	}
+
 	public static function init() {
 		if (!self::$class_init) {
 
-			self::xml_import();
+			self::xml_import(); //imports domain extension XML data file
 
-			self::json_import();
+			self::json_import(); //imports domain extension data file
+
+			self::json_import_registrar(); //imports registrar ID file
 
 			ksort(self::$whoisData);
 
@@ -433,6 +518,7 @@ class DomainCheckWhoisData {
 	}
 
 	public static function xml_import() {
+
 		if (!self::$whoisDataXml) {
 			self::$whoisDataXml = simplexml_load_file(dirname(__FILE__) . '/../db/whois-server-list.xml');
 		}
@@ -572,6 +658,24 @@ class DomainCheckWhoisData {
 						self::$whoisData[$extension]['expires'] = $extension_data['expires'];
 					}
 					//self::$whoisData = array_merge($whois_data, self::$whoisData);
+				}
+			}
+		}
+	}
+
+	public static function json_import_registrar() {
+		if ( is_file( dirname( __FILE__ ) . '/../db/registrar.json' ) ) {
+			ob_start();
+			include( dirname( __FILE__ ) . '/../db/registrar.json' );
+			$data = ob_get_contents();
+			ob_end_clean();
+			$data = json_decode( $data, true);
+			if ( $data && is_array( $data ) ) {
+				//TODO - just convert the data file
+				foreach ( $data as $data_data_idx => $data_data ) {
+					$data_data['id'] = $data_data['ID'];
+					unset($data_data['ID']);
+					self::$registrarData[$data_data['id']] = $data_data;
 				}
 			}
 		}

@@ -71,7 +71,10 @@ if(!class_exists('DomainCheckAdmin')) {
 
 
 				add_action( 'wp_ajax_watch_trigger', array(&$this, 'watch_trigger' ) );
+
 				add_action( 'wp_ajax_status_trigger', array(&$this, 'status_trigger' ) );
+
+				add_action( 'wp_ajax_autorenew_trigger', array(&$this, 'autorenew_trigger' ) );
 
 				add_action( 'wp_ajax_ssl_watch_trigger', array(&$this, 'ssl_watch_trigger' ) );
 
@@ -489,6 +492,10 @@ if(!class_exists('DomainCheckAdmin')) {
 
 		public static function ajax_error($message, $code = 0) {
 			DomainCheckAdminAjax::ajax_error($message, $code);
+		}
+
+		public function autorenew_trigger( $domain, $ajax = 0 ) {
+			DomainCheckAdminProfile::autorenew_trigger($domain, $ajax);
 		}
 
 		public function bulk_domain_delete($domain_urls) {

@@ -74,14 +74,18 @@ class DomainCheckWhois {
 				'data' => $data,
 				'extension' => $extension,
 				'status' => 0,
-				'domain_expires' => 0
+				'domain_expires' => 0,
+				'registrar' => null,
+				'nameserver' => null
 			);
 
 			//if we generated pattern before
 			$ret['status'] = DomainCheckWhoisData::get_status($extension, $data);
 
 			if ($ret['status']) {
-				$ret['domain_expires'] = DomainCheckWhoisData::get_expiration($extension, $data);
+				$ret['domain_expires'] = DomainCheckWhoisData::get_expiration( $extension, $data );
+				$ret['registrar'] = DomainCheckWhoisData::get_registrar( $extension, $data );
+				$ret['nameserver'] = DomainCheckWhoisData::get_nameserver( $extension, $data );
 			}
 
 			return $ret;

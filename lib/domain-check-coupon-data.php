@@ -11,6 +11,7 @@ class DomainCheckCouponData {
 	public static $api_url = 'http://static.domaincheckplugin.com/';
 	public static $updating = false;
 	public static $update_start = 0;
+	public static $bitly_links = array();
 
 	public static function get_data() {
 		self::init();
@@ -208,4 +209,18 @@ class DomainCheckCouponData {
 		}
 		return false;
 	}
+
+	public static function get_coupon_link_domain( $domain ) {
+
+		$coupon_link = 'http://www.anrdoezrs.net/interactive?domainToCheck='
+			. urlencode($domain)
+			. '&tld=' . urlencode('.com')
+			. '&aid=10451087'
+			. '&pid=7922728'
+			. '&cvosrc=' . urlencode('affiliate.cj.7922728')
+			. '&url=' . urlencode('https://www.godaddy.com/domains/searchresults.aspx?isc=cjcdomsb3');
+
+		return $coupon_link;
+	}
+
 }

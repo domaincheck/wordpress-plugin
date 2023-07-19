@@ -18,6 +18,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  * @since 0.1.0
  */
 class DomainCheck_Your_Domains_List extends WP_List_Table {
+
 	/**
 	* Constructor.
 	*/
@@ -154,6 +155,67 @@ class DomainCheck_Your_Domains_List extends WP_List_Table {
 		return $out;
 	}
 
+	public function column_domain_extension( $item ) {
+		$out = '';
+
+		if ( isset( $item['domain_extension'] ) && $item['domain_extension'] ) {
+			$out .= '.' . $item['domain_extension'];
+		}
+
+		return $out;
+	}
+
+	public function column_registrar( $item ) {
+		$out = '';
+		if ( isset($item['registrar']) && $item['registrar'] && $item['registrar'] != '' ) {
+			//$out = '<a href="">' .
+			$out .= DomainCheckWhoisData::get_registrar_name( $item['registrar'] );
+		}
+		return $out;
+	}
+
+	public function column_nameserver( $item ) {
+		$out = '';
+		if ( isset( $item['nameserver'] ) && $item['nameserver'] && $item['nameserver'] != '') {
+			$out = $item['nameserver'];
+		}
+		return $out;
+	}
+
+	public function column_autorenew( $item ) {
+		$out = '';
+
+		if ( array_key_exists( 'autorenew', $item ) ) {
+			$item['autorenew'] = (int)$item['autorenew'];
+			if ( $item['autorenew'] && $item['autorenew'] !== 0 ) {
+				//yes
+				$fill = 'green';
+				$text = 'on';
+				$alt_text = 'Autorenew is On. Click to turn Off.';
+			} else {
+				//no
+				$text = 'off';
+				$fill = 'disabled';
+				$alt_text = 'Autorenew is Off. Click to turn On.';
+			}
+			$out .= '<a id="autorenew-link-' . str_replace('.', '-', $item['domain_url']) . '" class="autorenew-link" alt="'.$alt_text.'" title="'.$alt_text.'" onclick="domain_check_ajax_call({\'action\':\'autorenew_trigger\', \'domain\':\'' . $item['domain_url'] . '\'}, autorenew_trigger_callback);">'
+			. '<img id="autorenew-image-' . str_replace('.', '-', $item['domain_url']) . '" src="' . plugins_url('/images/icons/color/infinity-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-' . $fill . '">'
+			. '<span id="autorenew-text-' . str_replace('.', '-', $item['domain_url']) . '">' . $text . '</span>'
+			. '</a>';
+
+			//$out = '<img src="' . plugins_url('/images/icons/color/infinity-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">';
+		}
+		return $out;
+	}
+
+	public function column_owner( $item ) {
+		$out = '';
+		if (isset($item['owner']) && $item['owner'] && $item['owner'] != '') {
+			$out = $item['owner'];
+		}
+		return $out;
+	}
+
 	/**
 	* Method for thumbnail column
 	*
@@ -283,14 +345,6 @@ class DomainCheck_Your_Domains_List extends WP_List_Table {
 
 		return $out;
 	}
-
-	public function column_owner( $item ) {
-		$out = '';
-		if (isset($item['owner']) && $item['owner'] && $item['owner'] != '') {
-			$out = $item['owner'];
-		}
-		return $out;
-	}
 	
 	/**
 	* Render a column when no column specific method exists.
@@ -341,9 +395,14 @@ class DomainCheck_Your_Domains_List extends WP_List_Table {
 			//'domain_id'	=> __('Domain ID', 'sp'),
 			//'domain_root' => __('Root Domain', 'sp'),
 			'domain_url'	=> __('Domain', 'sp'),
+			'domain_extension'	=> __('Extension', 'sp'),
 			'domain_expires' => __('Expires', 'sp'),
 			'domain_last_check' => __('Last Checked', 'sp'),
+			'registrar' => __('Registrar', 'sp'),
+			'nameserver' => __('Nameserver', 'sp'),
+			'autorenew' => __('Autorenew', 'sp'),
 			'owner' => __('Owner', 'sp'),
+			//'notes' => __('Notes', 'sp'),
 			//'domain_check' => __('Domain', 'sp'),
 			//'ssl_check' => __('SSL', 'sp'),
 			//'hosting_check' => __('Hosting'),
@@ -367,10 +426,13 @@ class DomainCheck_Your_Domains_List extends WP_List_Table {
 		  'domain_id' => array( 'domain_id', true ),
 		  //'domain_root' => array( 'domain_root', true ),
 		  'domain_url' => array( 'domain_url', true ),
+		  'domain_extension' => array( 'domain_extension', true ),
 		  'domain_expires' => array( 'domain_expires', true ),
 		  'status' => array( 'status', true ),
+		  'registrar' => array( 'registrar', true ),
+		  'nameserver' => array( 'nameserver', true ),
+		  'autorenew' => array( 'autorenew', true ),
 		  'owner' => array( 'owner', true ),
-
 	  );
  
 		return $sortable_columns;
@@ -408,7 +470,7 @@ class DomainCheck_Your_Domains_List extends WP_List_Table {
 		$use_defaults = ! is_array( $hidden );
 
 		if ($use_defaults) {
-			$hidden = array( 'owner' );
+			$hidden = array( 'owner', 'nameserver', 'domain_last_check' );
 			update_user_option( get_current_user_id(), 'manage' . $this->screen->id . 'columnshidden', $hidden, true );
 		}
 

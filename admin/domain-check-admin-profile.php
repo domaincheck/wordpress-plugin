@@ -96,6 +96,18 @@ class DomainCheckAdminProfile {
 						<!--li><strong>User ID:</strong> <?php echo $domain_result['user_id']; ?></li-->
 						<li class="domain-check-profile-li">
 							<div class="domain-check-profile-li-div-left">
+								Extension
+							</div>
+							<div class="domain-check-profile-li-div-right">
+								<?php
+								if( isset( $domain_result['domain_extension'] ) && $domain_result['domain_extension'] ) {
+									echo '.' . $domain_result['domain_extension'];
+								}
+								?>
+							</div>
+						</li>
+						<li class="domain-check-profile-li">
+							<div class="domain-check-profile-li-div-left">
 								<strong>Status:</strong>
 								<?php
 							switch ($domain_result['status']) {
@@ -181,6 +193,35 @@ class DomainCheckAdminProfile {
 								?>
 							</div>
 						</li>
+
+						<li class="domain-check-profile-li">
+							<div class="domain-check-profile-li-div-left">
+							<strong>Autorenew:</strong>
+							</div>
+							<div class="domain-check-profile-li-div-right">
+								<?php
+								$out = '';
+								if ( $domain_result['autorenew'] && $domain_result['autorenew'] !== 0 ) {
+									//yes
+									$fill = 'green';
+									$text = 'on';
+									$alt_text = 'Autorenew is On. Click to turn Off.';
+								} else {
+									//no
+									$text = 'off';
+									$fill = 'disabled';
+									$alt_text = 'Autorenew is Off. Click to turn On.';
+								}
+								$out .= '<a id="autorenew-link-' . str_replace('.', '-', $domain_result['domain_url']) . '"  alt="'.$alt_text.'" title="'.$alt_text.'" class="autorenew-link" onclick="domain_check_ajax_call({\'action\':\'autorenew_trigger\', \'domain\':\'' . $domain_result['domain_url'] . '\'}, autorenew_trigger_callback);">'
+								. '<img id="autorenew-image-' . str_replace('.', '-', $domain_result['domain_url']) . '" src="' . plugins_url('/images/icons/color/infinity-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-' . $fill . '">'
+								. '<span id="autorenew-text-' . str_replace('.', '-', $domain_result['domain_url']) . '">' . $text . '</span>'
+								. '</a>';
+
+								echo $out;
+								?>
+							</div>
+						</li>
+
 						<li class="domain-check-profile-li">
 							<div class="domain-check-profile-li-div-left">
 							<strong>Expires:</strong>
@@ -240,6 +281,18 @@ class DomainCheckAdminProfile {
 									</div>
 								</li>
 								<li>
+									<div class="domain-check-profile-li-div-left domain-check-profile-li-div-left-settings">Registrar:</div>
+									<div class="domain-check-profile-li-div-right domain-check-profile-li-div-right-settings">
+										<?php echo isset( $domain_result['registrar'] ) ? DomainCheckWhoisData::get_registrar_name( $domain_result['registrar'] ) : ''; ?>
+									</div>
+								</li>
+								<li>
+									<div class="domain-check-profile-li-div-left domain-check-profile-li-div-left-settings">Nameserver:</div>
+									<div class="domain-check-profile-li-div-right domain-check-profile-li-div-right-settings">
+										<?php echo isset($domain_result['nameserver']) ? $domain_result['nameserver'] : ''; ?>
+									</div>
+								</li>
+								<li>
 									<input type="submit" class="button" value="Update Settings">
 								</li>
 							</ul>
@@ -261,18 +314,7 @@ class DomainCheckAdminProfile {
 						<input type="submit" class="button" value="Update Emails">
 					</form>
 				</div>
-				<div id="domain-check-domain-profile-notes" class="setting-div" style="display: none;">
-						<strong>Notes</strong>
-						<form action="admin.php?page=domain-check-profile&domain=<?php echo $domain_result['domain_url']; ?>" method="POST">
-							<textarea name="notes_add" rows="10" cols="40" class="domain-check-text-input domain-check-profile-settings-textarea"><?php
-							if (isset($domain_result['domain_settings']['notes']) && is_array($domain_result['domain_settings']['notes']) && count($domain_result['domain_settings']['notes'])) {
-								echo implode("\n", $domain_result['domain_settings']['notes']);
-							}
-								?></textarea>
-							<br>
-							<input type="submit" class="button" value="Update Notes">
-						</form>
-				</div>
+				<?php DomainCheck::pro( 'AdminProfile', 'profile_notes_html', $domain_result ); ?>
 				<div id="domain-check-domain-profile-whois" class="setting-box-lg">
 					<h3>WHOIS Cache</h3>
 					<strong>Last Updated:</strong> <?php echo date('m/d/Y', $domain_result['domain_last_check']); ?>
@@ -369,15 +411,43 @@ class DomainCheckAdminProfile {
 		}
 		if ( $domain_result ) {
 			$domain_result['cache'] = ($domain_result['cache'] ? json_decode(gzuncompress($domain_result['cache']), true) : null);
+
+			//decode the settings from the blob
 			$domain_result['domain_settings'] = ($domain_result['domain_settings'] ? json_decode(gzuncompress($domain_result['domain_settings']), true) : null);
-			if (array_key_exists('profile_settings_owner', $_POST)) {
-				if (strlen($_POST['profile_settings_owner']) > 255) {
-					$_POST['profile_settings_owner'] = substr($_POST['profile_settings_owner'], 0, 255);
+			$new_settings['domain_settings'] = $domain_result['domain_settings'];
+
+			//some "settings" are actually DB columns, deal with these
+			$profile_domain_arr = array(
+				'owner',
+				'registrar',
+				'nameserver'
+			);
+			foreach ( $profile_domain_arr as $tmp_setting_name ) {
+				if ( array_key_exists( 'profile_settings_' . $tmp_setting_name, $_POST ) ) {
+					$tmp_setting = $_POST['profile_settings_' . $tmp_setting_name];
+					switch ( $tmp_setting_name ) {
+						case 'owner':
+						case 'registrar':
+						case 'nameserver':
+						default:
+						if ( strlen( $tmp_setting ) > 255) {
+							$tmp_setting = substr($tmp_setting, 0, 255);
+						}
+						$new_settings[$tmp_setting_name] = $tmp_setting;
+					}
 				}
-				$new_settings['owner'] = $_POST['profile_settings_owner'];
 			}
 
-			$new_settings['domain_settings'] = gzcompress(json_encode($domain_result['domain_settings']));
+			DomainCheckUtil::debug( 'profilearr yeah', $new_settings );
+
+			$new_settings = DomainCheck::pro( 'AdminProfile', 'profile_settings_update', $new_settings );
+
+			DomainCheckUtil::debug( 'profilearr yeah', $new_settings );
+
+			//some "settings" are actually just in the settings data blob, deal with these
+			//right now we haven't put any new settings in to the blob so we don't really have to change that...
+			$new_settings['domain_settings'] = gzcompress(json_encode($new_settings['domain_settings']));
+
 			$wpdb->update(
 				DomainCheck::$db_prefix . '_domains',
 				$new_settings,
@@ -394,6 +464,53 @@ class DomainCheckAdminProfile {
 				'circle-check'
 			);
 
+		}
+	}
+
+	public static function autorenew_trigger($domain, $ajax = 0) {
+		//this function sucks because it has to do a select first
+		global $wpdb;
+
+		if (isset($_POST['domain'])) {
+			$ajax = 1;
+			$domain = strtolower($_POST['domain']);
+		}
+
+		$domain = strtolower($domain);
+
+		$sql = 'SELECT * FROM ' . DomainCheck::$db_prefix . '_domains WHERE domain_url ="' . strtolower($domain) . '"';
+		$result = $wpdb->get_results( $sql, 'ARRAY_A' );
+		if ( count ( $result ) ) {
+			$result = array_pop($result);
+			$new_status = $result['autorenew'] ? 0 : 1;
+			$wpdb->update(
+				DomainCheck::$db_prefix . '_domains',
+				array(
+					'autorenew' => $new_status
+				),
+				array(
+					'domain_url' => $domain
+				)
+			);
+
+			$message_start = 'Autorenew set to On for <strong>' . $domain . '</strong>!';
+			$message_stop = 'Autorenew set to Off for <strong>' . $domain . '</strong>!';
+
+			if (!$ajax) {
+				if ($new_status) {
+					DomainCheckAdmin::admin_notices_add($message_start, 'updated', null, 'infinity-green');
+				} else {
+					DomainCheckAdmin::admin_notices_add($message_stop, 'error', null, 'infinity-disabled');
+				}
+			} else {
+				DomainCheckAdmin::ajax_success(
+					$data = array(
+						'autorenew' => $new_status,
+						'message' => ($new_status ? $message_start : $message_stop),
+						'domain' => $domain
+					)
+				);
+			}
 		}
 	}
 }

@@ -117,4 +117,8 @@ class DomainCheckLinks {
 		}
 		return false;
 	}
+
+	public static function registrar_link( $iana ) {
+
+	}
 }
