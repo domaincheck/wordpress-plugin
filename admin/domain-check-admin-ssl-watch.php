@@ -9,8 +9,8 @@ class DomainCheckAdminSslWatch {
 		?>
 		<div class="wrap">
 			<h2>
-				<img src="<?php echo plugins_url('/images/icons/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
-				<img src="<?php echo plugins_url('/images/icons/bell.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-update-gray">
+				<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<img src="<?php echo plugins_url('/images/icons/color/bell.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-update-gray">
 				SSL Expiration Alerts
 			</h2>
 			<?php

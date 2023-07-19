@@ -7,9 +7,9 @@ class DomainCheckAdminImportExport {
 		?>
 		<div class="wrap">
 			<h2>
-				<img src="<?php echo plugins_url('/images/icons/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
-				<img src="<?php echo plugins_url('/images/icons/data-transfer-upload.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
-				<img src="<?php echo plugins_url('/images/icons/data-transfer-download.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<img src="<?php echo plugins_url('/images/icons/color/data-transfer-upload.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<img src="<?php echo plugins_url('/images/icons/color/data-transfer-download.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
 				Domain Check - Import / Export
 			</h2>
 			<?php DomainCheckAdminHeader::admin_header(); ?>
@@ -70,7 +70,7 @@ class DomainCheckAdminImportExport {
 				}
 
 				function import_text_loop(data) {
-					var plugins_url_icons = '<?php echo plugins_url('/images/icons/', __FILE__); ?>';
+					var plugins_url_icons = '<?php echo plugins_url('/images/icons/color/', __FILE__); ?>';
 					if (!data.hasOwnProperty('error')) {
 						if (data.hasOwnProperty('domain')) {
 							var html_domain = data.domain.replace(/\./g, '-');
@@ -263,7 +263,7 @@ class DomainCheckAdminImportExport {
 				</div>
 			</div>
 			<h2>
-				<img src="<?php echo plugins_url('/images/icons/data-transfer-upload.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
+				<img src="<?php echo plugins_url('/images/icons/color/data-transfer-upload.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
 				Import
 			</h2>
 			<div class="domain-check-import-left">

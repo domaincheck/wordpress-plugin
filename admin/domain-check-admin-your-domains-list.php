@@ -122,7 +122,7 @@ class DomainCheck_Your_Domains_List extends WP_List_Table {
     function column_domain_url( $item ) {
         $out = '<a href="?page=domain-check-profile&domain='.$item['domain_url'].'"><strong>'.$item['domain_url'].'</strong></a>&nbsp;&nbsp;'
             . '<a href="//' . $item['domain_url'] . '" target="_blank">'
-            . '<img src="' . plugins_url('/images/icons/external-link.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-small svg-fill-gray">'
+            . '<img src="' . plugins_url('/images/icons/color/external-link.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-small svg-fill-gray">'
             . '</a>';
         return $out;
     }
@@ -155,10 +155,10 @@ class DomainCheck_Your_Domains_List extends WP_List_Table {
                 if ($days_flat < 3) {
                     $fill = 'red';
                 }
-                $out .= '<img src="' . plugins_url('/images/icons/clock.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">';
+                $out .= '<img src="' . plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">';
             }
             if ($days_flat < 0) {
-                $out = '<img src="' . plugins_url('/images/icons/clock.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-error">'
+                $out = '<img src="' . plugins_url('/images/icons/color/clock-error.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-error">'
                     . ' Expired';
             } else {
                 $out .= ' ' . number_format(($item['domain_expires'] - time())/60/60/24, 0) . ' Days';
@@ -240,17 +240,17 @@ class DomainCheck_Your_Domains_List extends WP_List_Table {
 
         $out = '';
         $out .= '<a href="?page=domain-check-your-domains&domain_check_search=' . $item['domain_url']  . $paged . $order . '" alt="Refresh" title="Refresh">'
-            . '<img src="' . plugins_url('/images/icons/303-loop2.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">'
+            . '<img src="' . plugins_url('/images/icons/color/303-loop2.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">'
             //. ' Refresh'
             . '</a>';
 
         $out .= '<a id="watch-link-' . str_replace('.', '-', $item['domain_url']) . '"  alt="'.$text.'" title="'.$text.'" onclick="domain_check_ajax_call({\'action\':\'watch_trigger\', \'domain\':\'' . $item['domain_url'] . '\'}, watch_trigger_callback);">'
-            . '<img id="watch-image-' . str_replace('.', '-', $item['domain_url']) . '" src="' . plugins_url('/images/icons/207-eye.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-' . $fill . '">'
+            . '<img id="watch-image-' . str_replace('.', '-', $item['domain_url']) . '" src="' . plugins_url('/images/icons/color/207-eye-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-' . $fill . '">'
             //. $text
             . '</a>';
 
         $out .= '<a href="?page=domain-check-your-domains&domain_check_delete=' . $item['domain_url']  . $paged . $order . '" alt="Delete" title="Delete">'
-            . '<img src="' . plugins_url('/images/icons/174-bin2.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">'
+            . '<img src="' . plugins_url('/images/icons/color/174-bin2.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">'
             //. ' Delete'
             . '</a>';
 

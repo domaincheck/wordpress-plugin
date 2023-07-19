@@ -98,8 +98,8 @@ class DomainCheckAdminSettings {
 		</script>
 		<div class="wrap">
 			<h2>
-				<img src="<?php echo plugins_url('/images/icons/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
-				<img src="<?php echo plugins_url('/images/icons/cog.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<img src="<?php echo plugins_url('/images/icons/color/cog.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
 				Domain Check - Settings
 			</h2>
 			<?php DomainCheckAdminHeader::admin_header(); ?>

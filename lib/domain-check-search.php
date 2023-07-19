@@ -2,8 +2,14 @@
 
 
 class DomainCheckSearch {
+
 	public static function domain_search($domain, $use_cache = false, $force_owned = false, $force_watch = false, $ajax = false) {
 		global $wpdb;
+
+		//add .com to any search to help out
+		if ( strpos( $domain, '.' ) === false ) {
+			$domain = $domain . '.com';
+		}
 
 		$domain_data = DomainCheckWhois::validdomain($domain);
 

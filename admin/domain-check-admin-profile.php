@@ -40,22 +40,22 @@ class DomainCheckAdminProfile {
 		</style>
 		<div class="wrap">
 			<h2>
-				<img src="<?php echo plugins_url('/images/icons/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
 				<?php
 				$icon_src = DomainCheckAdmin::$admin_icon;
 				$icon_fill = 'gray';
 				if ($domain_result) {
 					switch ($domain_result['status']) {
 						case 0:
-							$icon_src = plugins_url('/images/icons/circle-check.svg', __FILE__);
+							$icon_src = plugins_url('/images/icons/color/circle-check.svg', __FILE__);
 							$icon_fill = 'success';
 							break;
 						case 1:
-							$icon_src = plugins_url('/images/icons/ban.svg', __FILE__);
+							$icon_src = plugins_url('/images/icons/color/ban.svg', __FILE__);
 							$icon_fill = 'taken';
 							break;
 						case 2:
-							$icon_src = plugins_url('/images/icons/flag.svg', __FILE__);
+							$icon_src = plugins_url('/images/icons/color/flag.svg', __FILE__);
 							$icon_fill = 'owned';
 							break;
 						default:
@@ -76,15 +76,15 @@ class DomainCheckAdminProfile {
 				?>
 				<div style="max-width: 450px; min-width: 350px; display: inline-block; background: #ffffff; padding: 20px; float: left;">
 						<a href="?page=domain-check-profile&domain=<?php echo $_GET['domain']; ?>&domain_check_search=<?php echo $_GET['domain']; ?>" class="button">
-							<img src="<?php echo plugins_url('/images/icons/303-loop2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
+							<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 							Refresh
 						</a>
 						<a href="?page=domain-check-ssl-profile&domain=<?php echo $_GET['domain']; ?>&domain_check_ssl_search=<?php echo $_GET['domain']; ?>" class="button">
-							<img src="<?php echo plugins_url('/images/icons/lock-locked.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
+							<img src="<?php echo plugins_url('/images/icons/color/lock-locked.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 							SSL
 						</a>
 						<a href="?page=domain-check-profile&domain=<?php echo $_GET['domain']; ?>&domain_check_delete=<?php echo $_GET['domain']; ?>" class="button">
-							<img src="<?php echo plugins_url('/images/icons/174-bin2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
+							<img src="<?php echo plugins_url('/images/icons/color/174-bin2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 							Delete
 						</a>
 						<br>
@@ -123,7 +123,7 @@ class DomainCheckAdminProfile {
 								case 0:
 									?>
 									<a href="#">
-										<img src="<?php echo plugins_url('/images/icons/circle-check.svg', __FILE__); ?>" class="svg svg-icon-table svg-fill-success">
+										<img src="<?php echo plugins_url('/images/icons/color/circle-check.svg', __FILE__); ?>" class="svg svg-icon-table svg-fill-success">
 										Available [&raquo;]
 									</a>
 									<?php
@@ -131,7 +131,7 @@ class DomainCheckAdminProfile {
 								case 1:
 									?>
 									<a href="admin.php?page=domain-check-profile&domain=<?php echo $_GET['domain']; ?>&domain_check_status_owned=<?php echo $_GET['domain']; ?>">
-										<img src="<?php echo plugins_url('/images/icons/ban.svg', __FILE__); ?>" class="svg svg-icon-table svg-fill-taken">
+										<img src="<?php echo plugins_url('/images/icons/color/ban.svg', __FILE__); ?>" class="svg svg-icon-table svg-fill-taken">
 										Taken
 									</a>
 									<?php
@@ -139,7 +139,7 @@ class DomainCheckAdminProfile {
 								case 2:
 									?>
 									<a href="admin.php?page=domain-check-profile&domain=<?php echo $_GET['domain']; ?>&domain_check_status_taken=<?php echo $_GET['domain']; ?>">
-										<img src="<?php echo plugins_url('/images/icons/flag.svg', __FILE__); ?>" class="svg svg-icon-table svg-fill-owned">
+										<img src="<?php echo plugins_url('/images/icons/color/flag.svg', __FILE__); ?>" class="svg svg-icon-table svg-fill-owned">
 										Owned
 									</a>
 									<?php
@@ -162,14 +162,14 @@ class DomainCheckAdminProfile {
 								if (!$domain_result['domain_watch']) {
 									?>
 									<a href="?page=domain-check-profile&domain=<?php echo $_GET['domain']; ?>&domain_check_watch_start=<?php echo $_GET['domain']; ?>">
-										<img src="<?php echo plugins_url('/images/icons/209-eye-minus.svg', __FILE__); ?>" class="svg svg-icon-table svg-fill-error">
+										<img src="<?php echo plugins_url('/images/icons/color/209-eye-minus.svg', __FILE__); ?>" class="svg svg-icon-table svg-fill-error">
 										Not Watching
 									</a>
 									<?php
 								} else {
 									?>
 									<a href="?page=domain-check-profile&domain=<?php echo $_GET['domain']; ?>&domain_check_watch_stop=<?php echo $_GET['domain']; ?>">
-										<img src="<?php echo plugins_url('/images/icons/208-eye-plus.svg', __FILE__); ?>" class="svg svg-icon-table svg-fill-updated">
+										<img src="<?php echo plugins_url('/images/icons/color/208-eye-plus.svg', __FILE__); ?>" class="svg svg-icon-table svg-fill-updated">
 										Watching
 									</a>
 									<?php
@@ -205,7 +205,7 @@ class DomainCheckAdminProfile {
 										if ($days_flat < 3) {
 											$fill = 'red';
 										}
-										$out .= '<img src="' . plugins_url('/images/icons/clock.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">';
+										$out .= '<img src="' . plugins_url('/images/icons/color/clock.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">';
 									}
 									if ($domain_result['domain_expires'] < time()) {
 										$out .= ' Expired';
@@ -274,7 +274,7 @@ class DomainCheckAdminProfile {
 							<strong>Last Updated:</strong> <?php echo date('m/d/Y', $domain_result['domain_last_check']); ?>
 							<div style="float:right;">
 								<a href="admin.php?page=domain-check-profile&domain=<?php echo $_GET['domain']; ?>&domain_check_search=<?php echo $_GET['domain']; ?>" class="button">
-									<img src="<?php echo plugins_url('/images/icons/303-loop2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
+									<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 									Refresh
 								</a>
 							</div>
@@ -282,9 +282,9 @@ class DomainCheckAdminProfile {
 							<div style="background-color: #FFFFFF;">
 							<pre><?php
 								if (is_array($domain_result['cache']['data'])) {
-									echo implode('<br>', $domain_result['cache']['data']);
+									echo htmlentities(implode('<br>', $domain_result['cache']['data']));
 								} else {
-									print_r($domain_result['cache']['data']);
+									htmlentities(print_r($domain_result['cache']['data']));
 								}
 								?></pre>
 							</div>
@@ -300,8 +300,8 @@ class DomainCheckAdminProfile {
 
 					<strong>Last Updated:</strong> <?php echo date('m/d/Y', $ssl_domain_result['domain_last_check']); ?>
 					<div style="float:right;"> <a href="admin.php?page=domain-check-ssl-profile&domain=<?php echo $_GET['domain']; ?>&domain_check_ssl_search=<?php echo $_GET['domain']; ?>" class="button">
-							<img src="<?php echo plugins_url('/images/icons/303-loop2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
-							<img src="<?php echo plugins_url('/images/icons/lock-locked.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-update-nag">
+							<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
+							<img src="<?php echo plugins_url('/images/icons/color/lock-locked.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-update-nag">
 							Refresh SSL
 						</a>
 					</div>
@@ -321,7 +321,7 @@ class DomainCheckAdminProfile {
 					?>
 					SSL not found in cache.<br><br>
 					<a href="" class="button">
-						<img src="<?php echo plugins_url('/images/icons/lock-locked.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-update-nag">
+						<img src="<?php echo plugins_url('/images/icons/color/lock-locked.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-update-nag">
 						Check SSL
 					</a>
 					<?php
@@ -342,7 +342,7 @@ class DomainCheckAdminProfile {
 		<?php
 	}
 
-	function profile_settings_update($domain) {
+	public static function profile_settings_update($domain) {
 		global $wpdb;
 
 		$sql = 'SELECT * FROM ' . DomainCheck::$db_prefix . '_domains WHERE domain_url ="' . strtolower($domain) . '"';

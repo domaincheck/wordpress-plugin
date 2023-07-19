@@ -123,7 +123,7 @@ class DomainCheck_SSL_List extends WP_List_Table {
     function column_domain_url( $item ) {
         $out = '<a href="?page=domain-check-ssl-profile&domain='.$item['domain_url'].'"><strong>'.$item['domain_url'].'</strong></a>&nbsp;&nbsp;'
             . '<a href="https://' . $item['domain_url'] . '" target="_blank">'
-            . '<img src="' . plugins_url('/images/icons/external-link.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-small svg-fill-gray">'
+            . '<img src="' . plugins_url('/images/icons/color/external-link.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-small svg-fill-gray">'
             . '</a>';
         return $out;
     }
@@ -156,7 +156,7 @@ class DomainCheck_SSL_List extends WP_List_Table {
                 if ($days_flat < 3) {
                     $fill = 'red';
                 }
-                $out .= '<img src="' . plugins_url('/images/icons/clock.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">';
+                $out .= '<img src="' . plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">';
             }
             if ($item['domain_expires'] < time()) {
                 $out .= 'Expired';
@@ -204,20 +204,20 @@ class DomainCheck_SSL_List extends WP_List_Table {
          switch ($status) {
              case 0:
                  $out = '<a id="status-link-' . str_replace('.', '-', $item['domain_url']) . '" href="#">'
-                 . '<img src="' . plugins_url('/images/icons/lock-unlocked.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-error">'
+                 . '<img src="' . plugins_url('/images/icons/color/lock-unlocked.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-error">'
                  . ' Not Secure</a>'
                  . '&nbsp;&nbsp;<a href="' . DomainCheckLinks::ssl($item['domain_url']) . '" class="button" target="_blank">Fix It!</a>';
              break;
              case 1:
                  $out = 'Secure';
                  $out = '<a id="status-link-' . str_replace('.', '-', $item['domain_url']) . '" onclick="domain_check_ajax_call({\'action\':\'status_trigger\', \'domain\':\'' . $item['domain_url'] . '\'}, status_trigger_callback);">'
-                     . '<img src="' . plugins_url('/images/icons/lock-locked.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-success">'
+                     . '<img src="' . plugins_url('/images/icons/color/lock-locked.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-success">'
                      . ' ' . $out . '</a>';
              break;
              case 2:
                  $out = 'Owned';
                  $out = '<a id="status-link-' . str_replace('.', '-', $item['domain_url']) . '" onclick="domain_check_ajax_call({\'action\':\'status_trigger\', \'domain\':\'' . $item['domain_url'] . '\'}, status_trigger_callback);">'
-                         . '<img src="' . plugins_url('/images/icons/flag.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-owned">'
+                         . '<img src="' . plugins_url('/images/icons/color/flag.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-owned">'
                          . ' ' . $out . '</a>';
              break;
              default:
@@ -269,17 +269,17 @@ class DomainCheck_SSL_List extends WP_List_Table {
 
         $out = '';
         $out .= '<a href="?page=domain-check-ssl-check&domain_check_ssl_search=' . $item['domain_url']  . $paged . $order . '" alt="Refresh" title="Refresh">'
-            . '<img src="' . plugins_url('/images/icons/303-loop2.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">'
+            . '<img src="' . plugins_url('/images/icons/color/303-loop2.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">'
             //. ' Refresh'
             . '</a>';
 
         $out .= '<a id="watch-link-' . str_replace('.', '-', $item['domain_url']) . '"  alt="'.$text.'" title="'.$text.'" onclick="domain_check_ajax_call({\'action\':\'ssl_watch_trigger\', \'domain\':\'' . $item['domain_url'] . '\'}, ssl_watch_trigger_callback);">'
-            . '<img id="watch-image-' . str_replace('.', '-', $item['domain_url']) . '" src="' . plugins_url('/images/icons/bell.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-' . $fill . '">'
+            . '<img id="watch-image-' . str_replace('.', '-', $item['domain_url']) . '" src="' . plugins_url('/images/icons/color/bell-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-' . $fill . '">'
             //. $text
             . '</a>';
 
         $out .= '<a href="?page=domain-check-ssl-check&domain_check_ssl_delete=' . $item['domain_url']  . $paged . $order . '" alt="Delete" title="Delete">'
-            . '<img src="' . plugins_url('/images/icons/174-bin2.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">'
+            . '<img src="' . plugins_url('/images/icons/color/174-bin2.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">'
             //. ' Delete'
             . '</a>';
 

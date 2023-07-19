@@ -185,38 +185,44 @@ class DomainCheckAdminHeader {
 			});
 
 			jQuery('img.svg').each(function(){
-			var $img = jQuery(this);
-			var imgID = $img.attr('id');
-			var imgClass = $img.attr('class');
-			var imgURL = $img.attr('src');
 
-			jQuery.get(imgURL, function(data) {
-				// Get the SVG tag, ignore the rest
-				var $svg = jQuery(data).find('svg');
-
-				// Add replaced image's ID to the new SVG
-				if(typeof imgID !== 'undefined') {
-					$svg = $svg.attr('id', imgID);
-				}
-				// Add replaced image's classes to the new SVG
-				if(typeof imgClass !== 'undefined') {
-					$svg = $svg.attr('class', imgClass+' replaced-svg');
+				//does not have the class set, already colored
+				if ( $(this).attr('class').indexOf( ' svg-fill ' ) === (-1) ) {
+					return;
 				}
 
-				// Remove any invalid XML tags as per http://validator.w3.org
-				$svg = $svg.removeAttr('xmlns:a');
+				var $img = jQuery(this);
+				var imgID = $img.attr('id');
+				var imgClass = $img.attr('class');
+				var imgURL = $img.attr('src');
 
-				// Check if the viewport is set, if the viewport is not set the SVG wont't scale.
-				if(!$svg.attr('viewBox') && $svg.attr('height') && $svg.attr('width')) {
-					$svg.attr('viewBox', '0 0 ' + $svg.attr('height') + ' ' + $svg.attr('width'))
-				}
+				jQuery.get(imgURL, function(data) {
+					// Get the SVG tag, ignore the rest
+					var $svg = jQuery(data).find('svg');
 
-				// Replace image with new SVG
-				$img.replaceWith($svg);
+					// Add replaced image's ID to the new SVG
+					if(typeof imgID !== 'undefined') {
+						$svg = $svg.attr('id', imgID);
+					}
+					// Add replaced image's classes to the new SVG
+					if(typeof imgClass !== 'undefined') {
+						$svg = $svg.attr('class', imgClass+' replaced-svg');
+					}
 
-			}, 'xml');
+					// Remove any invalid XML tags as per http://validator.w3.org
+					$svg = $svg.removeAttr('xmlns:a');
 
-		});
+					// Check if the viewport is set, if the viewport is not set the SVG wont't scale.
+					if(!$svg.attr('viewBox') && $svg.attr('height') && $svg.attr('width')) {
+						$svg.attr('viewBox', '0 0 ' + $svg.attr('height') + ' ' + $svg.attr('width'))
+					}
+
+					// Replace image with new SVG
+					$img.replaceWith($svg);
+
+				}, 'xml');
+
+			});
 		});
 		function domain_check_ajax_call(data, callback) {
 			jQuery.post(
@@ -245,31 +251,31 @@ class DomainCheckAdminHeader {
 		}
 		function watch_trigger_callback(data) {
 			var htmlDomain = data.domain.replace(/\./g, '-');
-			var iconDir = '<?php echo plugins_url('domain-check/images/icons/'); ?>';
+			var iconDir = '<?php echo plugins_url('domain-check/images/icons/color'); ?>';
 			if (data.watch) {
 				jQuery('#domain-check-admin-notices').append('<div class="notice updated domain-check-notice"><p>' + data.message + '</p></div>');
 				//jQuery('#watch-link-' + htmlDomain).text('Stop Watching');
 
-				var replace = '<img id="watch-image-' + htmlDomain + '" src="' + iconDir + '207-eye.svg" class="svg svg-icon-table svg-icon-table-links svg-fill-gray" onload="paint_svg(\'watch-image-' + htmlDomain + '\')">';
+				var replace = '<img id="watch-image-' + htmlDomain + '" src="' + iconDir + '207-eye.svg" class="svg svg-fill svg-icon-table svg-icon-table-links svg-fill-gray" onload="paint_svg(\'watch-image-' + htmlDomain + '\')">';
 				jQuery('#watch-image-' + htmlDomain).replaceWith(replace);
 			} else {
 				jQuery('#domain-check-admin-notices').append('<div class="notice error domain-check-notice"><p>' + data.message + '</p></div>');
 				//jQuery('#watch-link-' + htmlDomain).text('Watch');
-				var replace = '<img id="watch-image-' + htmlDomain + '" src="' + iconDir + '207-eye.svg" class="svg svg-icon-table svg-icon-table-links svg-fill-disabled" onload="paint_svg(\'watch-image-' + htmlDomain + '\')">';
+				var replace = '<img id="watch-image-' + htmlDomain + '" src="' + iconDir + '207-eye-disabled.svg" class="svg svg-fill svg-icon-table svg-icon-table-links svg-fill-disabled" onload="paint_svg(\'watch-image-' + htmlDomain + '\')">';
 				jQuery('#watch-image-' + htmlDomain).replaceWith(replace);
 			}
 		}
 
 		function ssl_watch_trigger_callback(data) {
 			var htmlDomain = data.domain.replace(/\./g, '-');
-			var iconDir = '<?php echo plugins_url('domain-check/images/icons/'); ?>';
+			var iconDir = '<?php echo plugins_url('domain-check/images/icons/color'); ?>';
 			if (data.watch) {
 				jQuery('#domain-check-admin-notices').append('<div class="notice updated domain-check-notice"><p>' + data.message + '</p></div>');
-				var replace = '<img id="watch-image-' + htmlDomain + '" src="' + iconDir + 'bell.svg" class="svg svg-icon-table svg-icon-table-links svg-fill-gray" onload="paint_svg(\'watch-image-' + htmlDomain + '\')">';
+				var replace = '<img id="watch-image-' + htmlDomain + '" src="' + iconDir + 'bell.svg" class="svg svg-fill svg-icon-table svg-icon-table-links svg-fill-gray" onload="paint_svg(\'watch-image-' + htmlDomain + '\')">';
 				jQuery('#watch-image-' + htmlDomain).replaceWith(replace);
 			} else {
 				jQuery('#domain-check-admin-notices').append('<div class="notice error domain-check-notice"><p>' + data.message + '</p></div>');
-				var replace = '<img id="watch-image-' + htmlDomain + '" src="' + iconDir + 'bell.svg" class="svg svg-icon-table svg-icon-table-links svg-fill-disabled" onload="paint_svg(\'watch-image-' + htmlDomain + '\')">';
+				var replace = '<img id="watch-image-' + htmlDomain + '" src="' + iconDir + 'bell-disabled.svg" class="svg svg-fill svg-icon-table svg-icon-table-links svg-fill-disabled" onload="paint_svg(\'watch-image-' + htmlDomain + '\')">';
 				jQuery('#watch-image-' + htmlDomain).replaceWith(replace);
 			}
 		}
@@ -287,7 +293,15 @@ class DomainCheckAdminHeader {
 
 		function paint_svg(elem_id) {
 
+
+
 			var $img = jQuery('#' + elem_id);
+
+			//does not have the class set, already colored
+			if ( $img.attr('class').indexOf( ' svg-fill ' ) === (-1) ) {
+				return;
+			}
+
 			var imgID = $img.attr('id');
 			var imgClass = $img.attr('class');
 			var imgURL = $img.attr('src');
@@ -337,11 +351,11 @@ class DomainCheckAdminHeader {
 			if ( !isset($ftue['intro']) ) {
 				$icon = 'circle-www2';
 				$options = array();
-				$image = '<img src="' . plugins_url('/images/icons/' . $icon . '.svg', __FILE__) .'" class="svg svg-icon-admin-notice svg-fill-gray">';
+				$image = '<img src="' . plugins_url('/images/icons/color/' . $icon . '.svg', __FILE__) .'" class="svg svg-icon-admin-notice svg-fill-gray">';
 
 				$message = '<h2>' . $image . 'Welcome to Domain Check!</h2>';
 				$message .= '<br>';
-				$message .= 'Get started by using <a href="admin.php?page=domain-check-import-export" class="button"><img src="'. plugins_url('/images/icons/data-transfer-upload.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">Import</a> to add all of your domains and SSL certificates at once or by using <a href="admin.php?page=domain-check-search" class="button"><img src="'. plugins_url('/images/icons/magnifying-glass.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">Domain Search</a> or <a href="admin.php?page=domain-check-ssl-check" class="button"><img src="'. plugins_url('/images/icons/lock-locked.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">SSL Check</a> to add them one at a time!';
+				$message .= 'Get started by using <a href="admin.php?page=domain-check-import-export" class="button"><img src="'. plugins_url('/images/icons/color/data-transfer-upload.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">Import</a> to add all of your domains and SSL certificates at once or by using <a href="admin.php?page=domain-check-search" class="button"><img src="'. plugins_url('/images/icons/color/magnifying-glass.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">Domain Search</a> or <a href="admin.php?page=domain-check-ssl-check" class="button"><img src="'. plugins_url('/images/icons/color/lock-locked-gray.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">SSL Check</a> to add them one at a time!';
 				$message .= '<br><br>';
 
 				if ($options && is_array($options) && count($options)) {
@@ -489,7 +503,7 @@ class DomainCheckAdminHeader {
 
 			?>
 			<a href="admin.php?page=<?php echo $nav_page; ?>" class="<?php echo $css_class; ?>" style="display: inline-block; margin-right: 3px; margin-top: 5px;">
-				<img src="<?php echo plugins_url('/images/icons/' . $nav_data[2] . '.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
+				<img src="<?php echo plugins_url('/images/icons/' . $nav_data[2] . '.svg', __FILE__); ?>" class="svg svg-fill svg-icon-table svg-icon-table-links svg-fill-gray">
 				<?php echo $nav_data[1]; ?>
 			</a>
 			<?php
@@ -535,7 +549,6 @@ class DomainCheckAdminHeader {
 						&#9733;
 						&#9733;
 					</span>
-				</a>
 				</a>
 			</div>
 			<div class="domain-check-footer-col">

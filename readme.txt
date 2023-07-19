@@ -7,7 +7,7 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Tags: admin, multisite, domain, ssl, https, hosting, email, admin, alerts, coupons, deals, dashboard, expiration, alert, notification, dashboard, domain checker, domain search, domain mapping
 Requires at least: 3.8
 Tested up to: 4.7.2
-Stable tag: 1.0.10
+Stable tag: 1.0.11
 
 Domain Check lets you search domain names, check SSL certificates and HTTPS, set email alerts for domain and SSL expiration, and get daily coupons.
 
@@ -98,6 +98,14 @@ A: Please use the email alert tester in the Help section within the plugin. This
 
 == Changelog ==
 
+= 1.0.11 =
+* Major upgrades for domain lookups and WHOIS server data
+* Better checking for domain availability
+* Automated support for WHOIS server standards
+* Bugfix for error message when setting domain Owner and domain emails introduced in version 1.0.10
+* Improved icon graphic performance for large result table layouts
+* Full expiration support for many more domains! Including: .bet, .ca, .club, .co.za, .com.br, .com.mx, .creditcard, .dk, .domains, .fi, .fm, .fr, .hosting, .in, .info, .it, .jobs, .la, .live, .marketing, .mobi, .mx, .nu, .pro, .pw, .rich, .rocks, .ru, .se, .services, .shop, .tax, .tel, .today, .travel, .tv, .xxx, .xyz, and of course co.uk!
+
 = 1.0.10 =
 * UI / UX upgrades
 * Included availability checks for 300+ new domain extensions
@@ -108,7 +116,7 @@ A: Please use the email alert tester in the Help section within the plugin. This
 * Support link added to footer
 * Full support for dot cn, use .cn domain names!
 * Full support for dot top, use .top domain names!
-* Full support for dot me , use .me domain names!
+* Full support for dot me, use .me domain names!
 
 = 1.0.9 =
 * Bugfixes

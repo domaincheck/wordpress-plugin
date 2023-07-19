@@ -50,8 +50,8 @@ class DomainCheckAdminCoupons {
 		</style>
 		<div class="wrap">
 			<h2>
-				<img src="<?php echo plugins_url('/images/icons/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
-				<img src="<?php echo plugins_url('/images/icons/055-price-tags.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-updated">
+				<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<img src="<?php echo plugins_url('/images/icons/color/055-price-tags.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-updated">
 				Domain Check - Coupons &amp; Deals
 			</h2>
 			<?php
@@ -63,7 +63,7 @@ class DomainCheckAdminCoupons {
 				<br>
 			<?php } ?>
 			<a href="admin.php?page=domain-check-coupons&domain_check_coupons_update=1" class="button">
-				<img src="<?php echo plugins_url('/images/icons/303-loop2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
+				<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 				Refresh Coupons
 			</a>
 			<?php
@@ -209,7 +209,7 @@ class DomainCheckAdminCoupons {
 		</style>
 		<div class="wrap">
 			<h2>
-				<img src="<?php echo plugins_url('/images/icons/055-price-tags.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-updated">
+				<img src="<?php echo plugins_url('/images/icons/color/055-price-tags.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-updated">
 				<?php echo $_GET['domain_check_coupons_site']; ?> Coupons
 			</h2>
 			<?php
@@ -382,7 +382,7 @@ class DomainCheckAdminCoupons {
 			<input type="hidden" name="page" value="domain-check-coupons">
 			<?php if ( !$dashboard ) { ?>
 			<div type="button" class="button domain-check-admin-search-input-btn" onclick="domain_check_coupon_search_click();">
-				<img src="<?php echo plugins_url('/images/icons/055-price-tags.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-updated">
+				<img src="<?php echo plugins_url('/images/icons/color/055-price-tags.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-updated">
 				<div style="display: inline-block;">Search Coupons</div>
 			</div>
 			<?php } else { ?>

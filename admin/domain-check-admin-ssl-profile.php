@@ -281,7 +281,7 @@ class DomainCheckAdminSslProfile {
 		<?php
 	}
 
-	function ssl_profile_settings_update($domain) {
+	public static function ssl_profile_settings_update($domain) {
 		global $wpdb;
 
 		$sql = 'SELECT * FROM ' . DomainCheck::$db_prefix . '_ssl WHERE domain_url ="' . strtolower($domain) . '"';

@@ -41,8 +41,8 @@ class DomainCheckAdminHelp {
 		?>
 		<div class="wrap">
 			<h2>
-				<img src="<?php echo plugins_url('/images/icons/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
-				<img src="<?php echo plugins_url('/images/icons/266-question.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<img src="<?php echo plugins_url('/images/icons/color/266-question.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
 				Domain Check - Help
 			</h2>
 			<?php
@@ -96,7 +96,7 @@ class DomainCheckAdminHelp {
 			<div class="setting-div">
 				<h3>
 					<a href="admin.php?page=domain-check">
-						<img src="<?php echo plugins_url('/images/icons/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
+						<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
 						Domains / Dashboard
 					</a>
 				</h3>
@@ -105,7 +105,7 @@ class DomainCheckAdminHelp {
 				</p>
 				<h3>
 					<a href="admin.php?page=domain-check-your-domains">
-						<img src="<?php echo plugins_url('/images/icons/flag.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-blue">
+						<img src="<?php echo plugins_url('/images/icons/color/flag.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-blue">
 						Your Domains
 					</a>
 				</h3>
@@ -114,7 +114,7 @@ class DomainCheckAdminHelp {
 				</p>
 				<h3>
 					<a href="admin.php?page=domain-check-search">
-						<img src="<?php echo plugins_url('/images/icons/magnifying-glass.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
+						<img src="<?php echo plugins_url('/images/icons/color/magnifying-glass.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
 						Domain Search
 					</a>
 				</h3>
@@ -123,7 +123,7 @@ class DomainCheckAdminHelp {
 				</p>
 				<h3>
 					<a href="admin.php?page=domain-check-watch">
-						<img src="<?php echo plugins_url('/images/icons/207-eye.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
+						<img src="<?php echo plugins_url('/images/icons/color/207-eye.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
 						Domain Watch
 					</a>
 				</h3>
@@ -134,7 +134,7 @@ class DomainCheckAdminHelp {
 			<div class="setting-div">
 				<h3>
 					<a href="admin.php?page=domain-check-ssl-check">
-						<img src="<?php echo plugins_url('/images/icons/lock-locked.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-update-nag">
+						<img src="<?php echo plugins_url('/images/icons/color/lock-locked-yellow.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-update-nag">
 						SSL Check
 					</a>
 				</h3>
@@ -143,7 +143,7 @@ class DomainCheckAdminHelp {
 				</p>
 				<h3>
 					<a href="admin.php?page=domain-check-ssl-watch">
-						<img src="<?php echo plugins_url('/images/icons/bell.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
+						<img src="<?php echo plugins_url('/images/icons/color/bell.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
 						SSL Expiration Alerts
 					</a>
 				</h3>
@@ -152,8 +152,8 @@ class DomainCheckAdminHelp {
 				</p>
 				<h3>
 					<a href="admin.php?page=domain-check-import-export">
-						<img src="<?php echo plugins_url('/images/icons/data-transfer-upload.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
-						<img src="<?php echo plugins_url('/images/icons/data-transfer-download.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
+						<img src="<?php echo plugins_url('/images/icons/color/data-transfer-upload.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
+						<img src="<?php echo plugins_url('/images/icons/color/data-transfer-download.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
 						Import / Export
 					</a>
 				</h3>
@@ -162,7 +162,7 @@ class DomainCheckAdminHelp {
 				</p>
 				<h3>
 					<a href="admin.php?page=domain-check-settings">
-						<img src="<?php echo plugins_url('/images/icons/cog.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
+						<img src="<?php echo plugins_url('/images/icons/color/cog.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
 						Settings
 					</a>
 				</h3>
@@ -171,7 +171,7 @@ class DomainCheckAdminHelp {
 				</p>
 				<h3>
 					<a href="admin.php?page=domain-check-coupons">
-						<img src="<?php echo plugins_url('/images/icons/055-price-tags.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-updated">
+						<img src="<?php echo plugins_url('/images/icons/color/055-price-tags.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-updated">
 						Coupons &amp; Deals
 					</a>
 				</h3>
@@ -181,7 +181,7 @@ class DomainCheckAdminHelp {
 			</div>
 			<div class="setting-div">
 				<h3>
-					<img src="<?php echo plugins_url('/images/icons/266-question.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
+					<img src="<?php echo plugins_url('/images/icons/color/266-question.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
 					FAQ
 				</h3>
 				<p class="p">

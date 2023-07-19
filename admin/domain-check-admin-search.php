@@ -9,8 +9,8 @@ class DomainCheckAdminSearch {
 		?>
 		<div id="domain-check-wrapper" class="wrap">
 			<h2>
-				<img src="<?php echo plugins_url('/images/icons/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
-				<img src="<?php echo plugins_url('/images/icons/magnifying-glass.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<img src="<?php echo plugins_url('/images/icons/color/magnifying-glass.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
 				Domain Check - Domain Search
 			</h2>
 			<?php echo DomainCheckAdminHeader::admin_header(); ?>
@@ -55,7 +55,7 @@ class DomainCheckAdminSearch {
 			<input type="hidden" name="page" value="domain-check-search" />
 			<?php if ( !$dashboard ) { ?>
 			<div type="button" class="button domain-check-admin-search-input-btn" onclick="domain_check_search_click();">
-				<img src="<?php echo plugins_url('/images/icons/magnifying-glass.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-gray">
+				<img src="<?php echo plugins_url('/images/icons/color/magnifying-glass.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-gray">
 				<div style="display: inline-block;">Search Domain Name</div>
 			</div>
 			<?php } else { ?>

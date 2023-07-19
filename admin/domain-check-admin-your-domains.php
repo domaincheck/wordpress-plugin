@@ -14,8 +14,8 @@ class DomainCheckAdminYourDomains {
 		?>
 		<div class="wrap">
 			<h2>
-				<img src="<?php echo plugins_url('/images/icons/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
-				<img src="<?php echo plugins_url('/images/icons/flag.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-owned">
+				<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<img src="<?php echo plugins_url('/images/icons/color/flag.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-owned">
 				Domain Check - Your Domains
 			</h2>
 			<?php DomainCheckAdminHeader::admin_header(true, null, 'domain-check-your-domains'); ?>
@@ -70,7 +70,7 @@ class DomainCheckAdminYourDomains {
 			<input type="text" name="domain_check_your_domains" id="domain_check_your_domains" class="domain-check-admin-search-input">
 			<input type="hidden" name="page" value="domain-check-your-domains">
 			<div type="button" class="button domain-check-admin-search-input-btn" onclick="domain_check_your_domains_search_click();">
-				<img src="<?php echo plugins_url('/images/icons/flag.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-owned">
+				<img src="<?php echo plugins_url('/images/icons/color/flag.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-owned">
 				<div style="display: inline-block;">Add to Your Domains</div>
 			</div>
 		</form>

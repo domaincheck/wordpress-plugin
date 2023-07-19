@@ -140,8 +140,8 @@ class DomainCheckAdminSslSearch {
 		?>
 		<div class="wrap">
 			<h2>
-				<img src="<?php echo plugins_url('/images/icons/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
-				<img src="<?php echo plugins_url('/images/icons/lock-locked.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-update-nag">
+				<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+				<img src="<?php echo plugins_url('/images/icons/color/lock-locked-yellow.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-update-nag">
 				Domain Check - SSL Check
 			</h2>
 			<?php
@@ -228,7 +228,7 @@ class DomainCheckAdminSslSearch {
 			<input type="hidden" name="page" value="domain-check-ssl-check">
 			<?php if ( !$dashboard ) { ?>
 			<div type="button" class="button domain-check-admin-search-input-btn" onclick="domain_check_ssl_search_click();">
-				<img src="<?php echo plugins_url('/images/icons/lock-locked.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-update-nag">
+				<img src="<?php echo plugins_url('/images/icons/color/lock-locked-yellow.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-update-nag">
 				<div style="display: inline-block;">Check SSL</div>
 			</div>
 			<?php } else { ?>

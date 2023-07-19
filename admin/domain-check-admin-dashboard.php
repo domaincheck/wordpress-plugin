@@ -24,7 +24,7 @@ class DomainCheckAdminDashboard {
 				</style>
 				<div class="wrap">
 					<h2>
-						<img src="<?php echo plugins_url('/images/icons/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
+						<img src="<?php echo plugins_url('/images/icons/color/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
 						Domain Check - Domains
 					</h2>
 					<div class="domain-check-dasboard-wrap">
@@ -32,7 +32,7 @@ class DomainCheckAdminDashboard {
 					<div class="domain-check-admin-dashboard-search-box">
 					<h3>
 						<a href="<?php echo admin_url('admin.php?page=domain-check-search'); ?>">
-						<img src="<?php echo plugins_url('/images/icons/magnifying-glass.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-gray">
+						<img src="<?php echo plugins_url('/images/icons/color/magnifying-glass.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-gray">
 						Domain Search
 						</a>
 					</h3>
@@ -41,7 +41,7 @@ class DomainCheckAdminDashboard {
 					?>
 						<h3>
 							<a href="<?php echo admin_url('admin.php?page=domain-check-your-domains'); ?>">
-							<img src="<?php echo plugins_url('/images/icons/flag.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-owned">
+							<img src="<?php echo plugins_url('/images/icons/color/flag.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-owned">
 							Your Domains
 							</a>
 						</h3>
@@ -69,7 +69,7 @@ class DomainCheckAdminDashboard {
 						if ($expire_days < 0) {
 							$expire_days = 'Expired';
 						}
-						$expire_days = '<img src="' . plugins_url('/images/icons/clock.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">' . $expire_days;
+						$expire_days = '<img src="' . plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">' . $expire_days;
 					}
 				} else {
 					$expire_days = 'n/a';
@@ -93,7 +93,7 @@ class DomainCheckAdminDashboard {
 								?>
 								<a href="?page=domain-check&domain_check_search=<?php echo $item['domain_url']; ?>"
 								   class="button">
-									<img src="<?php echo plugins_url('/images/icons/303-loop2.svg', __FILE__); ?>"
+									<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>"
 										 class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 								</a>
 								<a class="button" href="<?php echo DomainCheckLinks::homepage($item['domain_url']); ?>"
@@ -114,7 +114,7 @@ class DomainCheckAdminDashboard {
 						</table>
 						<h3>
 							<a href="<?php echo admin_url('admin.php?page=domain-check-watch'); ?>">
-							<img src="<?php echo plugins_url('/images/icons/207-eye.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-gray">
+							<img src="<?php echo plugins_url('/images/icons/color/207-eye.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-gray">
 							Watched Domains
 							</a>
 						</h3>
@@ -142,7 +142,7 @@ class DomainCheckAdminDashboard {
 						if ($expire_days < 0) {
 							$expire_days = 'Expired';
 						}
-						$expire_days = '<img src="' . plugins_url('/images/icons/clock.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">' . $expire_days;
+						$expire_days = '<img src="' . plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">' . $expire_days;
 					}
 				} else {
 					$expire_days = 'n/a';
@@ -163,7 +163,7 @@ class DomainCheckAdminDashboard {
 								?>
 								<a href="?page=domain-check&domain_check_search=<?php echo $item['domain_url']; ?>"
 								   class="button">
-									<img src="<?php echo plugins_url('/images/icons/303-loop2.svg', __FILE__); ?>"
+									<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>"
 										 class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 								</a>
 								<a href="<?php echo DomainCheckLinks::homepage($item['domain_url']); ?>" class="button"
@@ -186,7 +186,7 @@ class DomainCheckAdminDashboard {
 					<div class="domain-check-admin-dashboard-search-box">
 						<h3>
 							<a href="<?php echo admin_url('admin.php?page=domain-check-ssl-check'); ?>">
-							<img src="<?php echo plugins_url('/images/icons/lock-locked.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-update-nag">
+							<img src="<?php echo plugins_url('/images/icons/color/lock-locked-yellow.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-update-nag">
 							SSL Check
 							</a>
 						</h3>
@@ -195,7 +195,7 @@ class DomainCheckAdminDashboard {
 		?>
 					<h3>
 						<a href="<?php echo admin_url('admin.php?page=domain-check-ssl-watch'); ?>">
-						<img src="<?php echo plugins_url('/images/icons/bell.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-gray">
+						<img src="<?php echo plugins_url('/images/icons/color/bell.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-gray">
 						SSL Expiration Alerts
 						</a>
 					</h3>
@@ -223,12 +223,12 @@ class DomainCheckAdminDashboard {
 						if ($expire_days < 0) {
 							$expire_days = 'Expired';
 						}
-						$expire_days = '<img src="' . plugins_url('/images/icons/clock.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">' . $expire_days;
+						$expire_days = '<img src="' . plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">' . $expire_days;
 					} else {
-						$expire_days = '<img src="' . plugins_url('/images/icons/lock-locked.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-updated">' . $expire_days;
+						$expire_days = '<img src="' . plugins_url('/images/icons/color/lock-locked-updated.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-updated">' . $expire_days;
 					}
 				} else {
-					$expire_days = $expire_days = '<img src="' . plugins_url('/images/icons/lock-unlocked.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-error">' . 'Not Secure';
+					$expire_days = $expire_days = '<img src="' . plugins_url('/images/icons/color/lock-unlocked.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-error">' . 'Not Secure';
 				}
 				?>
 				<tr class="domain-check-dasboard-table-tr">
@@ -247,7 +247,7 @@ class DomainCheckAdminDashboard {
 								?>
 								<a href="?page=domain-check&domain_check_ssl_search=<?php echo $item['domain_url']; ?>"
 								   class="button">
-									<img src="<?php echo plugins_url('/images/icons/303-loop2.svg', __FILE__); ?>"
+									<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>"
 										 class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 								</a>
 								<a href="<?php echo DomainCheckLinks::ssl($item['domain_url']); ?>" class="button"
@@ -260,7 +260,7 @@ class DomainCheckAdminDashboard {
 							?>
 							<a href="?page=domain-check&domain_check_ssl_search=<?php echo $item['domain_url']; ?>"
 							   class="button">
-								<img src="<?php echo plugins_url('/images/icons/303-loop2.svg', __FILE__); ?>"
+								<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>"
 									 class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 							</a>
 							<a href="<?php echo DomainCheckLinks::ssl($item['domain_url']); ?>" class="button"
@@ -280,7 +280,7 @@ class DomainCheckAdminDashboard {
 					</table>
 					<h3>
 						<a href="<?php echo admin_url('admin.php?page=domain-check-ssl-watch'); ?>">
-						<img src="<?php echo plugins_url('/images/icons/lock-locked.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-green">
+						<img src="<?php echo plugins_url('/images/icons/color/lock-locked-green.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-green">
 						Recent SSL Checks
 						</a>
 					</h3>
@@ -308,13 +308,13 @@ class DomainCheckAdminDashboard {
 						if ($expire_days < 0) {
 							$expire_days = 'Expired';
 						}
-						$expire_days = '<img src="' . plugins_url('/images/icons/clock.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">' . $expire_days;
+						$expire_days = '<img src="' . plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-' . $fill . '">' . $expire_days;
 					} else {
-						$expire_days = '<img src="' . plugins_url('/images/icons/lock-locked.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-updated">' . $expire_days;
+						$expire_days = '<img src="' . plugins_url('/images/icons/color/lock-locked-updated.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-updated">' . $expire_days;
 					}
 
 				} else {
-					$expire_days = '<img src="' . plugins_url('/images/icons/lock-unlocked.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-error">' . 'Not Secure';
+					$expire_days = '<img src="' . plugins_url('/images/icons/color/lock-unlocked.svg', __FILE__) . '" class="svg svg-icon-table svg-fill-error">' . 'Not Secure';
 				}
 				?>
 				<tr class="domain-check-dasboard-table-tr">
@@ -333,7 +333,7 @@ class DomainCheckAdminDashboard {
 								?>
 								<a href="?page=domain-check&domain_check_ssl_search=<?php echo $item['domain_url']; ?>"
 								   class="button">
-									<img src="<?php echo plugins_url('/images/icons/303-loop2.svg', __FILE__); ?>"
+									<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>"
 										 class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 								</a>
 								<a href="<?php echo DomainCheckLinks::ssl($item['domain_url']); ?>" class="button"
@@ -346,7 +346,7 @@ class DomainCheckAdminDashboard {
 							?>
 							<a href="?page=domain-check&domain_check_ssl_search=<?php echo $item['domain_url']; ?>"
 							   class="button">
-								<img src="<?php echo plugins_url('/images/icons/303-loop2.svg', __FILE__); ?>"
+								<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>"
 									 class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 							</a>
 							<a href="<?php echo DomainCheckLinks::ssl($item['domain_url']); ?>" class="button"
@@ -368,7 +368,7 @@ class DomainCheckAdminDashboard {
 					<div class="domain-check-admin-dashboard-search-box">
 						<h3>
 							<a href="<?php echo admin_url('admin.php?page=domain-check-coupons'); ?>">
-							<img src="<?php echo plugins_url('/images/icons/055-price-tags.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-green">
+							<img src="<?php echo plugins_url('/images/icons/color/055-price-tags.svg', __FILE__); ?>" class="svg svg-icon-h3 svg-fill-green">
 							Coupons &amp; Deals
 							</a>
 						</h3>
@@ -385,7 +385,7 @@ class DomainCheckAdminDashboard {
 		?>
 					<h4>Updated: <?php echo $updated_date; ?></h4>
 					<a href="admin.php?page=domain-check&domain_check_coupons_update=1" class="button">
-						<img src="<?php echo plugins_url('/images/icons/303-loop2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
+						<img src="<?php echo plugins_url('/images/icons/color/303-loop2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 						Refresh Coupons
 					</a>
 						<style type="text/css">
