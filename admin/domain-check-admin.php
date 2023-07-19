@@ -131,14 +131,14 @@ if(!class_exists('DomainCheckAdmin')) {
 					$admin_notice_data['type'] = 'updated notice-' . $admin_notice_data['type'];
 				}
 				?>
-			<div class="<?php echo $admin_notice_data['type']; ?> domain-check-admin-notice">
+			<div class="<?php echo $admin_notice_data['type']; ?> domain-check-notice">
 				<p><?php echo $admin_notice_data['message']; ?></p>
 			</div>
 		<?php
 			}
 		}
 
-		public function admin_header() {
+		public function admin_header($nav = true) {
 			?>
 			<style type="text/css">
 				.svg-fill-red path {
@@ -232,6 +232,23 @@ if(!class_exists('DomainCheckAdmin')) {
 					margin: 10px;
 					background-color: #ffffff;
 				}
+
+				.domain-check-nav-div-dashboard {
+					margin: 5px;
+					padding: 5px;
+					padding-top: 0px;
+					margin-top: 0px;
+					width:100%;
+					float: left;
+				}
+				.domain-check-nav-div {
+					margin: 5px;
+					padding: 5px;
+					padding-top: 0px;
+					margin-top: 0px;
+					width:auto;
+					float: right;
+				}
 			</style>
 			<script type="text/javascript">
 			/*
@@ -252,7 +269,7 @@ if(!class_exists('DomainCheckAdmin')) {
 						}
 					}
 					if (!plugin_notice) {
-						jQuery(this).css('display', 'hidden');
+						jQuery(this).css('display', 'none');
 					}
 				});
 
@@ -420,6 +437,114 @@ if(!class_exists('DomainCheckAdmin')) {
 			}
 			</script>
 			<?php
+			if (class_exists('DomainCheckDebug') && isset($_GET['test_ftue'])) {
+				DomainCheckDebug::debug();
+			}
+			if ( function_exists( 'get_option' ) && function_exists('get_current_screen') ) {
+				//get ftue array
+				$ftue = get_option(DomainCheckConfig::OPTIONS_PREFIX . 'ftue');
+				$ftue_exists = true;
+				if (!$ftue || !count($ftue)) {
+					$ftue = array();
+					$ftue_exists = false;
+				}
+				//check if they have seen the intro message...
+				if ( !isset($ftue['intro']) ) {
+					$icon = 'circle-www2';
+					$options = array();
+					$image = '<img src="' . plugins_url('/images/icons/' . $icon . '.svg', __FILE__) .'" class="svg svg-icon-admin-notice svg-fill-gray">';
+
+					$message = '<h2>' . $image . 'Welcome to Domain Check!</h2>';
+					$message .= '<br>';
+					$message .= 'Get started by using <a href="admin.php?page=domain-check-import-export" class="button"><img src="'. plugins_url('/images/icons/data-transfer-upload.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">Import</a> to add all of your domains and SSL certificates at once or by using <a href="admin.php?page=domain-check-search" class="button"><img src="'. plugins_url('/images/icons/magnifying-glass.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">Domain Search</a> or <a href="admin.php?page=domain-check-ssl-check" class="button"><img src="'. plugins_url('/images/icons/lock-locked.svg', __FILE__) . '" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">SSL Check</a> to add them one at a time!';
+					$message .= '<br><br>';
+
+					if ($options && is_array($options) && count($options)) {
+						$message .= '<br><br>' . "\n";
+						$first = true;
+						foreach($options as $option_name => $option_url) {
+							if (!$first) {
+								$message .= ' | ';
+							}
+							if ($option_name == 'Launch [&raquo]') {
+								$message .= '<a href="http://'.$option_url.'" target="_blank">'.$option_name.'</a>';
+							} else {
+								$message .= '<a href="'.$option_url.'">'.$option_name.'</a>';
+							}
+							if ($first) {
+								$first = false;
+							}
+						}
+					}
+					?>
+					<div class="updated domain-check-notice">
+					<?php echo $message; ?>
+					</div>
+					<?php
+				}
+
+				//if they are on import or search remove the ftue message
+				$screen = get_current_screen();
+				$screen_page = null;
+				if (is_object($screen) && property_exists($screen, 'base') && $screen->base) {
+					$screen_page = $screen->base;
+					$screen_page = str_replace('toplevel_page_', '', $screen_page);
+					$screen_page = str_replace('domains_page_', '', $screen_page);
+				}
+				if ( !isset($ftue['intro']) &&
+					(
+						$screen_page == 'domain-check-search'
+						|| $screen_page == 'domain-check-import-export'
+						|| $screen_page == 'domain-check-ssl-check'
+					)
+				) {
+					$ftue['intro'] = time();
+					if ($ftue_exists) {
+						update_option( DomainCheckConfig::OPTIONS_PREFIX . 'ftue', $ftue );
+					} else {
+						add_option( DomainCheckConfig::OPTIONS_PREFIX . 'ftue', $ftue );
+					}
+				}
+			}
+			?>
+			<?php
+			if ($nav) {
+				$this->admin_header_nav();
+			}
+			?>
+			<div id="domain-check-admin-notices"></div>
+			<?php
+		}
+
+		function admin_header_nav() {
+			?>
+			<div class="domain-check-nav-div-dashboard">
+			<?php
+			$nav_pages = array(
+				'domain-check' => array('Domains', 'circle-www2'),
+				'domain-check-your-domains' => array('Your Domains', 'flag'),
+				'domain-check-search' => array('Search', 'magnifying-glass'),
+				'domain-check-watch' => array('Watch', '207-eye'),
+				'domain-check-ssl-check' => array('SSL Check', 'lock-locked'),
+				'domain-check-ssl-watch' => array('SSL Alerts', 'bell'),
+				'domain-check-import-export' => array('Import', 'data-transfer-upload'),
+				'domain-check-settings' => array('Settings', 'cog'),
+				'domain-check-help' => array('Help', '266-question'),
+				'domain-check-coupons' => array('Coupons', '055-price-tags')
+			);
+
+			foreach ($nav_pages as $nav_page => $nav_data) {
+				?>
+				<a href="admin.php?page=<?php echo $nav_page; ?>" class="button" style="display: inline-block; margin-right: 3px; margin-top: 5px;">
+					<img src="<?php echo plugins_url('/images/icons/' . $nav_data[1] . '.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
+					<?php echo $nav_data[0]; ?>
+				</a>
+				<?php
+			}
+			?>
+			</div>
+			<div style="clear:both;" />
+			<?php
 		}
 
 		public function admin_init() {
@@ -502,7 +627,8 @@ if(!class_exists('DomainCheckAdmin')) {
 					$this,
 					'dashboard'
 				),
-				DomainCheckAdmin::$admin_icon //'dashicons-admin-site'
+				DomainCheckAdmin::$admin_icon, //'dashicons-admin-site'
+				'81.9987654321'
 			);
 			//add_action( 'load-' . $hook, array( $this, 'screen_option' ) );
 
@@ -750,6 +876,7 @@ if(!class_exists('DomainCheckAdmin')) {
 								$email_arr = array();
 							}
 							update_option(DomainCheckConfig::OPTIONS_PREFIX . $_POST['method'], $email_arr);
+							$this->ajax_success(array('message' => 'Success! Setting updated!'));
 						}
 						break;
 					case 'email_primary_email':
@@ -759,7 +886,7 @@ if(!class_exists('DomainCheckAdmin')) {
 							$email = sanitize_email($email);
 							if (is_email($email)) {
 								update_option(DomainCheckConfig::OPTIONS_PREFIX . $_POST['method'], $email);
-
+								$this->ajax_success(array('message' => 'Success! Setting updated!'));
 							} else {
 
 							}
@@ -783,6 +910,7 @@ if(!class_exists('DomainCheckAdmin')) {
 								$item_arr = DomainCheckConfig::$options[DomainCheckConfig::OPTIONS_PREFIX . 'settings']['domain_extension_favorites'];
 							}
 							update_option(DomainCheckConfig::OPTIONS_PREFIX . $_POST['method'], $item_arr);
+							$this->ajax_success(array('message' => 'Success! Setting updated!'));
 						}
 						break;
 					case 'coupons_primary_site':
@@ -792,11 +920,13 @@ if(!class_exists('DomainCheckAdmin')) {
 							$data = DomainCheckCouponData::get_data();
 							if (isset($data[$site])) {
 								update_option(DomainCheckConfig::OPTIONS_PREFIX . $_POST['method'], $site);
+								$this->ajax_success(array('message' => 'Success! Setting updated!'));
 							}
 						}
 						break;
 				}
 			}
+			$this->ajax_error('Setting not updated.');
 		}
 
 		public static function ajax_success($data) {
@@ -1194,7 +1324,7 @@ if(!class_exists('DomainCheckAdmin')) {
 
 		public function dashboard() {
 			global $wpdb;
-			$this->admin_header();
+			$this->admin_header(false);
 			?>
 			<style type="text/css">
 				.domain-check-admin-dashboard-search-box {
@@ -1215,6 +1345,8 @@ if(!class_exists('DomainCheckAdmin')) {
 					<img src="<?php echo plugins_url('/images/icons/circle-www2.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
 					Domains
 				</h2>
+				<div class="domain-check-dasboard-wrap">
+				<?php $this->admin_header_nav(); ?>
 				<div class="domain-check-admin-dashboard-search-box">
 				<h3>
 					<a href="<?php echo admin_url( 'admin.php?page=domain-check-search' ); ?>">
@@ -1546,13 +1678,16 @@ if(!class_exists('DomainCheckAdmin')) {
 				<?php
 				$coupon_last_updated = DomainCheckCouponData::last_updated();
 				if ($coupon_last_updated) {
+					$updated_date = date('m-d-Y', $coupon_last_updated);
+				} else {
+					$updated_date = 'EXPIRED. Please Refresh.';
+				}
 				?>
-				<h4>Updated: <?php echo date('m-d-Y', $coupon_last_updated); ?></h4>
+				<h4>Updated: <?php echo $updated_date;  ?></h4>
 				<a href="admin.php?page=domain-check&domain_check_coupons_update=1" class="button">
 					<img src="<?php echo plugins_url('/images/icons/303-loop2.svg', __FILE__); ?>" class="svg svg-icon-table svg-icon-table-links svg-fill-gray">
 					Refresh Coupons
 				</a>
-				<?php } ?>
 					<style type="text/css">
 						.dashboard-coupon-table {
 
@@ -1665,6 +1800,7 @@ if(!class_exists('DomainCheckAdmin')) {
 			}
 			$coupon_site_counter++;
 			?>
+			</div>
 			</div>
 		<?php
 		}
@@ -1840,7 +1976,7 @@ if(!class_exists('DomainCheckAdmin')) {
 							);
 
 							$wpdb->insert(
-								'wp_domain_check_domains',
+								DomainCheck::$db_prefix . '_domains',
 								$valarr
 							);
 						} else {
@@ -1900,103 +2036,6 @@ if(!class_exists('DomainCheckAdmin')) {
 		public function import_export() {
 			global $wpdb;
 
-			if (isset($_FILES['domain_check_your_domains_import'])) {
-				$firstrow = null;
-				$filedata = explode("\n", file_get_contents($_FILES['domain_check_your_domains_import']['tmp_name']));
-				foreach ($filedata as $filedata_idx => $file_line) {
-					if ($file_line == '' || $file_line == "\n") {
-						break;
-					}
-					$file_line = explode(',', $file_line);
-					$filedata[$filedata_idx] = $file_line;
-					//DomainName,TLD,CreateDate,ExpirationDate,Status,Privacy,Locked
-					$header_counter = 0;
-					foreach ($file_line as $file_line_data) {
-						if ($file_line_data == 'DomainName') {
-							$firstrow = array_flip($file_line);
-							break;
-						}
-						$search = strtolower(str_replace('"', '', $file_line[$firstrow['DomainName']]));
-						//check if is in DB...
-						if ( $search ) {
-							$sql = 'SELECT * FROM ' . DomainCheck::$db_prefix . '_domains WHERE domain_url ="' . strtolower($search) . '"';
-							$result = $wpdb->get_results( $sql, 'ARRAY_A' );
-							if ( count ( $result ) ) {
-								//domain exists in DB...
-								$domain_result = array_pop($result);
-
-								$sql = 'UPDATE ' . DomainCheck::$db_prefix . '_domains SET status = 2 WHERE domain_url = "' . $search . '"';
-
-								$wpdb->update(
-									DomainCheck::$db_prefix . '_domains',
-									array(
-										'status' => 2
-									),
-									array (
-										'domain_url' => $search
-									)
-								);
-
-								DomainCheckAdmin::admin_notices_add('Success! Data imported!', 'updated', null, 'data-transfer-upload');
-
-							} else {
-								$domain_root = $search;
-								$dot = strpos($domain_root, '.');
-								$sld = substr($domain_root, 0, $dot);
-								$tld = substr($domain_root, $dot + 1);
-
-								$whois = $this->getwhois( $sld, $tld );
-								if (!isset($whois['error'])) {
-
-									$status = 0;
-									$expires = 0;
-									if (strpos($whois['data'], 'No match for domain') !== false) {
-										DomainCheckAdmin::admin_notices_add('<strong>' . $search . '</strong> is not yet registered.', 'updated', null, 'circle-check');
-									} else {
-										$whois = explode("\n", $whois['data']);
-										foreach ($whois as $line) {
-											if (strpos($line, 'Expiration Date') !== false) {
-												$line = explode(' ', $line);
-												$dateArr = explode('-', $line[5]);
-												$expires = mktime(0, 0, 0, date('m', strtotime(ucfirst($dateArr[1]))), $dateArr[0], $dateArr[2]);
-
-												//echo '<br>' . "\n";
-											}
-										}
-									}
-
-									$sql = 'INSERT INTO wp_domain_check_domains VALUES (null, "' . $search . '", 0, 2, '.time().', 0, '.$expires.', null, null)';
-
-									$valarr = array(
-										'domain_id' => null,
-										'domain_url' => $search,
-										'user_id' => 0,
-										'status' => 2,
-										'date_added' => time(),
-										'domain_watch' => 1,
-										'domain_created' => 0,
-										'domain_last_check' => time(),
-										'domain_next_check' => 0,
-										'domain_expires' => $expires,
-										'domain_settings' => null,
-										'cache' => null,
-									);
-
-									$wpdb->insert(
-										'wp_domain_check_domains',
-										$valarr
-									);
-
-									//echo $sql;
-								} else {
-									DomainCheckAdmin::admin_notices_add($whois['error'], 'error', null, 'circle-x');
-								}
-							}
-						}
-						break;
-					}
-				}
-			}
 			$this->admin_header();
 			?>
 			<div class="wrap">
@@ -2065,21 +2104,23 @@ if(!class_exists('DomainCheckAdmin')) {
 						var plugins_url_icons = '<?php echo plugins_url('/images/icons/', __FILE__); ?>';
 						if (!data.hasOwnProperty('error')) {
 							if (data.hasOwnProperty('domain')) {
+								var html_domain = data.domain.replace(/\./g, '-');
+								var random = (Math.floor(Math.random() * 100)).toString();
 								if (!jQuery('#force_ssl').prop('checked')) {
 									var status_image = '<img src="'  + plugins_url_icons + 'circle-check.svg" class="svg svg-icon-table svg-fill-updated">';
 									var status_text = 'Available!';
 									switch (data.status) {
 										case 0:
 											status_text = 'Available!';
-											status_image = '<img src="'  + plugins_url_icons + 'circle-check.svg" class="svg svg-icon-table svg-fill-update-updated">';
+											status_image = '<img  id="' + html_domain + '-image-' + random + '" src="'  + plugins_url_icons + 'circle-check.svg" class="svg svg-icon-table svg-fill-update-updated" onload="paint_svg(\'' + html_domain + '-image-' + random + '\');">';
 											break;
 										case 1:
 											status_text = 'Taken';
-											status_image = '<img src="'  + plugins_url_icons + 'ban.svg" class="svg svg-icon-table svg-fill-error">';
+											status_image = '<img  id="' + html_domain + '-image-' + random + '" src="'  + plugins_url_icons + 'ban.svg" class="svg svg-icon-table svg-fill-error" onload="paint_svg(\'' + html_domain + '-image-' + random + '\');">';
 											break;
 										case 2:
 											status_text = 'Owned';
-											status_image = '<img src="'  + plugins_url_icons + 'flag.svg" class="svg svg-icon-table svg-fill-owned">';
+											status_image = '<img  id="' + html_domain + '-image-' + random + '" src="'  + plugins_url_icons + 'flag.svg" class="svg svg-icon-table svg-fill-owned" onload="paint_svg(\'' + html_domain + '-image-' + random + '\');">';
 											break;
 									}
 									var table_row = '<tr>' +
@@ -2096,11 +2137,11 @@ if(!class_exists('DomainCheckAdmin')) {
 									switch (data.status) {
 										case 0:
 											status_text = 'Not Secure';
-											status_image = '<img src="'  + plugins_url_icons + 'lock-unlocked.svg" class="svg svg-icon-table svg-fill-error">';
+											status_image = '<img id="' + html_domain + '-ssl-image-' + random + '" src="'  + plugins_url_icons + 'lock-unlocked.svg" class="svg svg-icon-table svg-fill-error" onload="paint_svg(\'' + html_domain + '-ssl-image-' + random + '\');">';
 											break;
 										case 1:
 											status_text = 'Secure';
-											status_image = '<img src="'  + plugins_url_icons + 'lock-locked.svg" class="svg svg-icon-table svg-fill-updated">';
+											status_image = '<img id="' + html_domain + '-ssl-image-' + random + '" src="'  + plugins_url_icons + 'lock-locked.svg" class="svg svg-icon-table svg-fill-updated" onload="paint_svg(\'' + html_domain + '-ssl-image-' + random + '\');">';
 											break;
 									}
 									var table_row = '<tr>' +
@@ -2197,6 +2238,19 @@ if(!class_exists('DomainCheckAdmin')) {
 						}
 					}
 
+					function import_text_toggle_checkboxes(elem) {
+						if (elem.id == 'force_owned') {
+							if (jQuery('#force_owned').prop('checked')) {
+								jQuery('#force_ssl').prop('checked', false);
+							}
+						}
+						if (elem.id == 'force_ssl') {
+							if (jQuery('#force_ssl').prop('checked')) {
+								jQuery('#force_owned').prop('checked', false);
+							}
+						}
+					}
+
 				</script>
 				<style type="text/css">
 					.domain-check-import-left {
@@ -2211,7 +2265,7 @@ if(!class_exists('DomainCheckAdmin')) {
 					}
 				</style>
 				<p class="p">
-					Use this tool to import your data and easily grab any domains from files, text lists, emails, or other documents.
+					Use this tool to import your data and easily grab any domains from files, text lists, emails, or other documents. To get a list of your domains you should log in to your domain registrar and find the section that lists all of your domains. Highlight the entire page and copy and paste in to the first textbox. If you have multiple pages of domains you can also see if your domain registrar can export a CSV and you can use the file importer.
 				</p>
 				<h2>
 					<img src="<?php echo plugins_url('/images/icons/data-transfer-upload.svg', __FILE__); ?>" class="svg svg-icon-h2 svg-fill-gray">
@@ -2220,13 +2274,13 @@ if(!class_exists('DomainCheckAdmin')) {
 				<div class="domain-check-import-left">
 					<h2>Step 1</h2>
 					<div>
-						<h3>Copy & Paste Text!</h3>
+						<h3>Copy & Paste Any Text!</h3>
 						<p class="p">
 							Copy and paste any text in to here to find any domain names! Extract domain names from any text, HTML, email, and anything you can copy & paste!
 						</p>
-						<textarea id="import_text" style="width: 100%; height: 200px;" onclick='if (this.value == "Copy and paste any text here and get the domains!") {this.value="";}'>Copy and paste any text here and get the domains!</textarea>
+						<textarea id="import_text" style="width: 100%; height: 200px;" onclick="if (this.value == 'Copy and paste any text here and get the domains!') { this.value=''; }" onkeyup="import_text_raw_init();">Copy and paste any text here and get the domains!</textarea>
 						<br>
-						<input type="button" class="button" value="Find Domains" onclick="import_text_raw_init();"/>
+						<input type="button" class="button-primary" value="Find Domains" onclick="import_text_raw_init();"/>
 					</div>
 					<div style="min-height: 30px; text-align: center;"></div>
 					<h3>File Import</h3>
@@ -2243,15 +2297,16 @@ if(!class_exists('DomainCheckAdmin')) {
 				?><div class="domain-check-import-left">
 					<h2>Step 2</h2>
 					<h3>Domains to Import</h3>
-					<a href="#" class="button" value="Search" onclick="import_text_search();">
-						Import
-					</a>
 					<div>
-					<input type="checkbox" id="force_owned">&nbsp;-&nbsp;Import all as Owned<br>
-					<input type="checkbox" id="force_ssl">&nbsp;-&nbsp;Import all as SSL<br>
-					<input type="checkbox" id="force_watch">&nbsp;-&nbsp;Watch All Domains<br>
+					<input type="checkbox" id="force_owned" onclick="import_text_toggle_checkboxes(this);" checked>&nbsp;-&nbsp;Import as Owned<br>
+					<input type="checkbox" id="force_ssl" onchange="import_text_toggle_checkboxes(this);">&nbsp;-&nbsp;Do SSL Check<br>
+					<input type="checkbox" id="force_watch" checked>&nbsp;-&nbsp;Watch All Domains<br>
 					</div>
 					<textarea id="found_domains" style="width: 100%; height: 350px;"></textarea>
+					<br>
+					<a href="#" class="button-primary" value="Search" onclick="import_text_search();">
+						Start the Import!
+					</a>
 				</div><?php
 				//spacer
 				?><div class="domain-check-import-left">
@@ -2601,7 +2656,6 @@ if(!class_exists('DomainCheckAdmin')) {
 				<?php
 				$this->search_box();
 				?>
-				<div id="domain-check-admin-notices"></div>
 				<div id="poststuff">
 					<div id="post-body" class="metabox-holder columns-2">
 						<div id="post-body-content">
@@ -2921,7 +2975,13 @@ if(!class_exists('DomainCheckAdmin')) {
 					);
 				}
 
-				function update_setting_callback(data) {}
+				function update_setting_callback(data) {
+					if (!data.hasOwnProperty('error')) {
+						jQuery('#domain-check-admin-notices').append('<div class="notice updated domain-check-notice"><p>' + data.message + '</p></div>');
+					} else {
+						jQuery('#domain-check-admin-notices').append('<div class="notice error domain-check-notice"><p>' + data.error + '</p></div>');
+					}
+				}
 			</script>
 			<h2>
 				<img src="<?php echo plugins_url('/images/icons/cog.svg', __FILE__); ?>" class="svg svg-icon-h1 svg-fill-gray">
@@ -3167,7 +3227,7 @@ if(!class_exists('DomainCheckAdmin')) {
 				);
 			} else {
 				$wpdb->insert(
-					'wp_domain_check_ssl',
+					DomainCheck::$db_prefix . '_ssl',
 					$valarr
 				);
 			}
@@ -3184,7 +3244,6 @@ if(!class_exists('DomainCheckAdmin')) {
 				<?php
 				$this->ssl_search_box();
 				?>
-				<div id="domain-check-admin-notices"></div>
 				<div id="poststuff">
 					<div id="post-body" class="metabox-holder columns-2">
 						<div id="post-body-content">
@@ -3697,7 +3756,6 @@ if(!class_exists('DomainCheckAdmin')) {
 				<?php
 				$this->search_box();
 				?>
-				<div id="domain-check-admin-notices"></div>
 				<div id="poststuff">
 					<div id="post-body" class="metabox-holder columns-2">
 						<div id="post-body-content">
@@ -3777,8 +3835,6 @@ if(!class_exists('DomainCheckAdmin')) {
 					$domain_result = array_pop($result);
 					$domain_result['cache'] = ($domain_result['cache'] ? json_decode(gzuncompress($domain_result['cache']), true) : null);
 					$domain_result['domain_settings'] = ($domain_result['domain_settings'] ? json_decode(gzuncompress($domain_result['domain_settings']), true) : null);
-					print_r($domain_result);
-
 				} else {
 					//domain not found... redirect to search...
 					?>

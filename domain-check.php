@@ -2,8 +2,8 @@
 /*
 Plugin Name: Domain Check
 Plugin URI: http://domaincheckplugin.com
-Description: Domain Check lets your search domain names using your Wordpress blog, set domain expiration reminders for yourself or multiple email addresses, check SSL certificates, and set SSL expiration reminders. Get email reminders when domains expire or SSL certificates expire and set multiple emails for domain expiration reminders. Watch domain names on your own domain watch list and do your own domain lookups! Get the latest daily coupon codes from all the major domain registrars, SSL certificate providers, and hosting companies right in your Wordpress admin!
-Version: 1.0.2
+Description: Domain Check lets you search domain names in your admin using your Wordpress blog, set domain expiration reminders for yourself or multiple email addresses, check SSL certificates, and set SSL expiration reminders. Get email reminders when domains expire or SSL certificates expire and set multiple emails for domain expiration reminders. Watch domain names on your own domain watch list and do your own domain lookups! Get the latest daily coupon codes from all the major domain registrars, SSL certificate providers, and hosting companies right in your Wordpress admin!
+Version: 1.0.4
 Author: Domain Check
 Author URI: http://domaincheckplugin.com
 
@@ -46,13 +46,13 @@ if(!class_exists('DomainCheck')) {
 
 		const CAPABILITY = 'edit_domain_check';
 
-		const PHP_REQUIRED_VERSION = '5.2.0';
+		const PHP_REQUIRED_VERSION = '5.3.0';
 
 		//plugin
 		const PLUGIN_CLASSNAME = 'DomainCheck';
 		const PLUGIN_NAME = 'domain-check';
 		const PLUGIN_OPTION_PREFIX = 'domain_check';
-		const PLUGIN_VERSION = '1.0.2';
+		const PLUGIN_VERSION = '1.0.4';
 
 		public static $db_table; //db table (has to be dynamic for wp prefix)
 
@@ -637,7 +637,6 @@ if(!class_exists('DomainCheck')) {
 		public function activate_plugin() {
 			global $wpdb, $charset_collate;
 
-
 			//ob_start();
 
 			//validate env
@@ -721,12 +720,16 @@ if(!class_exists('DomainCheck')) {
 				add_option($key, $value);
 			}
 
+			$wpdb->flush();
+
 			//add entry for current url...
+			$update_res = DomainCheckCouponData::update();
+
 			DomainCheckSearch::domain_search(site_url(), false, true, true);
 			DomainCheckSearch::ssl_search(site_url(), true);
 			//DomainCheckSearch::domain_search(get_option('site_url'));
 
-			//trigger_error(ob_get_contents(),E_USER_ERROR);
+			//trigger_error(ob_get_contents(), E_USER_ERROR);
 		}
 
 		//deactivate
