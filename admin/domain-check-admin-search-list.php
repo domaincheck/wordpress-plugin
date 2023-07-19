@@ -43,12 +43,15 @@ class DomainCheck_Search_List extends WP_List_Table {
 	public static function get_domains( $per_page = 100, $page_number = 1 ) {
 		global $wpdb;
 		$sql = 'SELECT * FROM ' . DomainCheck::$db_prefix . '_domains WHERE search_date > 0';
+		
 		if ( ! empty( $_REQUEST['orderby'] ) ) {
-			$sql .= ' ORDER BY ' . esc_sql( $_REQUEST['orderby'] );
-			$sql .= ! empty( $_REQUEST['order'] ) ? ' ' . esc_sql( $_REQUEST['order'] ) : ' ASC, search_date DESC';
+			$sql_order = ' ORDER BY ' . sanitize_sql_orderby( $_REQUEST['orderby'] );
+			$sql_order .= (! empty( $_REQUEST['order'] ) ? ' ' . sanitize_sql_orderby( $_REQUEST['order'] ) : ' ASC, search_date DESC');
+			$sql .= $sql_order;
 		} else {
 			$sql .= ' ORDER BY search_date DESC';
 		}
+
 		$sql .= " LIMIT $per_page";
 		$sql .= ' OFFSET ' . ( $page_number - 1 ) * $per_page;
 		$result = $wpdb->get_results( $sql, 'ARRAY_A' );
@@ -283,11 +286,11 @@ class DomainCheck_Search_List extends WP_List_Table {
 			$paged = '&paged=' . $this->get_pagenum();
 		}
 		$order = '';
-		if (isset($_REQUEST['orderby']) && isset($_REQUEST['order'])) {
-			$order = '&orderby='
-				. sanitize_text_field($_REQUEST['orderby'])
-				. '&order='
-				. sanitize_text_field($_REQUEST['order']);
+		if (isset($_REQUEST['orderby'])) {
+			$order .= '&orderby=' . sanitize_text_field($_REQUEST['orderby']);
+		}
+		if (isset($_REQUEST['order'])) {
+			$order .= '&order=' . sanitize_text_field($_REQUEST['order']);
 		}
 
 		$out = '';

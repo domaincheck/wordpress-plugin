@@ -260,7 +260,7 @@ class DomainCheckAdminProfile {
 										if ($days_flat < 3) {
 											$fill = 'red';
 										}
-										$expire_image = '/images/icons/color/clock-' . $fill . '.svg';
+										$expire_image = plugins_url('/images/icons/color/clock-' . $fill . '.svg', __FILE__);
 									}
 									if ($domain_result['domain_expires'] < time()) {
 										$out .= ' Expired';

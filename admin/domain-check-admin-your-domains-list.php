@@ -44,8 +44,8 @@ class DomainCheck_Your_Domains_List extends WP_List_Table {
 		global $wpdb;
 		$sql = 'SELECT * FROM ' . DomainCheck::$db_prefix . '_domains WHERE status = 2';
 		if ( ! empty( $_REQUEST['orderby'] ) ) {
-			$sql .= ' ORDER BY ' . esc_sql( $_REQUEST['orderby'] );
-			$sql .= ! empty( $_REQUEST['order'] ) ? ' ' . esc_sql( $_REQUEST['order'] ) : ' ASC';
+			$sql .= ' ORDER BY ' . sanitize_sql_orderby( $_REQUEST['orderby'] );
+			$sql .= ! empty( $_REQUEST['order'] ) ? ' ' . sanitize_sql_orderby( $_REQUEST['order'] ) : ' ASC';
 		} else {
 			$sql .= ' ORDER BY domain_url ASC';
 		}
@@ -323,11 +323,11 @@ class DomainCheck_Your_Domains_List extends WP_List_Table {
 			$paged = '&paged=' . $this->get_pagenum();
 		}
 		$order = '';
-		if (isset($_REQUEST['orderby']) && isset($_REQUEST['order'])) {
-			$order = '&orderby='
-				. sanitize_text_field($_REQUEST['orderby'])
-				. '&order='
-				. sanitize_text_field($_REQUEST['order']);
+		if (isset($_REQUEST['orderby'])) {
+			$order .= '&orderby=' . sanitize_text_field($_REQUEST['orderby']);
+		}
+		if (isset($_REQUEST['order'])) {
+			$order .= '&order=' . sanitize_text_field($_REQUEST['order']);
 		}
 
 		$out = '';
