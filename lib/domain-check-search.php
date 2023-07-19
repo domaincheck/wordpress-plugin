@@ -134,8 +134,8 @@ class DomainCheckSearch {
 						}
 						$ajax_response = array('message' => $message, 'status' => 0, 'domain' => $search);
 					} else {
-						if (isset($message_options['.' . $domain_parse[count($domain_parse)-1]])) {
-							unset($message_options['.' . $domain_parse[count($domain_parse)-1]]);
+						if (isset($message_options['.' . $domain_parse[strlen($domain_parse)-1]])) {
+							unset($message_options['.' . $domain_parse[strlen($domain_parse)-1]]);
 						}
 						if (($in_db && isset($domain_result) && $domain_result['status'] == 2) || $force_owned) {
 							$status = 2;

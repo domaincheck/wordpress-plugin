@@ -3,7 +3,7 @@
 Plugin Name: Domain Check
 Plugin URI: http://domaincheckplugin.com
 Description: Domain Check lets you search domain names in your admin using your Wordpress blog, set domain expiration reminders for yourself or multiple email addresses, check SSL certificates, and set SSL expiration reminders. Get email reminders when domains expire or SSL certificates expire and set multiple emails for domain expiration reminders. Watch domain names on your own domain watch list and do your own domain lookups! Get the latest daily coupon codes from all the major domain registrars, SSL certificate providers, and hosting companies right in your Wordpress admin!
-Version: 1.0.16
+Version: 1.0.17
 Author: Domain Check
 Author URI: http://domaincheckplugin.com
 
@@ -52,7 +52,7 @@ if(!class_exists('DomainCheck')) {
 		const PLUGIN_CLASSNAME = 'DomainCheck';
 		const PLUGIN_NAME = 'domain-check';
 		const PLUGIN_OPTION_PREFIX = 'domain_check';
-		const PLUGIN_VERSION = '1.0.16';
+		const PLUGIN_VERSION = '1.0.17';
 
 		public static $db_table; //db table (has to be dynamic for wp prefix)
 
@@ -418,7 +418,7 @@ if(!class_exists('DomainCheck')) {
 							}
 
 							if ($ssl_result[$domain_result_idx]['domain_expires'] - time() < (86400 * 60)) {
-								$cta = '<a href="' . DomainCheckLinks::ssl($domain_result[$domain_result_idx]['domain_url']) . '" target="_blank">Renew [&raquo;]</a>';
+								$cta = '<a href="' . DomainCheckLinks::ssl($ssl_result[$domain_result_idx]['domain_url']) . '" target="_blank">Renew [&raquo;]</a>';
 							}
 						} else {
 							$expires = 'n/a';
